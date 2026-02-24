@@ -1,10 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { AnimatedGroup } from "@/components/ui/animated-group"
-import Link from "next/link"
 import { ArrowRight, ChevronDown } from "lucide-react"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -24,7 +23,7 @@ const products = [
         accent: "#FF4D6D",
         darkBg: "#0d0004",
         available: true,
-        ctaHref: "#",
+        priceId: "price_1T4Rwp49C1TvyyAW38zEfb46",
     },
     {
         number: "02",
@@ -66,6 +65,22 @@ export default function CatalogPage() {
     const containerRef = useRef<HTMLDivElement>(null)
     const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
     const marqueeRef = useRef<HTMLDivElement>(null)
+    const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
+
+    async function handleCheckout(priceId: string, productNumber: string) {
+        setLoadingProductId(productNumber)
+        try {
+            const res = await fetch("/api/checkout", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ priceId }),
+            })
+            const { url } = await res.json()
+            window.location.href = url
+        } catch {
+            setLoadingProductId(null)
+        }
+    }
 
     useEffect(() => {
         const ctx = gsap.context(() => {
@@ -314,14 +329,17 @@ export default function CatalogPage() {
                         {/* CTA */}
                         <div className="prod-cta mt-10">
                             {product.available ? (
-                                <Link
-                                    href={product.ctaHref ?? "#"}
-                                    className="group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98]"
+                                <button
+                                    onClick={() => handleCheckout(product.priceId!, product.number)}
+                                    disabled={loadingProductId === product.number}
+                                    className="group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                                     style={{ backgroundColor: product.accent }}
                                 >
-                                    Shop Now
-                                    <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                                </Link>
+                                    {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
+                                    {loadingProductId !== product.number && (
+                                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                                    )}
+                                </button>
                             ) : (
                                 <div
                                     className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/45"
