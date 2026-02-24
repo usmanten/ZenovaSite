@@ -470,7 +470,7 @@ export default function CatalogPage() {
                 </div>
             ))}
 
-            {/* ── WAITLIST CTA ─────────────────────────────────────────────────── */}
+            {/* ── COMING SOON ──────────────────────────────────────────────────── */}
             <section className="relative flex min-h-[65vh] flex-col items-center justify-center overflow-hidden bg-black px-6 text-center text-white">
                 {/* Gradient blobs */}
                 <div
@@ -494,19 +494,8 @@ export default function CatalogPage() {
                         <span className="text-white/20">Coming soon.</span>
                     </h2>
                     <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white/35">
-                        Dream and Glow are in development. Join the waitlist and get early access,
-                        exclusive launch pricing, and first-drop updates.
+                        Dream and Glow are in development. Stay tuned for early access and first-drop updates.
                     </p>
-                    <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
-                        <input
-                            type="email"
-                            placeholder="your@email.com"
-                            className="w-full rounded-full border border-white/10 bg-white/5 px-6 py-3.5 text-sm text-white outline-none placeholder:text-white/25 focus:border-white/25 sm:w-80"
-                        />
-                        <button className="w-full rounded-full bg-white px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 sm:w-auto">
-                            Join Waitlist
-                        </button>
-                    </div>
 
                     {/* Product pills */}
                     <div className="mt-10 flex flex-wrap items-center justify-center gap-3">

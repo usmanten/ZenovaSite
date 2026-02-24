@@ -330,7 +330,9 @@ export default function AboutPage() {
                     <blockquote className="text-balance text-3xl font-medium leading-snug md:text-4xl lg:text-[2.8rem]">
                         {quoteWords.map((word, i) => (
                             <span key={i} className="quote-word mr-[0.3em] inline-block last:mr-0">
-                                {word}
+                                {["feel", "the", "difference."].includes(word)
+                                    ? <em>{word}</em>
+                                    : word}
                             </span>
                         ))}
                     </blockquote>
@@ -453,12 +455,12 @@ export default function AboutPage() {
                             Shop Now
                             <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
                         </Link>
-                        <a
-                            href="mailto:hello@zenovastrips.com"
+                        <Link
+                            href="/contact"
                             className="inline-flex items-center rounded-full border border-white/10 px-8 py-4 text-sm font-bold text-white/50 transition-colors duration-200 hover:border-white/20 hover:text-white"
                         >
                             Get in Touch
-                        </a>
+                        </Link>
                     </div>
                 </div>
             </section>
