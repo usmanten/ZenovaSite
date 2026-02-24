@@ -70,7 +70,7 @@ export default function FooterSection() {
                     className="mx-auto block size-fit"
                 >
                     <Image
-                        src="/logo.jpeg"
+                        src="/logoinvert.png"
                         alt="Zenova Strips"
                         width={120}
                         height={52}

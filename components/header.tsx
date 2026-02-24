@@ -41,7 +41,7 @@ export const HeroHeader = () => {
                                 data-nav-logo
                                 className="flex items-center space-x-2">
                                 <Image
-                                    src="/logo.jpeg"
+                                    src="/logoinvert.png"
                                     alt="Zenova Strips"
                                     width={120}
                                     height={52}

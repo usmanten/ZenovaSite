@@ -13,7 +13,6 @@ export default function LogoIntro() {
         const logo = logoRef.current
         if (!overlay || !logo) return
 
-        // Lock scroll during intro
         document.body.style.overflow = "hidden"
 
         const tl = gsap.timeline({
@@ -23,17 +22,17 @@ export default function LogoIntro() {
             },
         })
 
-        // Phase 1: Logo fades in, big and centered
+        // Phase 1: Logo fades in centered
         tl.fromTo(
             logo,
             { opacity: 0, scale: 0.85 },
             { opacity: 1, scale: 1, duration: 1, ease: "power2.out" }
         )
 
-        // Phase 2: Hold for a beat
+        // Phase 2: Hold
         tl.to({}, { duration: 0.6 })
 
-        // Phase 3: Logo shrinks and moves to the exact nav logo position
+        // Phase 3: Shrink and move to nav logo position
         tl.to(logo, {
             scale: () => {
                 const navEl = document.querySelector("[data-nav-logo]") as HTMLElement | null
@@ -64,17 +63,19 @@ export default function LogoIntro() {
             ease: "power4.inOut",
         })
 
-        // Phase 4: Overlay fades out revealing the page
-        tl.to(
-            overlay,
-            {
-                opacity: 0,
-                duration: 0.5,
-                ease: "power2.out",
-                pointerEvents: "none",
+        // Phase 4: Hold at nav position
+        tl.to({}, { duration: 0.5 })
+
+        // Phase 5: Overlay fades out
+        tl.to(overlay, {
+            opacity: 0,
+            duration: 0.7,
+            ease: "power2.inOut",
+            pointerEvents: "none",
+            onComplete: () => {
+                overlay.style.display = "none"
             },
-            "-=0.2"
-        )
+        })
 
         return () => {
             tl.kill()
@@ -85,19 +86,16 @@ export default function LogoIntro() {
     return (
         <div
             ref={overlayRef}
-            className="fixed inset-0 z-[9999] flex items-center justify-center bg-background"
-            style={{ pointerEvents: "all" }}
+            className="fixed inset-0 z-[9999] flex items-center justify-center"
+            style={{ backgroundColor: "#000000", pointerEvents: "all" }}
         >
             <div
                 ref={logoRef}
-                style={{
-                    opacity: 0,
-                    transformOrigin: "center center",
-                }}
+                style={{ opacity: 0, transformOrigin: "center center" }}
             >
                 <Image
-                    src="/logo.jpeg"
-                    alt="Zenova Strips"
+                    src="/logoinvert.png"
+                    alt="Zenova"
                     width={420}
                     height={180}
                     priority
