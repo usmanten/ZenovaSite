@@ -80,7 +80,7 @@ export default function Features() {
     }, [])
 
     return (
-        <div ref={pinWrapRef} className="h-screen w-full overflow-hidden bg-[#080808]">
+        <div ref={pinWrapRef} className="h-screen w-full overflow-hidden bg-black">
             <div className="flex h-full w-full flex-col items-center justify-center">
 
                 <div

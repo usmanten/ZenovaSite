@@ -22,7 +22,7 @@ const transitionVariants = {
 
 const marqueeItems = [
     'STRAWBERRY FROST', '·', 'MADE IN USA', '·', 'SUGAR FREE', '·',
-    'FAST ACTING', '·', 'CLEAN FORMULA', '·', '50K+ REVIEWS', '·',
+    'FAST ACTING', '·', 'CLEAN FORMULA', '·',
     'SUBLINGUAL STRIPS', '·', 'NO FILLERS', '·', 'CAFFEINE', '·',
 ]
 
@@ -105,7 +105,6 @@ export default function HeroHome() {
                             {/* Review badge — now below the headline */}
                             <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2 text-xs backdrop-blur-sm">
                                 <span className="text-sm leading-none text-yellow-400">★★★★★</span>
-                                <span className="text-white/50">50,000+ Five Star Reviews</span>
                                 <span className="h-3 w-px bg-white/15" />
                                 <span className="text-white/50">100% Satisfaction Guarantee</span>
                             </div>

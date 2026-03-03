@@ -23,7 +23,7 @@ const products = [
         accent: "#FF4D6D",
         darkBg: "#0d0004",
         available: true,
-        priceId: "price_1T4Rwp49C1TvyyAW38zEfb46",
+        priceId: "price_1T6x3s47Zfqv1hj2plMgK9BU",
     },
     {
         number: "02",
@@ -66,6 +66,16 @@ export default function CatalogPage() {
     const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
     const marqueeRef = useRef<HTMLDivElement>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
+    const [quantities, setQuantities] = useState<Record<string, number>>({})
+
+    const getQty = (num: string) => quantities[num] ?? 1
+
+    function changeQty(num: string, delta: number) {
+        setQuantities(prev => ({
+            ...prev,
+            [num]: Math.max(1, Math.min(10, (prev[num] ?? 1) + delta)),
+        }))
+    }
 
     async function handleCheckout(priceId: string, productNumber: string) {
         setLoadingProductId(productNumber)
@@ -73,7 +83,7 @@ export default function CatalogPage() {
             const res = await fetch("/api/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ priceId }),
+                body: JSON.stringify({ priceId, quantity: getQty(productNumber) }),
             })
             const { url } = await res.json()
             window.location.href = url
@@ -329,17 +339,50 @@ export default function CatalogPage() {
                         {/* CTA */}
                         <div className="prod-cta mt-10">
                             {product.available ? (
-                                <button
-                                    onClick={() => handleCheckout(product.priceId!, product.number)}
-                                    disabled={loadingProductId === product.number}
-                                    className="group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-                                    style={{ backgroundColor: product.accent }}
-                                >
-                                    {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
-                                    {loadingProductId !== product.number && (
-                                        <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                                    )}
-                                </button>
+                                <div className="flex flex-col items-start gap-4">
+                                    {/* Quantity selector */}
+                                    <div className="flex items-center gap-3">
+                                        <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/30">Qty</span>
+                                        <div
+                                            className="flex items-center rounded-full border"
+                                            style={{ borderColor: product.accent + "30", backgroundColor: product.accent + "0c" }}
+                                        >
+                                            <button
+                                                onClick={() => changeQty(product.number, -1)}
+                                                disabled={getQty(product.number) <= 1}
+                                                className="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-opacity hover:opacity-70 disabled:opacity-25"
+                                                style={{ color: product.accent }}
+                                            >
+                                                −
+                                            </button>
+                                            <span
+                                                className="w-6 text-center text-sm font-bold tabular-nums"
+                                                style={{ color: product.accent }}
+                                            >
+                                                {getQty(product.number)}
+                                            </span>
+                                            <button
+                                                onClick={() => changeQty(product.number, 1)}
+                                                disabled={getQty(product.number) >= 10}
+                                                className="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-opacity hover:opacity-70 disabled:opacity-25"
+                                                style={{ color: product.accent }}
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={() => handleCheckout(product.priceId!, product.number)}
+                                        disabled={loadingProductId === product.number}
+                                        className="group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                                        style={{ backgroundColor: product.accent }}
+                                    >
+                                        {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
+                                        {loadingProductId !== product.number && (
+                                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                                        )}
+                                    </button>
+                                </div>
                             ) : (
                                 <div
                                     className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/45"
