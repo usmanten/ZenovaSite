@@ -13,17 +13,23 @@ gsap.registerPlugin(ScrollTrigger)
 const products = [
     {
         number: "01",
-        nameLines: ["Strawberry", "Frost"],
+        nameLines: ["Power"],
+        flavor: "Strawberry Frost",
         category: "ENERGY",
         type: "Caffeine Strip",
-        tagline: "100mg of clean caffeine. Zero crash. Zero sugar.",
+        tagline: "50mg of clean caffeine. Zero crash. Zero sugar.",
         description:
-            "Our flagship energy strip dissolves in seconds and kicks in fast. Crisp strawberry flavor, no jitters, no crash — just clean, focused energy when you need it most.",
-        badges: ["100mg Caffeine", "Sugar Free", "No Artificial Colors", "Made in USA", "30 Strips / Pack"],
+            "Our flagship energy strip dissolves in seconds and kicks in fast. Crisp strawberry flavor, no jitters, no crash. Just clean, focused energy when you need it most.",
+        badges: ["50mg Caffeine", "Sugar Free", "Gluten Free", "Vegan", "No Artificial Colors", "Made in USA", "30 Strips / Pack"],
         accent: "#FF4D6D",
         darkBg: "#0d0004",
         available: true,
-        priceId: "price_1T6x3s47Zfqv1hj2plMgK9BU",
+        slug: "strawberry-frost",
+        bundles: [
+            { qty: 1, days: 30, price: "$18.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.63/strip", pctOff: "32% off", badge: null },
+            { qty: 2, days: 60, price: "$35.99", originalPrice: "$55.98", perPack: "$17.99/pack", perStrip: "$0.60/strip", pctOff: "36% off", badge: "Most Popular" },
+            { qty: 3, days: 90, price: "$47.99", originalPrice: "$83.97", perPack: "$16.00/pack", perStrip: "$0.53/strip", pctOff: "44% off", badge: "Best Value" },
+        ],
     },
     {
         number: "02",
@@ -32,8 +38,8 @@ const products = [
         type: "Melatonin Strip",
         tagline: "Fall asleep faster. Wake up refreshed.",
         description:
-            "3mg of fast-dissolving melatonin in a strip that works before your head hits the pillow. Formulated for quality sleep — not the grogginess you get from pills.",
-        badges: ["3mg Melatonin", "Sugar Free", "Non-Habit Forming", "Made in USA", "30 Strips / Pack"],
+            "3mg of fast-dissolving melatonin in a strip that works before your head hits the pillow. Formulated for quality sleep without the grogginess you get from pills.",
+        badges: ["3mg Melatonin", "Sugar Free", "Gluten Free", "Vegan", "Non-Habit Forming", "Made in USA", "30 Strips / Pack"],
         accent: "#8B5CF6",
         darkBg: "#05010d",
         available: false,
@@ -43,13 +49,15 @@ const products = [
         nameLines: ["Glow"],
         category: "BEAUTY",
         type: "Beauty Strip",
-        tagline: "Collagen, biotin & hyaluronic acid — in one strip.",
+        tagline: "Collagen, biotin & hyaluronic acid. All in one strip.",
         description:
             "Your entire daily beauty routine, simplified into a single strip. Zenova Glow delivers premium skin and hair nutrients sublingually for maximum bioavailability.",
-        badges: ["Collagen Peptides", "Biotin 5000mcg", "Hyaluronic Acid", "Made in USA", "30 Strips / Pack"],
+        badges: ["Collagen Peptides", "Biotin 5000mcg", "Hyaluronic Acid", "Gluten Free", "Vegan", "Made in USA", "30 Strips / Pack"],
         accent: "#F59E0B",
         darkBg: "#0d0800",
         available: false,
+        // per-letter margin-right adjustments for BEAUTY: B E A U T Y
+        bgTextSpacing: ["0", "0", "-0.04em", "0.02em", "0.04em", "0"],
     },
 ]
 
@@ -66,26 +74,27 @@ export default function CatalogPage() {
     const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
     const marqueeRef = useRef<HTMLDivElement>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
-    const [quantities, setQuantities] = useState<Record<string, number>>({})
+    const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
 
-    const getQty = (num: string) => quantities[num] ?? 1
+    const getBundle = (num: string) => selectedBundles[num] ?? 1
 
-    function changeQty(num: string, delta: number) {
-        setQuantities(prev => ({
-            ...prev,
-            [num]: Math.max(1, Math.min(10, (prev[num] ?? 1) + delta)),
-        }))
-    }
-
-    async function handleCheckout(priceId: string, productNumber: string) {
+    async function handleCheckout(slug: string, productNumber: string) {
         setLoadingProductId(productNumber)
         try {
             const res = await fetch("/api/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ priceId, quantity: getQty(productNumber) }),
+                body: JSON.stringify({ slug, bundle: getBundle(productNumber) }),
             })
+            if (!res.ok) {
+                setLoadingProductId(null)
+                return
+            }
             const { url } = await res.json()
+            if (!url) {
+                setLoadingProductId(null)
+                return
+            }
             window.location.href = url
         } catch {
             setLoadingProductId(null)
@@ -253,12 +262,19 @@ export default function CatalogPage() {
                         className="prod-bg-text pointer-events-none absolute -right-[4vw] top-1/2 -translate-y-1/2 select-none font-black leading-none"
                         style={{
                             color: product.accent,
-                            fontSize: "24vw",
+                            fontSize: "22vw",
                             lineHeight: 1,
+                            letterSpacing: "-0.01em",
+                            WebkitMaskImage: product.number !== "02" ? "linear-gradient(to right, transparent 7%, black 20%)" : undefined,
+                            maskImage: product.number !== "02" ? "linear-gradient(to right, transparent 7%, black 30%)" : undefined,
                         }}
                         aria-hidden
                     >
-                        {product.category}
+                        {"bgTextSpacing" in product && product.bgTextSpacing
+                            ? (product.category as string).split("").map((char, ci) => (
+                                <span key={ci} style={{ marginRight: (product.bgTextSpacing as string[])[ci] ?? "0" }}>{char}</span>
+                            ))
+                            : product.category}
                     </div>
 
                     {/* Ambient glow */}
@@ -290,15 +306,23 @@ export default function CatalogPage() {
                         {/* Product name — each word on its own line for stagger */}
                         <div className="mt-5">
                             {product.nameLines.map((line, li) => (
-                                <div key={li} className="overflow-hidden">
+                                <div key={li} className="overflow-hidden pb-4">
                                     <h2
                                         className="prod-name-line font-black leading-[0.9] tracking-tight text-white"
-                                        style={{ fontSize: product.nameLines.length > 1 ? "clamp(3rem,5.5vw,6.5rem)" : "clamp(4rem,7vw,9rem)" }}
+                                        style={{ fontSize: "clamp(4rem,7vw,9rem)" }}
                                     >
                                         {line}
                                     </h2>
                                 </div>
                             ))}
+                            {"flavor" in product && product.flavor && (
+                                <p
+                                    className="mt-1 text-sm font-semibold uppercase tracking-[0.25em]"
+                                    style={{ color: product.accent + "99" }}
+                                >
+                                    {product.flavor as string}
+                                </p>
+                            )}
                         </div>
 
                         {/* Accent divider */}
@@ -321,7 +345,7 @@ export default function CatalogPage() {
                         </p>
 
                         {/* Badges */}
-                        <div className="mt-7 flex flex-wrap gap-2">
+                        <div className="mt-4 flex flex-wrap gap-2">
                             {product.badges.map(badge => (
                                 <span
                                     key={badge}
@@ -337,53 +361,97 @@ export default function CatalogPage() {
                         </div>
 
                         {/* CTA */}
-                        <div className="prod-cta mt-10">
-                            {product.available ? (
-                                <div className="flex flex-col items-start gap-4">
-                                    {/* Quantity selector */}
-                                    <div className="flex items-center gap-3">
-                                        <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/30">Qty</span>
-                                        <div
-                                            className="flex items-center rounded-full border"
-                                            style={{ borderColor: product.accent + "30", backgroundColor: product.accent + "0c" }}
-                                        >
-                                            <button
-                                                onClick={() => changeQty(product.number, -1)}
-                                                disabled={getQty(product.number) <= 1}
-                                                className="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-opacity hover:opacity-70 disabled:opacity-25"
-                                                style={{ color: product.accent }}
-                                            >
-                                                −
-                                            </button>
-                                            <span
-                                                className="w-6 text-center text-sm font-bold tabular-nums"
-                                                style={{ color: product.accent }}
-                                            >
-                                                {getQty(product.number)}
-                                            </span>
-                                            <button
-                                                onClick={() => changeQty(product.number, 1)}
-                                                disabled={getQty(product.number) >= 10}
-                                                className="flex size-8 items-center justify-center rounded-full text-sm font-bold transition-opacity hover:opacity-70 disabled:opacity-25"
-                                                style={{ color: product.accent }}
-                                            >
-                                                +
-                                            </button>
+                        <div className="prod-cta mt-5">
+                            {product.available && product.bundles ? (() => {
+                                const selectedQty = getBundle(product.number)
+                                const active = product.bundles.find(b => b.qty === selectedQty) ?? product.bundles[0]
+                                return (
+                                    <div className="flex flex-col gap-3">
+                                        {/* Price summary */}
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-baseline gap-2.5">
+                                                <span className="text-3xl font-black" style={{ color: product.accent }}>
+                                                    {active.price}
+                                                </span>
+                                                <span className="text-sm font-medium text-white/30 line-through">
+                                                    {active.originalPrice}
+                                                </span>
+                                                <span className="text-[11px] text-white/25">{active.perStrip}</span>
+                                            </div>
+                                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em]" style={{ color: product.accent + "99" }}>
+                                                Launch Batch · Special limited pricing while supplies last
+                                            </p>
                                         </div>
+
+                                        {/* Bundle cards — grid fills the same width as the text block above */}
+                                        <div className="mt-2 grid grid-cols-3 gap-2.5">
+                                                {product.bundles.map(b => {
+                                                    const isSelected = b.qty === selectedQty
+                                                    return (
+                                                        <div key={b.qty} className="flex flex-col items-center gap-1">
+                                                            {b.badge ? (
+                                                                <span
+                                                                    className="mb-0.5 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
+                                                                    style={{ backgroundColor: product.accent + "22", color: product.accent }}
+                                                                >
+                                                                    {b.badge}
+                                                                </span>
+                                                            ) : (
+                                                                <span className="mb-0.5 h-4" />
+                                                            )}
+                                                            <button
+                                                                onClick={() => setSelectedBundles(prev => ({ ...prev, [product.number]: b.qty }))}
+                                                                className="w-full flex flex-col items-center gap-1 rounded-xl px-3 py-3.5 text-center transition-all duration-200"
+                                                                style={{
+                                                                    border: `1.5px solid ${isSelected ? product.accent : product.accent + "28"}`,
+                                                                    backgroundColor: isSelected ? product.accent + "18" : "transparent",
+                                                                }}
+                                                            >
+                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-white/40">
+                                                                    {b.days} Days
+                                                                </span>
+                                                                <span className="text-sm font-black" style={{ color: isSelected ? product.accent : "rgba(255,255,255,0.6)" }}>
+                                                                    {b.qty === 1 ? "1 Pack" : `${b.qty} Packs`}
+                                                                </span>
+                                                                <span className="text-[11px] font-medium" style={{ color: isSelected ? product.accent + "cc" : "rgba(255,255,255,0.3)" }}>
+                                                                    {b.perPack ?? b.price}
+                                                                </span>
+                                                                {b.pctOff ? (
+                                                                    <span
+                                                                        className="mt-0.5 rounded-full px-2 py-0.5 text-[9px] font-bold"
+                                                                        style={{ backgroundColor: product.accent + "22", color: product.accent }}
+                                                                    >
+                                                                        {b.pctOff}
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="mt-0.5 h-4" />
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                    )
+                                                })}
+                                        </div>
+
+                                        {/* Checkout button */}
+                                        <button
+                                            onClick={() => handleCheckout(product.slug!, product.number)}
+                                            disabled={loadingProductId === product.number}
+                                            className="group flex w-full items-center justify-center gap-2.5 rounded-full py-4 text-base font-black text-black transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                                            style={{
+                                                backgroundColor: product.accent,
+                                                boxShadow: `0 0 28px ${product.accent}55`,
+                                            }}
+                                        >
+                                            {loadingProductId === product.number
+                                                ? "Redirecting…"
+                                                : `Shop Now — ${active.price}`}
+                                            {loadingProductId !== product.number && (
+                                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+                                            )}
+                                        </button>
                                     </div>
-                                    <button
-                                        onClick={() => handleCheckout(product.priceId!, product.number)}
-                                        disabled={loadingProductId === product.number}
-                                        className="group inline-flex items-center gap-2.5 rounded-full px-8 py-3.5 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-                                        style={{ backgroundColor: product.accent }}
-                                    >
-                                        {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
-                                        {loadingProductId !== product.number && (
-                                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                                        )}
-                                    </button>
-                                </div>
-                            ) : (
+                                )
+                            })() : !product.available ? (
                                 <div
                                     className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/45"
                                     style={{ borderColor: product.accent + "30", backgroundColor: product.accent + "08" }}
@@ -394,7 +462,7 @@ export default function CatalogPage() {
                                     />
                                     Coming Soon
                                 </div>
-                            )}
+                            ) : null}
                         </div>
                     </div>
 
@@ -549,7 +617,7 @@ export default function CatalogPage() {
                                 style={{ borderColor: p.accent + "30", backgroundColor: p.accent + "0a", color: p.accent + "cc" }}
                             >
                                 <span className="size-1.5 animate-pulse rounded-full" style={{ backgroundColor: p.accent }} />
-                                {p.nameLines.join(" ")} — {p.category}
+                                {p.nameLines.join(" ")} · {p.category}
                             </div>
                         ))}
                     </div>

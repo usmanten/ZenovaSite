@@ -11,7 +11,7 @@ const featuresData = [
     {
         icon: <Zap className="size-5" aria-hidden />,
         title: "Fast Acting",
-        description: "Dissolves in seconds for rapid absorption — feel the difference faster than any pill or gummy.",
+        description: "Dissolves in seconds for rapid absorption. Feel the difference faster than any pill or gummy.",
         from: { x: -500, y: -300, rotation: -45, opacity: 0, scale: 0.8 },
     },
     {
@@ -23,7 +23,7 @@ const featuresData = [
     {
         icon: <XCircle className="size-5" aria-hidden />,
         title: "No Sugar or Fillers",
-        description: "Zero sugar, zero artificial fillers — just clean, effective ingredients your body actually needs.",
+        description: "Zero sugar, zero artificial fillers. Just clean, effective ingredients your body actually needs.",
         from: { x: -500, y: 300, rotation: -45, opacity: 0, scale: 0.8 },
     },
     {

@@ -11,6 +11,7 @@ export interface OrderData {
     toCountry: string
     toEmail: string
     toPhone?: string
+    quantity?: number
 }
 
 export interface ShipmentResult {
@@ -22,6 +23,7 @@ export interface ShipmentResult {
 }
 
 export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentResult> {
+    const qty = Math.max(1, Math.min(3, order.quantity ?? 1))
     const shipment = await shippo.shipments.create({
         addressFrom: {
             name: process.env.SHIPPO_FROM_NAME!,
@@ -47,9 +49,9 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
             {
                 length: "6",
                 width: "4",
-                height: "1",
+                height: String(qty),
                 distanceUnit: "in",
-                weight: "0.25",
+                weight: String(0.25 * qty),
                 massUnit: "lb",
             },
         ],
