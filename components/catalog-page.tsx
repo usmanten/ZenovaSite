@@ -211,9 +211,9 @@ export default function CatalogPage() {
                     </p>
 
                     <h1 className="text-[13vw] font-black leading-[0.88] tracking-tight text-white">
-                        THE
+                        <span className="text-white/25">THE</span>
                         <br />
-                        <span className="text-white/20">COLLECTION</span>
+                        COLLECTION
                     </h1>
 
                     <div className="mt-12 flex flex-wrap items-center justify-center gap-6">

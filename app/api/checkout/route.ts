@@ -48,7 +48,6 @@ export async function POST(req: NextRequest) {
         shipping_address_collection: {
             allowed_countries: ["US"],
         },
-        shipping_options: [{ shipping_rate: shippingRateId }],
         phone_number_collection: { enabled: true },
         success_url: `${baseUrl}/checkout/success`,
         cancel_url: `${baseUrl}/catalog`,
