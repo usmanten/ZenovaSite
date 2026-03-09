@@ -1,9 +1,11 @@
 export const PRODUCTS: Record<string, {
     name: string
+    description?: string
     bundles: { qty: number; price: number; originalPrice: number }[]
 }> = {
     "strawberry-frost": {
         name: "Zenova Power - Strawberry Frost",
+        description: "50mg caffeine energy strip. Fast-acting, sugar free, no crash. Dissolves in seconds.",
         bundles: [
             { qty: 1, price: 1899, originalPrice: 2799 },
             { qty: 2, price: 3599, originalPrice: 5598 },

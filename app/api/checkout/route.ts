@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
         line_items: [{
             price_data: {
                 currency: "usd",
-                product_data: { name: productName },
+                product_data: { name: productName, description: product.description ?? undefined },
                 unit_amount: bundleOption.price,
             },
             quantity: 1,
