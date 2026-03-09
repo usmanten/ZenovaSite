@@ -8,11 +8,11 @@ import Image from "next/image"
 gsap.registerPlugin(ScrollTrigger)
 
 const images = [
-    { src: "/placeholder.png", alt: "Gallery image 1" },
-    { src: "/placeholder.png", alt: "Gallery image 2" },
-    { src: "/placeholder.png", alt: "Gallery image 3" },
-    { src: "/placeholder.png", alt: "Gallery image 4" },
-    { src: "/placeholder.png", alt: "Gallery image 5" },
+    { src: "/Filler_1.png", alt: "Zenova Strips" },
+    { src: "/ZS_4.png", alt: "Zenova Strips" },
+    { src: "/ZS_single_front.png", alt: "Zenova Strips" },
+    { src: "/ZS_5.png", alt: "Zenova Strips" },
+    { src: "/ZS_3.jpeg", alt: "Zenova Strips" },
 ]
 
 export default function HorizontalGallery() {
@@ -37,7 +37,7 @@ export default function HorizontalGallery() {
                         end: () => `+=${track.scrollWidth - window.innerWidth}`,
                         pin: true,
                         pinSpacing: true,
-                        scrub: 1,
+                        scrub: 2.5,
                         anticipatePin: 1,
                         invalidateOnRefresh: true,
                     },
@@ -67,18 +67,18 @@ export default function HorizontalGallery() {
                             src={img.src}
                             alt={img.alt}
                             fill
-                            className="object-cover opacity-70"
+                            className="object-cover opacity-95"
                             sizes="45vw"
                             priority={i === 0}
                         />
                         {/* Dark overlay */}
-                        <div className="absolute inset-0 bg-black/30" />
+                        <div className="absolute inset-0 bg-black/10" />
                         {/* Counter */}
-                        <div className="absolute bottom-5 left-5 font-mono text-xs tracking-widest text-white/35">
+                        <div className="absolute bottom-5 left-5 font-mono text-xs tracking-widest text-black/50">
                             {String(i + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
                         </div>
                         {/* Corner accent */}
-                        <div className="absolute right-5 top-5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/20">
+                        <div className="absolute right-5 top-5 text-[10px] font-semibold uppercase tracking-[0.4em] text-black/30">
                             Zenova
                         </div>
                     </div>

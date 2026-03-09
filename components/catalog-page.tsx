@@ -4,7 +4,8 @@ import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { AnimatedGroup } from "@/components/ui/animated-group"
-import { ArrowRight, ChevronDown } from "lucide-react"
+import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
+import Image from "next/image"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -25,6 +26,7 @@ const products = [
         darkBg: "#0d0004",
         available: true,
         slug: "strawberry-frost",
+        carouselImages: ["/ZS_5.png", "/ZS_single_front.png", "/ZS_single_back.jpeg"],
         bundles: [
             { qty: 1, days: 30, price: "$18.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.63/strip", pctOff: "32% off", badge: null },
             { qty: 2, days: 60, price: "$35.99", originalPrice: "$55.98", perPack: "$17.99/pack", perStrip: "$0.60/strip", pctOff: "36% off", badge: "Most Popular" },
@@ -75,8 +77,34 @@ export default function CatalogPage() {
     const marqueeRef = useRef<HTMLDivElement>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
+    const [carouselIndex, setCarouselIndex] = useState<Record<string, number>>({})
+    const carouselTimers = useRef<Record<string, ReturnType<typeof setInterval>>>({})
+    const [lightbox, setLightbox] = useState<string | null>(null)
 
     const getBundle = (num: string) => selectedBundles[num] ?? 1
+    const getCarouselIndex = (num: string) => carouselIndex[num] ?? 0
+
+    const carouselNext = (num: string, total: number) =>
+        setCarouselIndex(prev => ({ ...prev, [num]: ((prev[num] ?? 0) + 1) % total }))
+    const carouselPrev = (num: string, total: number) =>
+        setCarouselIndex(prev => ({ ...prev, [num]: ((prev[num] ?? 0) - 1 + total) % total }))
+
+    useEffect(() => {
+        const h = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null) }
+        document.addEventListener("keydown", h)
+        return () => document.removeEventListener("keydown", h)
+    }, [lightbox])
+
+    useEffect(() => {
+        products.forEach(p => {
+            if (!("carouselImages" in p) || !p.carouselImages) return
+            const total = (p.carouselImages as string[]).length + 1
+            carouselTimers.current[p.number] = setInterval(() => {
+                setCarouselIndex(prev => ({ ...prev, [p.number]: ((prev[p.number] ?? 0) + 1) % total }))
+            }, 5000)
+        })
+        return () => { Object.values(carouselTimers.current).forEach(clearInterval) }
+    }, [])
 
     async function handleCheckout(slug: string, productNumber: string) {
         setLoadingProductId(productNumber)
@@ -207,19 +235,15 @@ export default function CatalogPage() {
                             },
                         },
                     }}
-                    className="flex flex-col items-center"
+                    className="flex flex-col items-center gap-0"
                 >
-                    <p className="mb-8 text-[10px] font-semibold uppercase tracking-[0.55em] text-white/30">
-                        Zenova Strips · Est. 2025
-                    </p>
-
                     <h1 className="text-[13vw] font-black leading-[0.88] tracking-tight text-white">
                         <span className="text-white/25">THE</span>
                         <br />
                         COLLECTION
                     </h1>
 
-                    <div className="mt-12 flex flex-wrap items-center justify-center gap-6">
+                    <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
                         {products.map(p => (
                             <div key={p.number} className="flex items-center gap-2.5">
                                 <span className="size-1.5 rounded-full" style={{ backgroundColor: p.accent }} />
@@ -228,6 +252,14 @@ export default function CatalogPage() {
                                 </span>
                             </div>
                         ))}
+                    </div>
+
+                    {/* Risk-free blurb */}
+                    <div className="mt-10 flex flex-col items-center gap-2 text-center">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.5em] text-white/35">Try It Risk-Free</p>
+                        <p className="max-w-md text-sm leading-relaxed text-white/30">
+                            We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
+                        </p>
                     </div>
                 </AnimatedGroup>
 
@@ -481,7 +513,7 @@ export default function CatalogPage() {
 
                             {/* Card */}
                             <div
-                                className="relative flex h-[400px] w-[300px] flex-col items-center justify-center overflow-hidden rounded-3xl"
+                                className="relative flex h-[460px] w-[345px] flex-col items-center justify-center overflow-hidden rounded-3xl"
                                 style={{
                                     border: `1px solid ${product.accent}22`,
                                     background: `linear-gradient(145deg, ${product.accent}14 0%, ${product.darkBg} 50%, ${product.accent}08 100%)`,
@@ -493,68 +525,72 @@ export default function CatalogPage() {
                                     className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:24px_24px]"
                                 />
 
-                                {/* Product mockup */}
-                                <div
-                                    className="flex flex-col items-center gap-5"
-                                    style={{ filter: product.available ? "none" : "blur(3px) saturate(0.4)" }}
-                                >
-                                    {/* Strip stack visual */}
-                                    <div className="relative flex items-center justify-center">
-                                        {[...Array(3)].map((_, si) => (
+                                {"carouselImages" in product && product.carouselImages ? (() => {
+                                    const images = product.carouselImages as string[]
+                                    const total = images.length + 1
+                                    const idx = getCarouselIndex(product.number)
+                                    return (
+                                        <>
+                                            {/* Slide 0: placeholder mockup */}
                                             <div
-                                                key={si}
-                                                className="absolute rounded-2xl"
-                                                style={{
-                                                    width: 90,
-                                                    height: 140,
-                                                    backgroundColor: product.accent + (si === 0 ? "50" : si === 1 ? "35" : "20"),
-                                                    transform: `rotate(${(si - 1) * 8}deg) translateX(${(si - 1) * 14}px)`,
-                                                    zIndex: 3 - si,
-                                                }}
-                                            />
-                                        ))}
-                                        {/* Front strip */}
-                                        <div
-                                            className="relative z-10 flex h-36 w-[88px] flex-col items-center justify-center gap-2 rounded-2xl"
-                                            style={{
-                                                backgroundColor: product.accent,
-                                                boxShadow: `0 20px 60px ${product.accent}50`,
-                                            }}
-                                        >
-                                            <span className="text-[8px] font-black uppercase tracking-widest text-black/60">
-                                                Zenova
-                                            </span>
-                                            <div className="h-px w-8 bg-black/20" />
-                                            <span className="text-center text-[7px] font-bold uppercase tracking-wider text-black/50">
-                                                {product.type}
-                                            </span>
+                                                className="absolute inset-0 flex flex-col items-center justify-center gap-5 transition-opacity duration-700"
+                                                style={{ opacity: idx === 0 ? 1 : 0, pointerEvents: idx === 0 ? "auto" : "none" }}
+                                            >
+                                                <div className="relative flex items-center justify-center">
+                                                    {[...Array(3)].map((_, si) => (
+                                                        <div key={si} className="absolute rounded-2xl" style={{ width: 90, height: 140, backgroundColor: product.accent + (si === 0 ? "50" : si === 1 ? "35" : "20"), transform: `rotate(${(si - 1) * 8}deg) translateX(${(si - 1) * 14}px)`, zIndex: 3 - si }} />
+                                                    ))}
+                                                    <div className="relative z-10 flex h-36 w-[88px] flex-col items-center justify-center gap-2 rounded-2xl" style={{ backgroundColor: product.accent, boxShadow: `0 20px 60px ${product.accent}50` }}>
+                                                        <span className="text-[8px] font-black uppercase tracking-widest text-black/60">Zenova</span>
+                                                        <div className="h-px w-8 bg-black/20" />
+                                                        <span className="text-center text-[7px] font-bold uppercase tracking-wider text-black/50">{product.type}</span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-center">
+                                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
+                                                    <p className="mt-1 text-xs text-white/40">{product.nameLines.join(" ")}</p>
+                                                </div>
+                                            </div>
+
+                                            {/* Slides 1+: real photos */}
+                                            {images.map((src, si) => (
+                                                <div key={si} className="absolute inset-0 transition-opacity duration-700 cursor-zoom-in" style={{ opacity: idx === si + 1 ? 1 : 0, pointerEvents: idx === si + 1 ? "auto" : "none" }} onClick={() => setLightbox(src)}>
+                                                    <Image src={src} alt={`Product photo ${si + 1}`} fill className={`object-cover rounded-3xl opacity-90 ${si <= 1 ? "scale-[1.15]" : ""}`} sizes="345px" />
+                                                </div>
+                                            ))}
+
+                                            {/* Dot indicators */}
+                                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
+                                                {Array.from({ length: total }).map((_, di) => (
+                                                    <button key={di} onClick={() => setCarouselIndex(prev => ({ ...prev, [product.number]: di }))} className="size-1.5 rounded-full transition-all duration-300" style={{ backgroundColor: di === idx ? product.accent : product.accent + "44" }} />
+                                                ))}
+                                            </div>
+                                        </>
+                                    )
+                                })() : (
+                                    /* Non-carousel mockup for coming-soon products */
+                                    <div className="flex flex-col items-center gap-5" style={{ filter: "blur(3px) saturate(0.4)" }}>
+                                        <div className="relative flex items-center justify-center">
+                                            {[...Array(3)].map((_, si) => (
+                                                <div key={si} className="absolute rounded-2xl" style={{ width: 90, height: 140, backgroundColor: product.accent + (si === 0 ? "50" : si === 1 ? "35" : "20"), transform: `rotate(${(si - 1) * 8}deg) translateX(${(si - 1) * 14}px)`, zIndex: 3 - si }} />
+                                            ))}
+                                            <div className="relative z-10 flex h-36 w-[88px] flex-col items-center justify-center gap-2 rounded-2xl" style={{ backgroundColor: product.accent, boxShadow: `0 20px 60px ${product.accent}50` }}>
+                                                <span className="text-[8px] font-black uppercase tracking-widest text-black/60">Zenova</span>
+                                                <div className="h-px w-8 bg-black/20" />
+                                                <span className="text-center text-[7px] font-bold uppercase tracking-wider text-black/50">{product.type}</span>
+                                            </div>
+                                        </div>
+                                        <div className="text-center">
+                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
+                                            <p className="mt-1 text-xs text-white/40">{product.nameLines.join(" ")}</p>
                                         </div>
                                     </div>
-
-                                    <div className="text-center">
-                                        <p
-                                            className="text-[10px] font-bold uppercase tracking-[0.3em]"
-                                            style={{ color: product.accent }}
-                                        >
-                                            {product.category}
-                                        </p>
-                                        <p className="mt-1 text-xs text-white/40">
-                                            {product.nameLines.join(" ")}
-                                        </p>
-                                    </div>
-                                </div>
+                                )}
 
                                 {/* Coming soon overlay */}
                                 {!product.available && (
                                     <div className="absolute inset-0 flex items-center justify-center">
-                                        <div
-                                            className="rounded-full px-7 py-2.5 text-[10px] font-bold uppercase tracking-[0.35em] backdrop-blur-md"
-                                            style={{
-                                                border: `1px solid ${product.accent}45`,
-                                                backgroundColor: product.accent + "18",
-                                                color: product.accent,
-                                            }}
-                                        >
+                                        <div className="rounded-full px-7 py-2.5 text-[10px] font-bold uppercase tracking-[0.35em] backdrop-blur-md" style={{ border: `1px solid ${product.accent}45`, backgroundColor: product.accent + "18", color: product.accent }}>
                                             Coming Soon
                                         </div>
                                     </div>
@@ -562,17 +598,32 @@ export default function CatalogPage() {
 
                                 {/* Available badge */}
                                 {product.available && (
-                                    <div className="absolute right-4 top-4 flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider"
-                                        style={{
-                                            backgroundColor: product.accent + "22",
-                                            color: product.accent,
-                                        }}
-                                    >
+                                    <div className="absolute right-4 top-4 z-20 flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider" style={{ backgroundColor: product.accent + "22", color: product.accent }}>
                                         <span className="size-1.5 rounded-full" style={{ backgroundColor: product.accent }} />
                                         Available Now
                                     </div>
                                 )}
                             </div>
+
+                            {/* Carousel prev/next buttons */}
+                            {"carouselImages" in product && product.carouselImages && (
+                                <div className="mt-4 flex items-center justify-center gap-4">
+                                    <button
+                                        onClick={() => carouselPrev(product.number, (product.carouselImages as string[]).length + 1)}
+                                        className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
+                                        style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
+                                    >
+                                        <ChevronLeft className="size-4" />
+                                    </button>
+                                    <button
+                                        onClick={() => carouselNext(product.number, (product.carouselImages as string[]).length + 1)}
+                                        className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
+                                        style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
+                                    >
+                                        <ChevronRight className="size-4" />
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     </div>
 
@@ -626,6 +677,31 @@ export default function CatalogPage() {
                     </div>
                 </div>
             </section>
+
+            {/* ── LIGHTBOX ─────────────────────────────────────────────────────── */}
+            {lightbox && (
+                <div
+                    className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
+                    onClick={() => setLightbox(null)}
+                >
+                    <div className="relative max-h-[90vh] max-w-[90vw]" onClick={e => e.stopPropagation()}>
+                        <Image
+                            src={lightbox}
+                            alt="Product photo"
+                            width={900}
+                            height={900}
+                            className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain"
+                            style={{ width: "auto", height: "auto" }}
+                        />
+                        <button
+                            onClick={() => setLightbox(null)}
+                            className="absolute -right-3 -top-3 flex size-8 items-center justify-center rounded-full bg-white/10 text-white/60 hover:bg-white/20 transition-colors"
+                        >
+                            ✕
+                        </button>
+                    </div>
+                </div>
+            )}
         </div>
     )
 }

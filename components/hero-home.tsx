@@ -57,7 +57,7 @@ export default function HeroHome() {
                     />
 
                     {/* Hero image — right side, bleeds behind text */}
-                    <div className="absolute right-0 top-0 h-full w-[58%]">
+                    <div className="absolute right-0 top-0 h-full w-[46%]">
                         <Image
                             src="/herozenova.jpeg"
                             fill
