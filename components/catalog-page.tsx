@@ -122,6 +122,7 @@ export default function CatalogPage() {
                 const number   = section.querySelector(".prod-number")
                 const type     = section.querySelector(".prod-type")
                 const names    = section.querySelectorAll(".prod-name-line")
+                const flavor   = section.querySelector(".prod-flavor")
                 const divider  = section.querySelector(".prod-divider")
                 const tagline  = section.querySelector(".prod-tagline")
                 const desc     = section.querySelector(".prod-desc")
@@ -133,6 +134,7 @@ export default function CatalogPage() {
                 // Initial states
                 gsap.set([number, type, divider, tagline, desc, cta], { opacity: 0, y: 44 })
                 gsap.set(names,  { opacity: 0, y: 70 })
+                if (flavor) gsap.set(flavor, { opacity: 0, y: 28 })
                 gsap.set(badges, { opacity: 0, y: 18, scale: 0.92 })
                 gsap.set(image,  { opacity: 0, x: 70, scale: 0.93 })
                 gsap.set(bgText, { opacity: 0, x: 100 })
@@ -155,6 +157,7 @@ export default function CatalogPage() {
                     .to(number, { opacity: 1, y: 0, duration: 1.2 }, 0.6)
                     .to(type,   { opacity: 1, y: 0, duration: 1 }, 0.9)
                     .to(names,  { opacity: 1, y: 0, duration: 1.4, stagger: 0.18 }, 1.3)
+                    .to(flavor ?? [], { opacity: 1, y: 0, duration: 1 }, 1.9)
                     .to(divider,{ opacity: 1, y: 0, duration: 0.8 }, 2.3)
                     .to(tagline,{ opacity: 1, y: 0, duration: 1 }, 2.6)
                     .to(desc,   { opacity: 1, y: 0, duration: 1 }, 3.1)
@@ -317,7 +320,7 @@ export default function CatalogPage() {
                             ))}
                             {"flavor" in product && product.flavor && (
                                 <p
-                                    className="mt-1 text-sm font-semibold uppercase tracking-[0.25em]"
+                                    className="prod-flavor mt-1 text-sm font-semibold uppercase tracking-[0.25em]"
                                     style={{ color: product.accent + "99" }}
                                 >
                                     {product.flavor as string}
