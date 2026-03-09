@@ -47,11 +47,11 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
         },
         parcels: [
             {
-                length: "6",
-                width: "4",
+                length: "9",
+                width: "6",
                 height: String(qty),
                 distanceUnit: "in",
-                weight: String(0.25 * qty),
+                weight: String(0.08 * qty),
                 massUnit: "lb",
             },
         ],

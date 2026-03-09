@@ -545,7 +545,7 @@ export default function FooterSection() {
               alt="Zenova Strips"
               width={120}
               height={52}
-              style={{ height: "28px", width: "auto" }}
+              style={{ height: "42px", width: "auto" }}
             />
           </Link>
 
