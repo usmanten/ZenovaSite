@@ -136,34 +136,6 @@ export default function HeroHome() {
                     </div>
                 </div>
 
-                {/* ── PARTNERS ─────────────────────────────────────────────────── */}
-                <section className="border-t border-white/5 py-20">
-                    <div className="group relative mx-auto max-w-5xl px-6">
-                        <div className="mb-12 flex items-center justify-center">
-                            <Link
-                                href="/"
-                                className="text-[10px] font-semibold uppercase tracking-[0.45em] text-white/25 transition-colors duration-150 hover:text-white/50"
-                            >
-                                Meet Our Partners
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-4 gap-x-12 gap-y-10 transition-all duration-500 group-hover:opacity-40">
-                            {[
-                                { h: 'h-5' }, { h: 'h-4' }, { h: 'h-4' }, { h: 'h-5' },
-                                { h: 'h-5' }, { h: 'h-4' }, { h: 'h-7' }, { h: 'h-6' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-center justify-center">
-                                    <img
-                                        className={`mx-auto ${item.h} w-fit opacity-20 invert`}
-                                        src="/placeholder.png"
-                                        alt={`Partner ${i + 1}`}
-                                        height={30}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
 
             </main>
         </>
