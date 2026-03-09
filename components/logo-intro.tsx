@@ -13,6 +13,12 @@ export default function LogoIntro() {
         const logo = logoRef.current
         if (!overlay || !logo) return
 
+        if (sessionStorage.getItem("introPlayed")) {
+            overlay.style.display = "none"
+            return
+        }
+        sessionStorage.setItem("introPlayed", "1")
+
         document.body.style.overflow = "hidden"
 
         const tl = gsap.timeline({

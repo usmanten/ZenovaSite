@@ -49,7 +49,7 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
             {
                 length: "9",
                 width: "6",
-                height: String(qty),
+                height: "1",
                 distanceUnit: "in",
                 weight: String(0.08 * qty),
                 massUnit: "lb",
@@ -74,7 +74,7 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
 
     const transaction = await shippo.transactions.create({
         rate: cheapestRate.objectId,
-        labelFileType: "PDF",
+        labelFileType: "PDF_4x6",
         async: false,
     })
 
