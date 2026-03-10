@@ -5,10 +5,10 @@ const resendKey = process.env.RESEND_API_KEY
 if (!resendKey) throw new Error("Missing env var: RESEND_API_KEY")
 const resend = new Resend(resendKey)
 
-const fromEmail = process.env.RESEND_FROM_EMAIL
+const fromEmail = process.env.RESEND_FROM_EMAIL!
 if (!fromEmail) throw new Error("Missing env var: RESEND_FROM_EMAIL")
 
-const adminEmail = process.env.ADMIN_EMAIL
+const adminEmail = process.env.ADMIN_EMAIL!
 if (!adminEmail) throw new Error("Missing env var: ADMIN_EMAIL")
 
 const baseUrlEnv = process.env.NEXT_PUBLIC_BASE_URL

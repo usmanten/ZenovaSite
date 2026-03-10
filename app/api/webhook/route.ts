@@ -11,10 +11,10 @@ const stripe = new Stripe(stripeKey)
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 if (!webhookSecret) throw new Error("Missing env var: STRIPE_WEBHOOK_SECRET")
 
-const fromEmail = process.env.RESEND_FROM_EMAIL
+const fromEmail = process.env.RESEND_FROM_EMAIL!
 if (!fromEmail) throw new Error("Missing env var: RESEND_FROM_EMAIL")
 
-const adminEmail = process.env.ADMIN_EMAIL
+const adminEmail = process.env.ADMIN_EMAIL!
 if (!adminEmail) throw new Error("Missing env var: ADMIN_EMAIL")
 
 const isDev = process.env.NODE_ENV !== "production"
