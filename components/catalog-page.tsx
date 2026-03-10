@@ -271,18 +271,19 @@ export default function CatalogPage() {
                     </div>
 
                     {/* Risk-free blurb */}
-                    <div className="mt-10 flex flex-col items-center gap-2 text-center">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.5em] text-white">Try It Risk-Free</p>
-                        <p className="max-w-md text-sm leading-relaxed text-white">
+                    <div className="mt-16 relative flex flex-col items-center gap-4 text-center">
+                        <div aria-hidden className="pointer-events-none absolute -right-24 top-1/2 size-64 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#FF4D6D1a" }} />
+                        <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
+                            <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Try It Risk-Free</span>
+                        </div>
+                        <p className="max-w-md text-base leading-relaxed text-white/80">
                             We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
                         </p>
                     </div>
                 </AnimatedGroup>
 
-                {/* Scroll cue */}
-                <div className="absolute bottom-10 flex flex-col items-center gap-2 text-white/25">
-                    <span className="text-[9px] font-semibold uppercase tracking-[0.4em]">Scroll to explore</span>
-                    <ChevronDown className="size-4 animate-bounce" />
+                <div className="absolute bottom-8 flex items-center justify-center">
+                    <ChevronDown className="size-5 animate-bounce text-white/25" />
                 </div>
             </section>
 
