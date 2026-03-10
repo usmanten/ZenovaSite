@@ -65,6 +65,7 @@ export async function POST(req: NextRequest) {
             quantity: 1,
         }],
         metadata: { bundle_qty: String(bundleQty) },
+        automatic_tax: { enabled: true },
         shipping_address_collection: {
             allowed_countries: ["US"],
         },
