@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next"
 import { Montserrat } from "next/font/google"
 import "./globals.css"
 import Providers from "../components/providers"
+import { Analytics } from "@vercel/analytics/next"
 
 const montserrat = Montserrat({
     subsets: ["latin"],
@@ -43,6 +44,7 @@ export default function RootLayout({
     <html lang="en" className={`dark ${montserrat.variable}`}>
       <body className="antialiased">
         <Providers>{children}</Providers>
+        <Analytics />
       </body>
     </html>
   )
