@@ -51,15 +51,18 @@ export default function Features() {
             gsap.set(card, featuresData[i].from)
         })
 
+        const isMobile = window.innerWidth < 768
+
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: pinWrap,
-                start: "top top",
-                end: `+=${(cards.length * 1.2 + 1) * 400}`,
-                pin: true,
-                pinSpacing: true,
-                scrub: 1.2,
-                anticipatePin: 1,
+                start: isMobile ? "top 90%" : "top top",
+                end: isMobile ? "+=400" : `+=${(cards.length * 1.2 + 1) * 400}`,
+                pin: !isMobile,
+                pinSpacing: !isMobile,
+                scrub: isMobile ? false : 1.2,
+                toggleActions: isMobile ? "play none none none" : undefined,
+                anticipatePin: isMobile ? 0 : 1,
                 invalidateOnRefresh: true,
             },
         })
@@ -80,7 +83,7 @@ export default function Features() {
     }, [])
 
     return (
-        <div ref={pinWrapRef} className="h-screen w-full overflow-hidden bg-black">
+        <div ref={pinWrapRef} className="min-h-screen md:h-screen w-full overflow-hidden bg-black">
             <div className="flex h-full w-full flex-col items-center justify-center">
 
                 <div
@@ -99,7 +102,7 @@ export default function Features() {
                     </p>
                 </div>
 
-                <div className="grid w-full max-w-3xl grid-cols-2 gap-5 px-6">
+                <div className="grid w-full max-w-3xl grid-cols-1 sm:grid-cols-2 gap-5 px-6">
                     {featuresData.map((feature, i) => (
                         <div
                             key={i}

@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger)
 const products = [
     {
         number: "01",
-        nameLines: ["Power"],
+        nameLines: ["Focus"],
         flavor: "Strawberry Frost",
         category: "ENERGY",
         type: "Caffeine Strip",
@@ -26,7 +26,8 @@ const products = [
         darkBg: "#0d0004",
         available: true,
         slug: "strawberry-frost",
-        carouselImages: ["/ZS_5.png", "/ZS_single_front.png", "/ZS_single_back.jpeg"],
+        packImages: { 1: "/ZS_1.jpeg", 2: "/ZS_2.jpeg", 3: "/ZS_3.jpeg" } as Record<number, string>,
+        carouselImages: ["/ZS_single_front.png", "/ZS_single_back.jpeg"],
         bundles: [
             { qty: 1, days: 30, price: "$18.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.63/strip", pctOff: "32% off", badge: null },
             { qty: 2, days: 60, price: "$35.99", originalPrice: "$55.98", perPack: "$17.99/pack", perStrip: "$0.60/strip", pctOff: "36% off", badge: "Most Popular" },
@@ -102,7 +103,7 @@ export default function CatalogPage() {
             const total = (p.carouselImages as string[]).length + 1
             carouselTimers.current[p.number] = setInterval(() => {
                 setCarouselIndex(prev => ({ ...prev, [p.number]: ((prev[p.number] ?? 0) + 1) % total }))
-            }, 5000)
+            }, 10000)
         })
         return () => { Object.values(carouselTimers.current).forEach(clearInterval) }
     }, [])
@@ -148,6 +149,8 @@ export default function CatalogPage() {
             }
 
             // ── Product section pins + scroll-driven animations ───────────────
+            const isMobile = window.innerWidth < 768
+
             products.forEach((_, i) => {
                 const section = sectionsRef.current[i]
                 if (!section) return
@@ -169,33 +172,41 @@ export default function CatalogPage() {
                 gsap.set(names,  { opacity: 0, y: 70 })
                 if (flavor) gsap.set(flavor, { opacity: 0, y: 28 })
                 gsap.set(badges, { opacity: 0, y: 18, scale: 0.92 })
-                gsap.set(image,  { opacity: 0, x: 70, scale: 0.93 })
+                gsap.set(image,  { opacity: 0, x: isMobile ? 0 : 70, scale: 0.93 })
                 gsap.set(bgText, { opacity: 0, x: 100 })
 
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: section,
-                        pin: true,
-                        start: "top top",
-                        end: "+=960",
-                        scrub: 1,
-                        anticipatePin: 1,
+                        pin: !isMobile,
+                        start: isMobile ? "top 90%" : "top top",
+                        end: isMobile ? "+=400" : "+=960",
+                        scrub: isMobile ? false : 1,
+                        toggleActions: isMobile ? "play none none none" : undefined,
+                        anticipatePin: isMobile ? 0 : 1,
                         invalidateOnRefresh: true,
                     },
                 })
 
-                tl
-                    .to(bgText, { opacity: 0.055, x: 0, duration: 2.5 }, 0)
-                    .to(image,  { opacity: 1, x: 0, scale: 1, duration: 3 }, 0.2)
-                    .to(number, { opacity: 1, y: 0, duration: 1.2 }, 0.6)
-                    .to(type,   { opacity: 1, y: 0, duration: 1 }, 0.9)
-                    .to(names,  { opacity: 1, y: 0, duration: 1.4, stagger: 0.18 }, 1.3)
-                    .to(flavor ?? [], { opacity: 1, y: 0, duration: 1 }, 1.9)
-                    .to(divider,{ opacity: 1, y: 0, duration: 0.8 }, 2.3)
-                    .to(tagline,{ opacity: 1, y: 0, duration: 1 }, 2.6)
-                    .to(desc,   { opacity: 1, y: 0, duration: 1 }, 3.1)
-                    .to(badges, { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.7 }, 3.7)
-                    .to(cta,    { opacity: 1, y: 0, duration: 0.9 }, 4.6)
+                if (isMobile) {
+                    tl
+                        .to([number, type, names, flavor ?? [], divider, tagline, desc, badges, cta, image],
+                            { opacity: 1, y: 0, x: 0, scale: 1, duration: 0.7, stagger: 0.05 }, 0)
+                        .to(bgText, { opacity: 0.04, x: 0, duration: 0.7 }, 0)
+                } else {
+                    tl
+                        .to(bgText, { opacity: 0.055, x: 0, duration: 2.5 }, 0)
+                        .to(image,  { opacity: 1, x: 0, scale: 1, duration: 3 }, 0.2)
+                        .to(number, { opacity: 1, y: 0, duration: 1.2 }, 0.6)
+                        .to(type,   { opacity: 1, y: 0, duration: 1 }, 0.9)
+                        .to(names,  { opacity: 1, y: 0, duration: 1.4, stagger: 0.18 }, 1.3)
+                        .to(flavor ?? [], { opacity: 1, y: 0, duration: 1 }, 1.3)
+                        .to(divider,{ opacity: 1, y: 0, duration: 0.8 }, 1.3)
+                        .to(tagline,{ opacity: 1, y: 0, duration: 1 }, 1.3)
+                        .to(desc,   { opacity: 1, y: 0, duration: 1 }, 1.3)
+                        .to(badges, { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.7 }, 1.3)
+                        .to(cta,    { opacity: 1, y: 0, duration: 0.9 }, 1.3)
+                }
             })
 
         }, containerRef)
@@ -242,7 +253,7 @@ export default function CatalogPage() {
                     }}
                     className="flex flex-col items-center gap-0"
                 >
-                    <h1 className="text-[13vw] font-black leading-[0.88] tracking-tight text-white">
+                    <h1 className="text-[10vw] md:text-[13vw] font-black leading-[0.88] tracking-tight text-white">
                         <span className="text-white/25">THE</span>
                         <br />
                         COLLECTION
@@ -261,8 +272,8 @@ export default function CatalogPage() {
 
                     {/* Risk-free blurb */}
                     <div className="mt-10 flex flex-col items-center gap-2 text-center">
-                        <p className="text-[10px] font-semibold uppercase tracking-[0.5em] text-white/35">Try It Risk-Free</p>
-                        <p className="max-w-md text-sm leading-relaxed text-white/60">
+                        <p className="text-[10px] font-semibold uppercase tracking-[0.5em] text-white">Try It Risk-Free</p>
+                        <p className="max-w-md text-sm leading-relaxed text-white">
                             We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
                         </p>
                     </div>
@@ -294,7 +305,7 @@ export default function CatalogPage() {
                 <div
                     key={product.number}
                     ref={el => { sectionsRef.current[i] = el }}
-                    className="relative flex h-screen items-center overflow-hidden"
+                    className="relative flex min-h-screen flex-col md:flex-row md:items-center overflow-hidden"
                     style={{ backgroundColor: product.darkBg }}
                 >
                     {/* Giant background category word */}
@@ -302,7 +313,7 @@ export default function CatalogPage() {
                         className="prod-bg-text pointer-events-none absolute -right-[4vw] top-1/2 -translate-y-1/2 select-none font-black leading-none"
                         style={{
                             color: product.accent,
-                            fontSize: "22vw",
+                            fontSize: "clamp(80px, 22vw, 320px)",
                             lineHeight: 1,
                             letterSpacing: "-0.01em",
                             WebkitMaskImage: product.number !== "02" ? "linear-gradient(to right, transparent 7%, black 20%)" : undefined,
@@ -327,7 +338,7 @@ export default function CatalogPage() {
                     />
 
                     {/* ── Left: Info ───────────────────────────────────────── */}
-                    <div className="relative z-10 flex w-1/2 flex-col px-16 xl:px-24">
+                    <div className="relative z-10 flex w-full md:w-1/2 flex-col px-6 pt-20 pb-6 md:pt-0 md:pb-0 md:px-16 xl:px-24">
 
                         {/* Number + type row */}
                         <div className="flex items-center gap-3">
@@ -440,7 +451,18 @@ export default function CatalogPage() {
                                                                 <span className="mb-0.5 h-4" />
                                                             )}
                                                             <button
-                                                                onClick={() => setSelectedBundles(prev => ({ ...prev, [product.number]: b.qty }))}
+                                                                onClick={() => {
+                                                                    setSelectedBundles(prev => ({ ...prev, [product.number]: b.qty }))
+                                                                    if ("carouselImages" in product && product.carouselImages) {
+                                                                        setCarouselIndex(prev => ({ ...prev, [product.number]: 1 }))
+                                                                        clearInterval(carouselTimers.current[product.number])
+                                                                        const imgs = product.carouselImages as string[]
+                                                                        const total = imgs.length + ("packImages" in product && product.packImages ? 2 : 1)
+                                                                        carouselTimers.current[product.number] = setInterval(() => {
+                                                                            setCarouselIndex(prev => ({ ...prev, [product.number]: ((prev[product.number] ?? 0) + 1) % total }))
+                                                                        }, 10000)
+                                                                    }
+                                                                }}
                                                                 className="w-full flex flex-col items-center gap-1 rounded-xl px-3 py-3.5 text-center transition-all duration-200"
                                                                 style={{
                                                                     border: `1.5px solid ${isSelected ? product.accent : product.accent + "28"}`,
@@ -517,7 +539,7 @@ export default function CatalogPage() {
                     </div>
 
                     {/* ── Right: Product visual ────────────────────────────── */}
-                    <div className="prod-image relative flex w-1/2 items-center justify-center pr-16 xl:pr-24">
+                    <div className="prod-image relative flex w-full md:w-1/2 items-center justify-center px-6 pb-16 md:pb-0 md:pr-16 xl:pr-24">
                         <div className="relative">
                             {/* Outer glow */}
                             <div
@@ -528,7 +550,7 @@ export default function CatalogPage() {
 
                             {/* Card */}
                             <div
-                                className="relative flex h-[460px] w-[345px] flex-col items-center justify-center overflow-hidden rounded-3xl"
+                                className="relative flex h-[113vw] w-[85vw] md:h-[460px] md:w-[345px] flex-col items-center justify-center overflow-hidden rounded-3xl"
                                 style={{
                                     border: `1px solid ${product.accent}22`,
                                     background: `linear-gradient(145deg, ${product.accent}14 0%, ${product.darkBg} 50%, ${product.accent}08 100%)`,
@@ -541,7 +563,8 @@ export default function CatalogPage() {
                                 />
 
                                 {"carouselImages" in product && product.carouselImages ? (() => {
-                                    const images = product.carouselImages as string[]
+                                    const packImg = "packImages" in product && product.packImages ? (product.packImages as Record<number, string>)[getBundle(product.number)] : null
+                                    const images = packImg ? [packImg, ...(product.carouselImages as string[])] : product.carouselImages as string[]
                                     const total = images.length + 1
                                     const idx = getCarouselIndex(product.number)
                                     return (
@@ -699,18 +722,18 @@ export default function CatalogPage() {
                     className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/90 backdrop-blur-sm cursor-zoom-out"
                     onClick={() => setLightbox(null)}
                 >
-                    <div className="relative max-h-[90vh] max-w-[90vw]" onClick={e => e.stopPropagation()}>
+                    <div className="relative" onClick={e => e.stopPropagation()}>
                         <Image
                             src={lightbox}
                             alt="Product photo"
                             width={900}
                             height={900}
-                            className="max-h-[90vh] max-w-[90vw] rounded-2xl object-contain"
+                            className="max-h-[80vh] max-w-[80vw] rounded-2xl object-contain"
                             style={{ width: "auto", height: "auto" }}
                         />
                         <button
                             onClick={() => setLightbox(null)}
-                            className="absolute -right-3 -top-3 flex size-8 items-center justify-center rounded-full bg-white/10 text-white/60 hover:bg-white/20 transition-colors"
+                            className="absolute -right-10 -top-10 z-10 flex size-8 items-center justify-center rounded-full bg-white/20 text-white/80 hover:bg-white/35 transition-colors"
                         >
                             ✕
                         </button>

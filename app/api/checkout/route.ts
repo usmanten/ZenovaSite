@@ -69,6 +69,14 @@ export async function POST(req: NextRequest) {
             allowed_countries: ["US"],
         },
         phone_number_collection: { enabled: true },
+        consent_collection: {
+            terms_of_service: "required",
+        },
+        custom_text: {
+            terms_of_service_acceptance: {
+                message: `I agree to the [Terms of Service](${baseUrl}/legal/tos), [Privacy Policy](${baseUrl}/legal/privacy), and [Refund Policy](${baseUrl}/legal/refund).`,
+            },
+        },
         success_url: `${baseUrl}/checkout/success`,
         cancel_url: `${baseUrl}/catalog`,
     })

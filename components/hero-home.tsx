@@ -56,8 +56,8 @@ export default function HeroHome() {
                         className="pointer-events-none absolute inset-0 opacity-[0.032] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:80px_80px]"
                     />
 
-                    {/* Hero image — right side, bleeds behind text */}
-                    <div className="absolute right-0 top-0 h-full w-[46%]">
+                    {/* Hero image — right side, bleeds behind text (desktop only) */}
+                    <div className="absolute right-0 top-0 h-full w-[46%] hidden md:block">
                         <Image
                             src="/herozenova.jpeg"
                             fill
