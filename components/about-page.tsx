@@ -13,7 +13,7 @@ import {
     useScroll,
 } from "motion/react"
 import { useEffect as useEffectCounter, useRef as useRefCounter } from "react"
-import { Leaf, Users, Zap, ShieldCheck, FlaskConical, ArrowRight } from "lucide-react"
+import { Leaf, Users, Zap, ShieldCheck, FlaskConical, Target, ArrowRight } from "lucide-react"
 import Link from "next/link"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -43,10 +43,9 @@ function AnimatedCounter({ from, to, suffix = "" }: { from: number; to: number; 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
 const stats = [
-    { value: 50000, suffix: "+", label: "5-Star Reviews" },
-    { value: 3,     suffix: "M+", label: "Strips Sold" },
-    { value: 98,    suffix: "%",  label: "Satisfaction Rate" },
-    { value: 3,     suffix: "+",  label: "Formulas Developed" },
+    { value: 100, suffix: "+", label: "Stores Nationwide" },
+    { value: 3,   suffix: "M+", label: "Strips Sold" },
+    { value: 3,   suffix: "",   label: "Formulas Developed" },
 ]
 
 const values = [
@@ -71,9 +70,9 @@ const values = [
         description: "Our cutting-edge strip technology delivers nutrients faster than any pills or gummies, with no water needed.",
     },
     {
-        icon: <FlaskConical className="size-5" />,
+        icon: <Target className="size-5" />,
         title: "Clinically Dosed",
-        description: "Every active ingredient is included at the dose that research actually supports — not a token amount just to appear on the label.",
+        description: "Every active ingredient is included at the dose that research actually supports, never a token amount just to appear on the label.",
     },
     {
         icon: <Users className="size-5" />,
@@ -147,12 +146,10 @@ export default function AboutPage() {
             // ── Quote: GSAP pin + scroll-driven word reveal ────────────────────
             const quoteSection = quoteRef.current
             if (quoteSection) {
-                const quoteMark  = quoteSection.querySelector(".quote-mark")
                 const wordEls    = quoteSection.querySelectorAll(".quote-word")
                 const quoteAuthor   = quoteSection.querySelector(".quote-author")
                 const quoteDivider  = quoteSection.querySelector(".quote-divider")
 
-                gsap.set(quoteMark, { opacity: 0, scale: 0.4, y: -60 })
                 gsap.set(wordEls,   { opacity: 0, y: 28, filter: "blur(10px)" })
                 gsap.set([quoteAuthor, quoteDivider], { opacity: 0, y: 20 })
 
@@ -169,11 +166,10 @@ export default function AboutPage() {
                 })
 
                 tl
-                    .to(quoteMark, { opacity: 1, scale: 1, y: 0, duration: 2, ease: "power3.out" }, 0)
                     .to(wordEls, {
                         opacity: 1, y: 0, filter: "blur(0px)",
                         stagger: 0.2, duration: 0.9, ease: "power2.out",
-                    }, 1.5)
+                    }, 0)
                     .to(quoteDivider, { opacity: 1, y: 0, duration: 1 }, "-=0.5")
                     .to(quoteAuthor,  { opacity: 1, y: 0, duration: 1.2 }, "-=0.4")
             }
@@ -279,7 +275,7 @@ export default function AboutPage() {
 
                         <p className="max-w-2xl text-balance text-lg text-white/40">
                             Zenova was founded by two college students who were tired of supplements
-                            that underperform and overcharge. We built a better delivery system — and a
+                            that underperform and overcharge. We built a better delivery system and a
                             company that puts integrity first.
                         </p>
 
@@ -293,10 +289,10 @@ export default function AboutPage() {
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="stat-card mb-16 text-center">
                         <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">
-                            By the numbers
+                            Zenova&apos;s 2026 Projections
                         </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-px bg-white/5 md:grid-cols-4">
+                    <div className="grid grid-cols-1 gap-px bg-white/5 md:grid-cols-3">
                         {stats.map((stat) => (
                             <div
                                 key={stat.label}
@@ -317,15 +313,6 @@ export default function AboutPage() {
                 ref={quoteRef}
                 className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-white px-8 text-center text-black"
             >
-                {/* Giant decorative quote mark */}
-                <div
-                    aria-hidden
-                    className="quote-mark pointer-events-none absolute -left-6 top-6 select-none font-serif leading-none text-black/[0.06]"
-                    style={{ fontSize: "22rem" }}
-                >
-                    "
-                </div>
-
                 <div className="relative z-10 mx-auto max-w-4xl">
                     <blockquote className="text-balance text-3xl font-medium leading-snug md:text-4xl lg:text-[2.8rem]">
                         {quoteWords.map((word, i) => (

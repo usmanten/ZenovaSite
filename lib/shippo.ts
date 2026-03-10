@@ -11,6 +11,8 @@ export interface OrderData {
     toCountry: string
     toEmail: string
     toPhone?: string
+    quantity?: number
+    productName?: string
 }
 
 export interface ShipmentResult {
@@ -22,6 +24,7 @@ export interface ShipmentResult {
 }
 
 export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentResult> {
+    const qty = Math.max(1, Math.min(3, order.quantity ?? 1))
     const shipment = await shippo.shipments.create({
         addressFrom: {
             name: process.env.SHIPPO_FROM_NAME!,
@@ -45,15 +48,16 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
         },
         parcels: [
             {
-                length: "6",
-                width: "4",
+                length: "9",
+                width: "6",
                 height: "1",
                 distanceUnit: "in",
-                weight: "0.25",
+                weight: String(0.08 * qty),
                 massUnit: "lb",
             },
         ],
         async: false,
+        metadata: `${order.productName ?? "Power"} × ${qty}`,
     })
 
     const rates = shipment.rates ?? []
@@ -72,7 +76,7 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
 
     const transaction = await shippo.transactions.create({
         rate: cheapestRate.objectId,
-        labelFileType: "PDF",
+        labelFileType: "PDF_4x6",
         async: false,
     })
 

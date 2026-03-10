@@ -11,7 +11,7 @@ const featuresData = [
     {
         icon: <Zap className="size-5" aria-hidden />,
         title: "Fast Acting",
-        description: "Dissolves in seconds for rapid absorption — feel the difference faster than any pill or gummy.",
+        description: "Dissolves in seconds for rapid absorption. Feel the difference faster than any pill or gummy.",
         from: { x: -500, y: -300, rotation: -45, opacity: 0, scale: 0.8 },
     },
     {
@@ -23,7 +23,7 @@ const featuresData = [
     {
         icon: <XCircle className="size-5" aria-hidden />,
         title: "No Sugar or Fillers",
-        description: "Zero sugar, zero artificial fillers — just clean, effective ingredients your body actually needs.",
+        description: "Zero sugar, zero artificial fillers. Just clean, effective ingredients your body actually needs.",
         from: { x: -500, y: 300, rotation: -45, opacity: 0, scale: 0.8 },
     },
     {
@@ -51,27 +51,35 @@ export default function Features() {
             gsap.set(card, featuresData[i].from)
         })
 
+        const isMobile = window.innerWidth < 768
+
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: pinWrap,
-                start: "top top",
-                end: `+=${(cards.length * 1.2 + 1) * 400}`,
-                pin: true,
-                pinSpacing: true,
-                scrub: 1.2,
-                anticipatePin: 1,
+                start: isMobile ? "top 90%" : "top top",
+                end: isMobile ? "+=400" : `+=${(cards.length * 1.2 + 1) * 400}`,
+                pin: !isMobile,
+                pinSpacing: !isMobile,
+                scrub: isMobile ? false : 1.2,
+                toggleActions: isMobile ? "play none none none" : undefined,
+                anticipatePin: isMobile ? 0 : 1,
                 invalidateOnRefresh: true,
             },
         })
 
-        tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0)
-        cards.forEach((card, i) => {
-            tl.to(
-                card,
-                { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" },
-                0.8 + i * 1.2
-            )
-        })
+        if (isMobile) {
+            tl.to(heading, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0)
+            tl.to(cards, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.08, ease: "power3.out" }, 0.2)
+        } else {
+            tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0)
+            cards.forEach((card, i) => {
+                tl.to(
+                    card,
+                    { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" },
+                    0.8 + i * 1.2
+                )
+            })
+        }
 
         return () => {
             tl.scrollTrigger?.kill()
@@ -80,7 +88,7 @@ export default function Features() {
     }, [])
 
     return (
-        <div ref={pinWrapRef} className="h-screen w-full overflow-hidden bg-black">
+        <div ref={pinWrapRef} className="min-h-screen md:h-screen w-full overflow-hidden bg-black">
             <div className="flex h-full w-full flex-col items-center justify-center">
 
                 <div
@@ -99,7 +107,7 @@ export default function Features() {
                     </p>
                 </div>
 
-                <div className="grid w-full max-w-3xl grid-cols-2 gap-5 px-6">
+                <div className="grid w-full max-w-3xl grid-cols-1 sm:grid-cols-2 gap-5 px-6">
                     {featuresData.map((feature, i) => (
                         <div
                             key={i}

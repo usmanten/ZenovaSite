@@ -75,9 +75,9 @@ export default function ContactPage() {
                         className="font-black leading-[1.05] tracking-tight text-white"
                         style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
                     >
-                        Contact
+                        <span className="text-white/20">Contact</span>
                         <br />
-                        <span className="text-white/20">Zenova.</span>
+                        Zenova.
                     </h1>
 
                     <p className="mt-6 max-w-md text-sm leading-relaxed text-white/40">
@@ -182,8 +182,7 @@ export default function ContactPage() {
                                 <p className="text-xs text-red-400/80">{error}</p>
                             )}
 
-                            <div className="flex items-center justify-between border-t border-white/5 pt-6">
-                                <p className="text-xs text-white/20">We typically reply within 24 hours.</p>
+                            <div className="flex flex-col items-center gap-3 border-t border-white/5 pt-4 md:flex-row md:justify-between">
                                 <button
                                     type="submit"
                                     disabled={loading}
@@ -192,6 +191,7 @@ export default function ContactPage() {
                                     {loading ? "Sending…" : "Send Message"}
                                     {!loading && <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />}
                                 </button>
+                                <p className="text-xs text-white/50 md:order-first">We typically reply within 24 hours.</p>
                             </div>
 
                         </form>

@@ -15,7 +15,7 @@ const transitionVariants = {
             opacity: 1,
             filter: 'blur(0px)',
             y: 0,
-            transition: { type: 'spring', bounce: 0.2, duration: 1.5 },
+            transition: { type: 'spring' as const, bounce: 0.2, duration: 1.5 },
         },
     },
 }
@@ -56,8 +56,9 @@ export default function HeroHome() {
                         className="pointer-events-none absolute inset-0 opacity-[0.032] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:80px_80px]"
                     />
 
-                    {/* Hero image — right side, bleeds behind text */}
-                    <div className="absolute right-0 top-0 h-full w-[58%]">
+
+                    {/* Hero image — right side, bleeds behind text (desktop only) */}
+                    <div className="absolute right-0 top-0 h-full w-[46%] hidden md:block">
                         <Image
                             src="/herozenova.jpeg"
                             fill
@@ -136,34 +137,6 @@ export default function HeroHome() {
                     </div>
                 </div>
 
-                {/* ── PARTNERS ─────────────────────────────────────────────────── */}
-                <section className="border-t border-white/5 py-20">
-                    <div className="group relative mx-auto max-w-5xl px-6">
-                        <div className="mb-12 flex items-center justify-center">
-                            <Link
-                                href="/"
-                                className="text-[10px] font-semibold uppercase tracking-[0.45em] text-white/25 transition-colors duration-150 hover:text-white/50"
-                            >
-                                Meet Our Partners
-                            </Link>
-                        </div>
-                        <div className="grid grid-cols-4 gap-x-12 gap-y-10 transition-all duration-500 group-hover:opacity-40">
-                            {[
-                                { h: 'h-5' }, { h: 'h-4' }, { h: 'h-4' }, { h: 'h-5' },
-                                { h: 'h-5' }, { h: 'h-4' }, { h: 'h-7' }, { h: 'h-6' },
-                            ].map((item, i) => (
-                                <div key={i} className="flex items-center justify-center">
-                                    <img
-                                        className={`mx-auto ${item.h} w-fit opacity-20 invert`}
-                                        src="/placeholder.png"
-                                        alt={`Partner ${i + 1}`}
-                                        height={30}
-                                    />
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
 
             </main>
         </>
