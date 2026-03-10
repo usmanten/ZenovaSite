@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 import { Resend } from "resend"
 import { purchaseShippingLabel } from "@/lib/shippo"
+import { supabase } from "@/lib/supabase"
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 if (!stripeKey) throw new Error("Missing env var: STRIPE_SECRET_KEY")
@@ -10,8 +11,11 @@ const stripe = new Stripe(stripeKey)
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
 if (!webhookSecret) throw new Error("Missing env var: STRIPE_WEBHOOK_SECRET")
 
-// Best-effort deduplication within the same serverless instance lifecycle
-const processedSessions = new Set<string>()
+const fromEmail = process.env.RESEND_FROM_EMAIL
+if (!fromEmail) throw new Error("Missing env var: RESEND_FROM_EMAIL")
+
+const adminEmail = process.env.ADMIN_EMAIL
+if (!adminEmail) throw new Error("Missing env var: ADMIN_EMAIL")
 
 const isDev = process.env.NODE_ENV !== "production"
 
@@ -30,12 +34,6 @@ export async function POST(req: NextRequest) {
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session
 
-        // Skip if already processed by this instance
-        if (processedSessions.has(session.id)) {
-            return NextResponse.json({ received: true })
-        }
-        processedSessions.add(session.id)
-
         // Retrieve full session to get shipping and customer details
         const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
             expand: ["line_items"],
@@ -45,21 +43,44 @@ export async function POST(req: NextRequest) {
         const customer = fullSession.customer_details
         const qty = fullSession.line_items?.data?.[0]?.quantity ?? 1
 
+        // Idempotency check — sole dedup mechanism (works across instances/cold starts)
+        const { data: existing } = await supabase
+            .from("orders")
+            .select("id")
+            .eq("stripe_session_id", session.id)
+            .maybeSingle()
+        if (existing) {
+            if (isDev) console.log("Session already processed, skipping:", session.id)
+            return NextResponse.json({ received: true })
+        }
+
         if (!shipping?.address || !customer) {
             const sessionRef = isDev ? session.id : "[redacted]"
             console.error("Missing shipping or customer details for session:", sessionRef)
         } else {
+            const toName = shipping.name ?? customer.name ?? "Customer"
+            const toEmail = customer.email ?? ""
+            const toStreet1 = shipping.address.line1 ?? ""
+            const toCity = shipping.address.city ?? ""
+            const toState = shipping.address.state ?? ""
+            const toZip = shipping.address.postal_code ?? ""
+            const toCountry = shipping.address.country ?? "US"
+
             try {
+                const productName = fullSession.line_items?.data?.[0]?.description ?? "Power"
+                const orderQty = Number(fullSession.metadata?.bundle_qty ?? 1)
+
                 const label = await purchaseShippingLabel({
-                    toName: shipping.name ?? customer.name ?? "Customer",
-                    toStreet1: shipping.address.line1 ?? "",
-                    toCity: shipping.address.city ?? "",
-                    toState: shipping.address.state ?? "",
-                    toZip: shipping.address.postal_code ?? "",
-                    toCountry: shipping.address.country ?? "US",
-                    toEmail: customer.email ?? "",
+                    toName,
+                    toStreet1,
+                    toCity,
+                    toState,
+                    toZip,
+                    toCountry,
+                    toEmail,
                     toPhone: customer.phone ?? undefined,
                     quantity: qty,
+                    productName: orderQty > 1 ? `${productName} (${orderQty}-Pack)` : productName,
                 })
 
                 if (isDev) {
@@ -69,6 +90,32 @@ export async function POST(req: NextRequest) {
                     console.log("Tracking URL:", label.trackingUrl)
                     console.log("Label URL:", label.labelUrl)
                 }
+
+                // ── Save order to database ────────────────────────────────────
+
+                const { error: insertError } = await supabase.from("orders").insert({
+                    customer_name: toName,
+                    customer_email: toEmail,
+                    shipping_address: `${toStreet1}, ${toCity}, ${toState} ${toZip}`,
+                    product_name: productName,
+                    order_quantity: orderQty,
+                    tracking_number: label.trackingNumber,
+                    tracking_url: label.trackingUrl,
+                    label_url: label.labelUrl,
+                    carrier: label.carrier,
+                    stripe_session_id: session.id,
+                    stripe_payment_intent: String(fullSession.payment_intent ?? ""),
+                })
+
+                if (insertError) {
+                    console.error("Failed to insert order into database:", JSON.stringify(insertError))
+                } else {
+                    // Atomically increment orders_placed
+                    const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
+                    if (rpcError) console.error("Failed to increment orders_placed:", rpcError.message)
+                }
+                // ─────────────────────────────────────────────────────────────
+
             } catch (err) {
                 // Log and alert — return 200 so Stripe doesn't retry
                 const sessionRef = isDev ? session.id : "[redacted]"
@@ -77,8 +124,8 @@ export async function POST(req: NextRequest) {
                 try {
                     const resend = new Resend(process.env.RESEND_API_KEY)
                     await resend.emails.send({
-                        from: "Zenova Alerts <onboarding@resend.dev>",
-                        to: "officialzenovastrips@gmail.com",
+                        from: fromEmail,
+                        to: adminEmail,
                         subject: `[ACTION REQUIRED] Shipping label failed for order ${session.id}`,
                         text: `A payment was completed but the shipping label could not be created.\n\nSession ID: ${session.id}\nError: ${String(err)}\n\nLog in to Shippo and manually create a label for this order.`,
                     })

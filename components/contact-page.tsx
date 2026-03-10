@@ -75,9 +75,9 @@ export default function ContactPage() {
                         className="font-black leading-[1.05] tracking-tight text-white"
                         style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
                     >
-                        Contact
+                        <span className="text-white/20">Contact</span>
                         <br />
-                        <span className="text-white/20">Zenova.</span>
+                        Zenova.
                     </h1>
 
                     <p className="mt-6 max-w-md text-sm leading-relaxed text-white/40">

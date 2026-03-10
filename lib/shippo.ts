@@ -12,6 +12,7 @@ export interface OrderData {
     toEmail: string
     toPhone?: string
     quantity?: number
+    productName?: string
 }
 
 export interface ShipmentResult {
@@ -56,6 +57,7 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
             },
         ],
         async: false,
+        metadata: `${order.productName ?? "Power"} × ${qty}`,
     })
 
     const rates = shipment.rates ?? []

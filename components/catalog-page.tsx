@@ -76,6 +76,7 @@ export default function CatalogPage() {
     const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
     const marqueeRef = useRef<HTMLDivElement>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
+    const [soldOutProducts, setSoldOutProducts] = useState<Record<string, boolean>>({})
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
     const [carouselIndex, setCarouselIndex] = useState<Record<string, number>>({})
     const carouselTimers = useRef<Record<string, ReturnType<typeof setInterval>>>({})
@@ -115,6 +116,10 @@ export default function CatalogPage() {
                 body: JSON.stringify({ slug, bundle: getBundle(productNumber) }),
             })
             if (!res.ok) {
+                const body = await res.json().catch(() => ({}))
+                if (body.error === "sold_out") {
+                    setSoldOutProducts(prev => ({ ...prev, [productNumber]: true }))
+                }
                 setLoadingProductId(null)
                 return
             }
@@ -257,7 +262,7 @@ export default function CatalogPage() {
                     {/* Risk-free blurb */}
                     <div className="mt-10 flex flex-col items-center gap-2 text-center">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.5em] text-white/35">Try It Risk-Free</p>
-                        <p className="max-w-md text-sm leading-relaxed text-white/30">
+                        <p className="max-w-md text-sm leading-relaxed text-white/60">
                             We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
                         </p>
                     </div>
@@ -468,22 +473,32 @@ export default function CatalogPage() {
                                         </div>
 
                                         {/* Checkout button */}
-                                        <button
-                                            onClick={() => handleCheckout(product.slug!, product.number)}
-                                            disabled={loadingProductId === product.number}
-                                            className="group flex w-full items-center justify-center gap-2.5 rounded-full py-4 text-base font-black text-black transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
-                                            style={{
-                                                backgroundColor: product.accent,
-                                                boxShadow: `0 0 28px ${product.accent}55`,
-                                            }}
-                                        >
-                                            {loadingProductId === product.number
-                                                ? "Redirecting…"
-                                                : `Shop Now — ${active.price}`}
-                                            {loadingProductId !== product.number && (
-                                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-                                            )}
-                                        </button>
+                                        {soldOutProducts[product.number] ? (
+                                            <div
+                                                className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold"
+                                                style={{ border: `1px solid ${product.accent}30`, backgroundColor: product.accent + "08", color: product.accent + "cc" }}
+                                            >
+                                                <span className="size-2 rounded-full" style={{ backgroundColor: product.accent }} />
+                                                Sold Out
+                                            </div>
+                                        ) : (
+                                            <button
+                                                onClick={() => handleCheckout(product.slug!, product.number)}
+                                                disabled={loadingProductId === product.number}
+                                                className="group flex w-full items-center justify-center gap-2.5 rounded-full py-4 text-base font-black text-black transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                                                style={{
+                                                    backgroundColor: product.accent,
+                                                    boxShadow: `0 0 28px ${product.accent}55`,
+                                                }}
+                                            >
+                                                {loadingProductId === product.number
+                                                    ? "Redirecting…"
+                                                    : `Shop Now — ${active.price}`}
+                                                {loadingProductId !== product.number && (
+                                                    <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+                                                )}
+                                            </button>
+                                        )}
                                     </div>
                                 )
                             })() : !product.available ? (

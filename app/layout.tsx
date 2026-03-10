@@ -10,8 +10,22 @@ const montserrat = Montserrat({
 })
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://zenovastrips.com"),
   title: "Zenova | Fast-Acting Energy Strips",
   description: "100mg of clean caffeine. Zero crash. Zero sugar. Try Zenova Strawberry Frost energy strips.",
+  openGraph: {
+    title: "Zenova | Fast-Acting Energy Strips",
+    description: "100mg of clean caffeine. Zero crash. Zero sugar.",
+    siteName: "Zenova",
+    images: [{ url: "/herozenova.jpeg", width: 1200, height: 630, alt: "Zenova Energy Strips" }],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Zenova | Fast-Acting Energy Strips",
+    description: "100mg of clean caffeine. Zero crash. Zero sugar.",
+    images: ["/herozenova.jpeg"],
+  },
 }
 
 export default function RootLayout({

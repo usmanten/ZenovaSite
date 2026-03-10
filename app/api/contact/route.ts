@@ -5,11 +5,38 @@ const resendKey = process.env.RESEND_API_KEY
 if (!resendKey) throw new Error("Missing env var: RESEND_API_KEY")
 const resend = new Resend(resendKey)
 
+const fromEmail = process.env.RESEND_FROM_EMAIL
+if (!fromEmail) throw new Error("Missing env var: RESEND_FROM_EMAIL")
+
+const adminEmail = process.env.ADMIN_EMAIL
+if (!adminEmail) throw new Error("Missing env var: ADMIN_EMAIL")
+
+const baseUrlEnv = process.env.NEXT_PUBLIC_BASE_URL
+if (!baseUrlEnv) throw new Error("Missing env var: NEXT_PUBLIC_BASE_URL")
+
+// IP-based rate limit: 3 submissions per IP per hour
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>()
+function isRateLimited(ip: string): boolean {
+    const now = Date.now()
+    const entry = rateLimitMap.get(ip)
+    if (!entry || now > entry.resetAt) {
+        rateLimitMap.set(ip, { count: 1, resetAt: now + 60 * 60 * 1000 })
+        return false
+    }
+    if (entry.count >= 3) return true
+    entry.count++
+    return false
+}
+
 export async function POST(req: NextRequest) {
     const origin = req.headers.get("origin") ?? ""
-    const allowed = process.env.NEXT_PUBLIC_BASE_URL ?? ""
-    if (allowed && origin !== allowed) {
+    if (origin !== baseUrlEnv) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 })
+    }
+
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown"
+    if (isRateLimited(ip)) {
+        return NextResponse.json({ error: "Too many requests. Please try again later." }, { status: 429 })
     }
 
     const body = await req.json()
@@ -24,8 +51,8 @@ export async function POST(req: NextRequest) {
     }
 
     const { error } = await resend.emails.send({
-        from: "Zenova Contact <onboarding@resend.dev>",
-        to: "officialzenovastrips@gmail.com",
+        from: fromEmail,
+        to: adminEmail,
         reply_to: email,
         subject: `[Contact] ${subject}`,
         text: `Name: ${name}\nEmail: ${email}\n\n${message}`,
