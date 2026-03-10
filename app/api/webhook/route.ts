@@ -8,7 +8,7 @@ const stripeKey = process.env.STRIPE_SECRET_KEY
 if (!stripeKey) throw new Error("Missing env var: STRIPE_SECRET_KEY")
 const stripe = new Stripe(stripeKey)
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET
+const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 if (!webhookSecret) throw new Error("Missing env var: STRIPE_WEBHOOK_SECRET")
 
 const fromEmail = process.env.RESEND_FROM_EMAIL!

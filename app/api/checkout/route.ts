@@ -3,17 +3,17 @@ import Stripe from "stripe"
 import { PRODUCTS } from "@/lib/products"
 import { supabase } from "@/lib/supabase"
 
-const stripeKey = process.env.STRIPE_SECRET_KEY
+const stripeKey = process.env.STRIPE_SECRET_KEY!
 if (!stripeKey) throw new Error("Missing env var: STRIPE_SECRET_KEY")
 const stripe = new Stripe(stripeKey)
 
-const shippingRateId = process.env.STRIPE_SHIPPING_RATE_ID
+const shippingRateId = process.env.STRIPE_SHIPPING_RATE_ID!
 if (!shippingRateId) throw new Error("Missing env var: STRIPE_SHIPPING_RATE_ID")
 
-const pmcId = process.env.STRIPE_PAYMENT_METHOD_CONFIG_ID
+const pmcId = process.env.STRIPE_PAYMENT_METHOD_CONFIG_ID!
 if (!pmcId) throw new Error("Missing env var: STRIPE_PAYMENT_METHOD_CONFIG_ID")
 
-const baseUrlEnv = process.env.NEXT_PUBLIC_BASE_URL
+const baseUrlEnv = process.env.NEXT_PUBLIC_BASE_URL!
 if (!baseUrlEnv) throw new Error("Missing env var: NEXT_PUBLIC_BASE_URL")
 
 export async function POST(req: NextRequest) {
