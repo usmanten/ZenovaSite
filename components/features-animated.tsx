@@ -67,14 +67,19 @@ export default function Features() {
             },
         })
 
-        tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0)
-        cards.forEach((card, i) => {
-            tl.to(
-                card,
-                { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" },
-                0.8 + i * 1.2
-            )
-        })
+        if (isMobile) {
+            tl.to(heading, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0)
+            tl.to(cards, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.08, ease: "power3.out" }, 0.2)
+        } else {
+            tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0)
+            cards.forEach((card, i) => {
+                tl.to(
+                    card,
+                    { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" },
+                    0.8 + i * 1.2
+                )
+            })
+        }
 
         return () => {
             tl.scrollTrigger?.kill()

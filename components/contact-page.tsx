@@ -182,7 +182,7 @@ export default function ContactPage() {
                                 <p className="text-xs text-red-400/80">{error}</p>
                             )}
 
-                            <div className="flex flex-col items-center gap-3 border-t border-white/5 pt-6 md:flex-row md:justify-between">
+                            <div className="flex flex-col items-center gap-3 border-t border-white/5 pt-4 md:flex-row md:justify-between">
                                 <button
                                     type="submit"
                                     disabled={loading}
@@ -191,7 +191,7 @@ export default function ContactPage() {
                                     {loading ? "Sending…" : "Send Message"}
                                     {!loading && <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />}
                                 </button>
-                                <p className="text-xs text-white/20 md:order-first">We typically reply within 24 hours.</p>
+                                <p className="text-xs text-white/50 md:order-first">We typically reply within 24 hours.</p>
                             </div>
 
                         </form>

@@ -644,24 +644,28 @@ export default function CatalogPage() {
                             </div>
 
                             {/* Carousel prev/next buttons */}
-                            {"carouselImages" in product && product.carouselImages && (
-                                <div className="mt-4 flex items-center justify-center gap-4">
-                                    <button
-                                        onClick={() => carouselPrev(product.number, (product.carouselImages as string[]).length + 1)}
-                                        className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
-                                        style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
-                                    >
-                                        <ChevronLeft className="size-4" />
-                                    </button>
-                                    <button
-                                        onClick={() => carouselNext(product.number, (product.carouselImages as string[]).length + 1)}
-                                        className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
-                                        style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
-                                    >
-                                        <ChevronRight className="size-4" />
-                                    </button>
-                                </div>
-                            )}
+                            {"carouselImages" in product && product.carouselImages && (() => {
+                                    const hasPackImg = "packImages" in product && product.packImages && (product.packImages as Record<number, string>)[getBundle(product.number)]
+                                    const btnTotal = (product.carouselImages as string[]).length + 1 + (hasPackImg ? 1 : 0)
+                                    return (
+                                        <div className="mt-4 flex items-center justify-center gap-4">
+                                            <button
+                                                onClick={() => carouselPrev(product.number, btnTotal)}
+                                                className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
+                                                style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
+                                            >
+                                                <ChevronLeft className="size-4" />
+                                            </button>
+                                            <button
+                                                onClick={() => carouselNext(product.number, btnTotal)}
+                                                className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
+                                                style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
+                                            >
+                                                <ChevronRight className="size-4" />
+                                            </button>
+                                        </div>
+                                    )
+                                })()}
                         </div>
                     </div>
 
