@@ -32,8 +32,8 @@ export const HeroHeader = () => {
                 {!isScrolled && (
                     <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
                 )}
-                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-4xl rounded-2xl border backdrop-blur-lg lg:px-5')}>
-                    <div className="relative flex flex-wrap items-center justify-between gap-6 py-5 lg:gap-0 lg:py-6">
+                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-lg rounded-2xl border backdrop-blur-lg lg:px-5')}>
+                    <div className={cn("relative flex flex-wrap items-center justify-between gap-6 lg:gap-0", isScrolled ? "py-2.5 lg:py-3" : "py-5 lg:py-6")}>
                         <div className="flex w-full justify-between lg:w-auto">
                             <Link
                                 href="/"
