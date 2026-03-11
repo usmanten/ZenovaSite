@@ -31,6 +31,22 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 })
     }
 
+    if (event.type === "charge.updated") {
+        const charge = event.data.object as Stripe.Charge
+        const receiptNumber = charge.receipt_number
+        const paymentIntent = charge.payment_intent as string | null
+
+        if (receiptNumber && paymentIntent) {
+            const { error } = await supabase
+                .from("orders")
+                .update({ receipt_number: receiptNumber })
+                .eq("stripe_payment_intent", paymentIntent)
+                .is("receipt_number", null)
+
+            if (error) console.error("Failed to backfill receipt_number:", error.message)
+        }
+    }
+
     if (event.type === "charge.refunded") {
         const charge = event.data.object as Stripe.Charge
         const paymentIntent = charge.payment_intent as string
@@ -144,6 +160,9 @@ export async function POST(req: NextRequest) {
                     carrier: label.carrier,
                     stripe_session_id: session.id,
                     stripe_payment_intent: String(fullSession.payment_intent ?? ""),
+                    stripe_payment_url: fullSession.payment_intent
+                        ? `https://dashboard.stripe.com/payments/${String(fullSession.payment_intent)}`
+                        : null,
                     receipt_number: receiptNumber,
                     receipt_url: receiptUrl,
                 })

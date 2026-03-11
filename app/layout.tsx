@@ -20,6 +20,9 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://zenovastrips.com"),
   title: "Zenova | Fast-Acting Energy Strips",
   description: "Your wellness routine, simplified. Zenova's sublingual strips deliver clean energy, better sleep, and beauty nutrients faster than any pill or drink.",
+  verification: {
+    google: "yB8bR1ZxfoW-oe5htiB0CjD8SH-QSAFc-MB12TEAfsc",
+  },
   openGraph: {
     title: "Zenova | Fast-Acting Energy Strips",
     description: "Your wellness routine, simplified. Zenova's sublingual strips deliver clean energy, better sleep, and beauty nutrients faster than any pill or drink.",
