@@ -70,6 +70,18 @@ export async function POST(req: NextRequest) {
         const customer = fullSession.customer_details
         const qty = fullSession.line_items?.data?.[0]?.quantity ?? 1
 
+        let receiptNumber: string | null = null
+        let receiptUrl: string | null = null
+        if (fullSession.payment_intent) {
+            const pi = await stripe.paymentIntents.retrieve(
+                String(fullSession.payment_intent),
+                { expand: ["latest_charge"] }
+            )
+            const charge = pi.latest_charge as Stripe.Charge | null
+            receiptNumber = charge?.receipt_number ?? null
+            receiptUrl = charge?.receipt_url ?? null
+        }
+
         // Idempotency check — sole dedup mechanism (works across instances/cold starts)
         const { data: existing } = await supabase
             .from("orders")
@@ -132,6 +144,8 @@ export async function POST(req: NextRequest) {
                     carrier: label.carrier,
                     stripe_session_id: session.id,
                     stripe_payment_intent: String(fullSession.payment_intent ?? ""),
+                    receipt_number: receiptNumber,
+                    receipt_url: receiptUrl,
                 })
 
                 if (insertError) {
