@@ -27,7 +27,7 @@ export default async function CheckoutSuccess({
 
                 {order && (
                     <p className="mb-4 font-mono text-lg font-bold tracking-widest text-white">
-                        {order}
+                        <span className="font-sans text-xs font-normal tracking-[0.3em] text-white/40 uppercase">Order Number: </span>{order}
                     </p>
                 )}
 
