@@ -31,22 +31,6 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 })
     }
 
-    if (event.type === "charge.updated") {
-        const charge = event.data.object as Stripe.Charge
-        const receiptNumber = charge.receipt_number
-        const paymentIntent = charge.payment_intent as string | null
-
-        if (receiptNumber && paymentIntent) {
-            const { error } = await supabase
-                .from("orders")
-                .update({ receipt_number: receiptNumber })
-                .eq("stripe_payment_intent", paymentIntent)
-                .is("receipt_number", null)
-
-            if (error) console.error("Failed to backfill receipt_number:", error.message)
-        }
-    }
-
     if (event.type === "charge.refunded") {
         const charge = event.data.object as Stripe.Charge
         const paymentIntent = charge.payment_intent as string
@@ -86,7 +70,8 @@ export async function POST(req: NextRequest) {
         const customer = fullSession.customer_details
         const qty = fullSession.line_items?.data?.[0]?.quantity ?? 1
 
-        let receiptNumber: string | null = null
+        const orderNumber = session.client_reference_id ?? fullSession.metadata?.order_number ?? null
+
         let receiptUrl: string | null = null
         if (fullSession.payment_intent) {
             const pi = await stripe.paymentIntents.retrieve(
@@ -94,7 +79,6 @@ export async function POST(req: NextRequest) {
                 { expand: ["latest_charge"] }
             )
             const charge = pi.latest_charge as Stripe.Charge | null
-            receiptNumber = charge?.receipt_number ?? null
             receiptUrl = charge?.receipt_url ?? null
         }
 
@@ -163,12 +147,23 @@ export async function POST(req: NextRequest) {
                     stripe_payment_url: fullSession.payment_intent
                         ? `https://dashboard.stripe.com/payments/${String(fullSession.payment_intent)}`
                         : null,
-                    receipt_number: receiptNumber,
+                    order_number: orderNumber,
                     receipt_url: receiptUrl,
                 })
 
                 if (insertError) {
                     console.error("Failed to insert order into database:", JSON.stringify(insertError))
+                    try {
+                        const resend = new Resend(process.env.RESEND_API_KEY)
+                        await resend.emails.send({
+                            from: fromEmail,
+                            to: adminEmail,
+                            subject: `[ACTION REQUIRED] Order not saved for session ${isDev ? session.id : "[redacted]"}`,
+                            text: `A payment was completed but the order could not be saved to the database.\n\nSession ID: ${session.id}\nOrder Number: ${orderNumber ?? "unknown"}\nError: ${JSON.stringify(insertError)}\n\nManually record this order in Supabase.`,
+                        })
+                    } catch (alertErr) {
+                        console.error("Failed to send insert failure alert:", alertErr)
+                    }
                 } else {
                     // Atomically increment orders_placed
                     const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })

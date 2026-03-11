@@ -52,6 +52,7 @@ export async function POST(req: NextRequest) {
         : product.name
 
     const baseUrl = baseUrlEnv
+    const orderNumber = `ZEN-${Math.floor(100000 + Math.random() * 900000)}`
 
     const session = await stripe.checkout.sessions.create({
         mode: "payment",
@@ -64,7 +65,12 @@ export async function POST(req: NextRequest) {
             },
             quantity: 1,
         }],
-        metadata: { bundle_qty: String(bundleQty) },
+        client_reference_id: orderNumber,
+        metadata: { bundle_qty: String(bundleQty), order_number: orderNumber },
+        payment_intent_data: {
+            metadata: { order_number: orderNumber },
+            description: `Zenova order ${orderNumber}`,
+        },
         automatic_tax: { enabled: true },
         shipping_address_collection: {
             allowed_countries: ["US"],
@@ -78,7 +84,7 @@ export async function POST(req: NextRequest) {
                 message: `I agree to the [Terms of Service](${baseUrl}/legal/tos), [Privacy Policy](${baseUrl}/legal/privacy), and [Refund Policy](${baseUrl}/legal/refund).`,
             },
         },
-        success_url: `${baseUrl}/checkout/success`,
+        success_url: `${baseUrl}/checkout/success?order=${orderNumber}`,
         cancel_url: `${baseUrl}/catalog`,
     })
 
