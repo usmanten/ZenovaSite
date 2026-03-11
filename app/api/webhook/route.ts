@@ -31,6 +31,33 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 })
     }
 
+    if (event.type === "charge.refunded") {
+        const charge = event.data.object as Stripe.Charge
+        const paymentIntent = charge.payment_intent as string
+
+        if (paymentIntent) {
+            const { data: order } = await supabase
+                .from("orders")
+                .select("id, order_quantity")
+                .eq("stripe_payment_intent", paymentIntent)
+                .maybeSingle()
+
+            if (order) {
+                const { error } = await supabase
+                    .from("orders")
+                    .update({ refunded: true })
+                    .eq("id", order.id)
+
+                if (error) {
+                    console.error("Failed to mark order as refunded:", error.message)
+                } else {
+                    const { error: rpcError } = await supabase.rpc("decrement_orders_placed", { qty: order.order_quantity })
+                    if (rpcError) console.error("Failed to decrement orders_placed:", rpcError.message)
+                }
+            }
+        }
+    }
+
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session
 
