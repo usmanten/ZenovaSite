@@ -118,7 +118,7 @@ export async function POST(req: NextRequest) {
                     toCountry,
                     toEmail,
                     toPhone: customer.phone ?? undefined,
-                    quantity: qty,
+                    quantity: orderQty,
                     productName: orderQty > 1 ? `${productName} (${orderQty}-Pack)` : productName,
                 })
 
