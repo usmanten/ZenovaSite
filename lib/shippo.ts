@@ -57,7 +57,10 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
             },
         ],
         async: false,
-        metadata: `${order.productName ?? "Power"} × ${qty}`,
+        metadata: `${order.productName ?? "Focus"} × ${qty}`,
+        extra: {
+            reference1: `${order.productName ?? "Focus"} x${qty}`,
+        },
     })
 
     const rates = shipment.rates ?? []

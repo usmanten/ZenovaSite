@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
             const toCountry = shipping.address.country ?? "US"
 
             try {
-                const productName = fullSession.line_items?.data?.[0]?.description ?? "Power"
+                const productName = fullSession.line_items?.data?.[0]?.description ?? "Focus"
                 const orderQty = Number(fullSession.metadata?.bundle_qty ?? 1)
 
                 const label = await purchaseShippingLabel({
