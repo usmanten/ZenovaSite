@@ -1,6 +1,12 @@
 import Link from "next/link"
 
-export default function CheckoutSuccess() {
+export default async function CheckoutSuccess({
+    searchParams,
+}: {
+    searchParams: Promise<{ order?: string }>
+}) {
+    const { order } = await searchParams
+
     return (
         <div className="flex min-h-screen flex-col items-center justify-center bg-black px-6 text-center text-white">
             <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:80px_80px]" />
@@ -18,6 +24,13 @@ export default function CheckoutSuccess() {
                 <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/30">
                     Order Confirmed
                 </p>
+
+                {order && (
+                    <p className="mb-4 font-mono text-lg font-bold tracking-widest text-white">
+                        <span className="font-sans text-xs font-normal tracking-[0.3em] text-white/40 uppercase">Order Number: </span>{order}
+                    </p>
+                )}
+
                 <h1 className="text-4xl font-black leading-tight tracking-tight md:text-5xl">
                     Thanks for your
                     <br />

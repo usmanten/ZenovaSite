@@ -31,6 +31,33 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ error: "Webhook signature verification failed" }, { status: 400 })
     }
 
+    if (event.type === "charge.refunded") {
+        const charge = event.data.object as Stripe.Charge
+        const paymentIntent = charge.payment_intent as string
+
+        if (paymentIntent) {
+            const { data: order } = await supabase
+                .from("orders")
+                .select("id, order_quantity")
+                .eq("stripe_payment_intent", paymentIntent)
+                .maybeSingle()
+
+            if (order) {
+                const { error } = await supabase
+                    .from("orders")
+                    .update({ refunded: true })
+                    .eq("id", order.id)
+
+                if (error) {
+                    console.error("Failed to mark order as refunded:", error.message)
+                } else {
+                    const { error: rpcError } = await supabase.rpc("decrement_orders_placed", { qty: order.order_quantity })
+                    if (rpcError) console.error("Failed to decrement orders_placed:", rpcError.message)
+                }
+            }
+        }
+    }
+
     if (event.type === "checkout.session.completed") {
         const session = event.data.object as Stripe.Checkout.Session
 
@@ -42,6 +69,18 @@ export async function POST(req: NextRequest) {
         const shipping = fullSession.collected_information?.shipping_details
         const customer = fullSession.customer_details
         const qty = fullSession.line_items?.data?.[0]?.quantity ?? 1
+
+        const orderNumber = session.client_reference_id ?? fullSession.metadata?.order_number ?? null
+
+        let receiptUrl: string | null = null
+        if (fullSession.payment_intent) {
+            const pi = await stripe.paymentIntents.retrieve(
+                String(fullSession.payment_intent),
+                { expand: ["latest_charge"] }
+            )
+            const charge = pi.latest_charge as Stripe.Charge | null
+            receiptUrl = charge?.receipt_url ?? null
+        }
 
         // Idempotency check — sole dedup mechanism (works across instances/cold starts)
         const { data: existing } = await supabase
@@ -105,10 +144,26 @@ export async function POST(req: NextRequest) {
                     carrier: label.carrier,
                     stripe_session_id: session.id,
                     stripe_payment_intent: String(fullSession.payment_intent ?? ""),
+                    stripe_payment_url: fullSession.payment_intent
+                        ? `https://dashboard.stripe.com/payments/${String(fullSession.payment_intent)}`
+                        : null,
+                    order_number: orderNumber,
+                    receipt_url: receiptUrl,
                 })
 
                 if (insertError) {
                     console.error("Failed to insert order into database:", JSON.stringify(insertError))
+                    try {
+                        const resend = new Resend(process.env.RESEND_API_KEY)
+                        await resend.emails.send({
+                            from: fromEmail,
+                            to: adminEmail,
+                            subject: `[ACTION REQUIRED] Order not saved for session ${isDev ? session.id : "[redacted]"}`,
+                            text: `A payment was completed but the order could not be saved to the database.\n\nSession ID: ${session.id}\nOrder Number: ${orderNumber ?? "unknown"}\nError: ${JSON.stringify(insertError)}\n\nManually record this order in Supabase.`,
+                        })
+                    } catch (alertErr) {
+                        console.error("Failed to send insert failure alert:", alertErr)
+                    }
                 } else {
                     // Atomically increment orders_placed
                     const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
