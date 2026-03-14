@@ -57,8 +57,8 @@ export default function HeroHome() {
                     />
 
 
-                    {/* Hero image — right side, bleeds behind text (desktop only) */}
-                    <div className="absolute right-0 top-0 h-full w-[46%] hidden md:block">
+                    {/* Hero image — right side on both mobile and desktop */}
+                    <div className="absolute right-0 top-0 h-full w-[58%] md:w-[46%]">
                         <Image
                             src="/herozenova.jpeg"
                             fill

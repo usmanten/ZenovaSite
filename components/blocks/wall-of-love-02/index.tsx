@@ -103,26 +103,9 @@ export default function WallOfLove02() {
       .to(row2, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.45);
 
     // Direction flip at section midpoint
-    const tracks1 = Array.from(row1.querySelectorAll<HTMLElement>(".animate-marquee"));
-    const tracks2 = Array.from(row2.querySelectorAll<HTMLElement>(".animate-marquee"));
-
-    const flipTrigger = ScrollTrigger.create({
-      trigger: section,
-      start: "center center",
-      onEnter: () => {
-        tracks1.forEach(el => { el.style.animationDirection = "reverse"; });
-        tracks2.forEach(el => { el.style.animationDirection = "normal"; });
-      },
-      onLeaveBack: () => {
-        tracks1.forEach(el => { el.style.animationDirection = "normal"; });
-        tracks2.forEach(el => { el.style.animationDirection = "reverse"; });
-      },
-    });
-
     return () => {
       tl.scrollTrigger?.kill();
       tl.kill();
-      flipTrigger.kill();
     };
   }, []);
 
