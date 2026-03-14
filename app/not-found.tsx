@@ -9,7 +9,7 @@ export default function NotFound() {
                 className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:80px_80px]"
             />
 
-            <p className="mb-4 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/40">
+            <p className="mb-4 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/60">
                 404
             </p>
 
@@ -17,12 +17,12 @@ export default function NotFound() {
                 className="font-black leading-[1.05] tracking-tight"
                 style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
             >
-                <span className="text-white/20">Page</span>
+                <span className="text-white/40">Page</span>
                 <br />
                 Not Found.
             </h1>
 
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/40">
+            <p className="mt-6 max-w-sm text-sm leading-relaxed text-white/60">
                 The page you&apos;re looking for doesn&apos;t exist or has been moved.
             </p>
 

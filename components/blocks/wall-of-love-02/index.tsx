@@ -156,7 +156,7 @@ export default function WallOfLove02() {
         >
           What Our Customers Are Saying
         </h2>
-        <p className="mt-4 text-sm text-white/35">Real reviews from real customers.</p>
+        <p className="mt-4 text-sm text-white/55">Real reviews from real customers.</p>
       </div>
 
       <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden">
@@ -197,9 +197,9 @@ const ReviewCard = ({
         <figcaption className="text-sm font-semibold text-white">
           {name}
         </figcaption>
-        <p className="text-xs font-medium text-white/35">{position}</p>
+        <p className="text-xs font-medium text-white/55">{position}</p>
       </div>
-      <blockquote className="mt-3 text-sm text-white/40">{text}</blockquote>
+      <blockquote className="mt-3 text-sm text-white/60">{text}</blockquote>
     </figure>
   );
 };

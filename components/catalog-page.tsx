@@ -178,35 +178,25 @@ export default function CatalogPage() {
                 const tl = gsap.timeline({
                     scrollTrigger: {
                         trigger: section,
-                        pin: !isMobile,
-                        start: isMobile ? "top 90%" : "top top",
-                        end: isMobile ? "+=400" : "+=960",
-                        scrub: isMobile ? false : 1,
-                        toggleActions: isMobile ? "play none none none" : undefined,
-                        anticipatePin: isMobile ? 0 : 1,
+                        start: "top 80%",
+                        end: "bottom top",
+                        toggleActions: "play none none reverse",
                         invalidateOnRefresh: true,
                     },
                 })
 
-                if (isMobile) {
-                    tl
-                        .to([number, type, names, flavor ?? [], divider, tagline, desc, badges, cta, image],
-                            { opacity: 1, y: 0, x: 0, scale: 1, duration: 0.7, stagger: 0.05 }, 0)
-                        .to(bgText, { opacity: 0.04, x: 0, duration: 0.7 }, 0)
-                } else {
-                    tl
-                        .to(bgText, { opacity: 0.055, x: 0, duration: 2.5 }, 0)
-                        .to(image,  { opacity: 1, x: 0, scale: 1, duration: 3 }, 0.2)
-                        .to(number, { opacity: 1, y: 0, duration: 1.2 }, 0.6)
-                        .to(type,   { opacity: 1, y: 0, duration: 1 }, 0.9)
-                        .to(names,  { opacity: 1, y: 0, duration: 1.4, stagger: 0.18 }, 1.3)
-                        .to(flavor ?? [], { opacity: 1, y: 0, duration: 1 }, 1.3)
-                        .to(divider,{ opacity: 1, y: 0, duration: 0.8 }, 1.3)
-                        .to(tagline,{ opacity: 1, y: 0, duration: 1 }, 1.3)
-                        .to(desc,   { opacity: 1, y: 0, duration: 1 }, 1.3)
-                        .to(badges, { opacity: 1, y: 0, scale: 1, stagger: 0.12, duration: 0.7 }, 1.3)
-                        .to(cta,    { opacity: 1, y: 0, duration: 0.9 }, 1.3)
-                }
+                tl
+                    .to(bgText, { opacity: isMobile ? 0.04 : 0.055, x: 0, duration: 1 }, 0)
+                    .to(image,  { opacity: 1, x: 0, scale: 1, duration: 0.9 }, 0)
+                    .to(number, { opacity: 1, y: 0, duration: 0.6 }, 0.05)
+                    .to(type,   { opacity: 1, y: 0, duration: 0.6 }, 0.1)
+                    .to(names,  { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 }, 0.15)
+                    .to(flavor ?? [], { opacity: 1, y: 0, duration: 0.6 }, 0.15)
+                    .to(divider,{ opacity: 1, y: 0, duration: 0.5 }, 0.2)
+                    .to(tagline,{ opacity: 1, y: 0, duration: 0.6 }, 0.2)
+                    .to(desc,   { opacity: 1, y: 0, duration: 0.6 }, 0.25)
+                    .to(badges, { opacity: 1, y: 0, scale: 1, stagger: 0.07, duration: 0.5 }, 0.3)
+                    .to(cta,    { opacity: 1, y: 0, duration: 0.5 }, 0.35)
             })
 
         }, containerRef)
@@ -254,7 +244,7 @@ export default function CatalogPage() {
                     className="flex flex-col items-center gap-0"
                 >
                     <h1 className="text-[10vw] md:text-[13vw] font-black leading-[0.88] tracking-tight text-white">
-                        <span className="text-white/25">THE</span>
+                        <span className="text-white/45">THE</span>
                         <br />
                         COLLECTION
                     </h1>
@@ -263,7 +253,7 @@ export default function CatalogPage() {
                         {products.map(p => (
                             <div key={p.number} className="flex items-center gap-2.5">
                                 <span className="size-1.5 rounded-full" style={{ backgroundColor: p.accent }} />
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/40">
+                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/60">
                                     {p.number}&nbsp;&nbsp;{p.category}
                                 </span>
                             </div>
@@ -273,8 +263,13 @@ export default function CatalogPage() {
                     {/* Risk-free blurb */}
                     <div className="mt-16 relative flex flex-col items-center gap-4 text-center">
                         <div aria-hidden className="pointer-events-none absolute -right-24 top-1/2 size-64 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#FF4D6D1a" }} />
-                        <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
-                            <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Try It Risk-Free</span>
+                        <div className="flex flex-wrap items-center justify-center gap-3">
+                            <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
+                                <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Try It Risk-Free</span>
+                            </div>
+                            <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
+                                <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Free Shipping</span>
+                            </div>
                         </div>
                         <p className="max-w-md text-base leading-relaxed text-white/80">
                             We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
@@ -283,7 +278,7 @@ export default function CatalogPage() {
                 </AnimatedGroup>
 
                 <div className="absolute bottom-8 flex items-center justify-center">
-                    <ChevronDown className="size-5 animate-bounce text-white/25" />
+                    <ChevronDown className="size-5 animate-bounce text-white/45" />
                 </div>
             </section>
 
@@ -293,7 +288,7 @@ export default function CatalogPage() {
                     {[...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
                         <span
                             key={i}
-                            className={`mx-6 text-[10px] font-bold uppercase tracking-[0.4em] ${item === "·" ? "text-white/15" : "text-white/25"}`}
+                            className={`mx-6 text-[10px] font-bold uppercase tracking-[0.4em] ${item === "·" ? "text-white/35" : "text-white/45"}`}
                         >
                             {item}
                         </span>
@@ -350,7 +345,7 @@ export default function CatalogPage() {
                                 {product.number}
                             </span>
                             <span className="h-px w-6 bg-white/15" />
-                            <span className="prod-type text-[10px] font-semibold uppercase tracking-[0.35em] text-white/35">
+                            <span className="prod-type text-[10px] font-semibold uppercase tracking-[0.35em] text-white/55">
                                 {product.type}
                             </span>
                         </div>
@@ -392,7 +387,7 @@ export default function CatalogPage() {
                         </p>
 
                         {/* Description */}
-                        <p className="prod-desc mt-4 max-w-sm text-sm leading-relaxed text-white/45">
+                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white/65 md:block">
                             {product.description}
                         </p>
 
@@ -401,7 +396,7 @@ export default function CatalogPage() {
                             {product.badges.map(badge => (
                                 <span
                                     key={badge}
-                                    className="prod-badge rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-white/50"
+                                    className="prod-badge rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-white/70"
                                     style={{
                                         border: `1px solid ${product.accent}28`,
                                         backgroundColor: product.accent + "0c",
@@ -425,10 +420,10 @@ export default function CatalogPage() {
                                                 <span className="text-3xl font-black" style={{ color: product.accent }}>
                                                     {active.price}
                                                 </span>
-                                                <span className="text-sm font-medium text-white/30 line-through">
+                                                <span className="text-sm font-medium text-white/50 line-through">
                                                     {active.originalPrice}
                                                 </span>
-                                                <span className="text-[11px] text-white/25">{active.perStrip}</span>
+                                                <span className="text-[11px] text-white/45">{active.perStrip}</span>
                                             </div>
                                             <p className="text-[10px] font-semibold uppercase tracking-[0.3em]" style={{ color: product.accent + "99" }}>
                                                 Launch Batch · Special limited pricing while supplies last
@@ -470,7 +465,7 @@ export default function CatalogPage() {
                                                                     backgroundColor: isSelected ? product.accent + "18" : "transparent",
                                                                 }}
                                                             >
-                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-white/40">
+                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-white/60">
                                                                     {b.days} Days
                                                                 </span>
                                                                 <span className="text-sm font-black" style={{ color: isSelected ? product.accent : "rgba(255,255,255,0.6)" }}>
@@ -526,7 +521,7 @@ export default function CatalogPage() {
                                 )
                             })() : !product.available ? (
                                 <div
-                                    className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/45"
+                                    className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/65"
                                     style={{ borderColor: product.accent + "30", backgroundColor: product.accent + "08" }}
                                 >
                                     <span
@@ -587,7 +582,7 @@ export default function CatalogPage() {
                                                 </div>
                                                 <div className="text-center">
                                                     <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
-                                                    <p className="mt-1 text-xs text-white/40">{product.nameLines.join(" ")}</p>
+                                                    <p className="mt-1 text-xs text-white/60">{product.nameLines.join(" ")}</p>
                                                 </div>
                                             </div>
 
@@ -621,7 +616,7 @@ export default function CatalogPage() {
                                         </div>
                                         <div className="text-center">
                                             <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
-                                            <p className="mt-1 text-xs text-white/40">{product.nameLines.join(" ")}</p>
+                                            <p className="mt-1 text-xs text-white/60">{product.nameLines.join(" ")}</p>
                                         </div>
                                     </div>
                                 )}
@@ -675,6 +670,15 @@ export default function CatalogPage() {
                         className="absolute bottom-0 left-0 right-0 h-px"
                         style={{ backgroundColor: product.accent + "12" }}
                     />
+
+                    {/* Gradient blend into next section */}
+                    <div
+                        aria-hidden
+                        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
+                        style={{
+                            background: `linear-gradient(to bottom, transparent, ${i < products.length - 1 ? products[i + 1].darkBg : "#000000"})`,
+                        }}
+                    />
                 </div>
             ))}
 
@@ -693,15 +697,15 @@ export default function CatalogPage() {
                 />
 
                 <div className="relative z-10 max-w-2xl">
-                    <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/30">
+                    <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/50">
                         Be the first to know
                     </p>
                     <h2 className="text-5xl font-black leading-[0.9] tracking-tight md:text-6xl xl:text-7xl">
                         New drops.
                         <br />
-                        <span className="text-white/20">Coming soon.</span>
+                        <span className="text-white/40">Coming soon.</span>
                     </h2>
-                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white/35">
+                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white/55">
                         Dream and Glow are in development. Stay tuned for early access and first-drop updates.
                     </p>
 

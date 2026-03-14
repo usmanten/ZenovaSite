@@ -67,7 +67,7 @@ export default function ContactPage() {
                     }}
                     className="relative flex flex-col items-center"
                 >
-                    <div className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/40">
+                    <div className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/60">
                         Get in Touch
                     </div>
 
@@ -75,12 +75,12 @@ export default function ContactPage() {
                         className="font-black leading-[1.05] tracking-tight text-white"
                         style={{ fontSize: "clamp(3rem, 8vw, 7rem)" }}
                     >
-                        <span className="text-white/20">Contact</span>
+                        <span className="text-white/40">Contact</span>
                         <br />
                         Zenova.
                     </h1>
 
-                    <p className="mt-6 max-w-md text-sm leading-relaxed text-white/40">
+                    <p className="mt-6 max-w-md text-sm leading-relaxed text-white/60">
                         Questions about your order, wholesale inquiries, or anything else.
                     </p>
                 </AnimatedGroup>
@@ -102,11 +102,11 @@ export default function ContactPage() {
                             </div>
                             <div>
                                 <h2 className="text-2xl font-black text-white">Message sent.</h2>
-                                <p className="mt-2 text-sm text-white/40">We'll get back to you as soon as possible.</p>
+                                <p className="mt-2 text-sm text-white/60">We'll get back to you as soon as possible.</p>
                             </div>
                             <button
                                 onClick={() => setSuccess(false)}
-                                className="text-xs font-semibold uppercase tracking-[0.3em] text-white/30 transition-colors hover:text-white/60"
+                                className="text-xs font-semibold uppercase tracking-[0.3em] text-white/50 transition-colors hover:text-white/80"
                             >
                                 Send another message
                             </button>
@@ -117,7 +117,7 @@ export default function ContactPage() {
                             {/* Name + Email row */}
                             <div className="grid gap-6 sm:grid-cols-2">
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
+                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
                                         Name
                                     </label>
                                     <input
@@ -127,11 +127,11 @@ export default function ContactPage() {
                                         value={form.name}
                                         onChange={handleChange}
                                         placeholder="Your name"
-                                        className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors focus:border-white/25"
+                                        className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/45 transition-colors focus:border-white/25"
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
+                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
                                         Email
                                     </label>
                                     <input
@@ -141,14 +141,14 @@ export default function ContactPage() {
                                         value={form.email}
                                         onChange={handleChange}
                                         placeholder="your@email.com"
-                                        className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors focus:border-white/25"
+                                        className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/45 transition-colors focus:border-white/25"
                                     />
                                 </div>
                             </div>
 
                             {/* Subject */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
+                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
                                     Subject
                                 </label>
                                 <input
@@ -158,13 +158,13 @@ export default function ContactPage() {
                                     value={form.subject}
                                     onChange={handleChange}
                                     placeholder="What's this about?"
-                                    className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors focus:border-white/25"
+                                    className="rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/45 transition-colors focus:border-white/25"
                                 />
                             </div>
 
                             {/* Message */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/40">
+                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
                                     Message
                                 </label>
                                 <textarea
@@ -174,7 +174,7 @@ export default function ContactPage() {
                                     value={form.message}
                                     onChange={handleChange}
                                     placeholder="Tell us what's on your mind…"
-                                    className="resize-none rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/25 transition-colors focus:border-white/25"
+                                    className="resize-none rounded-xl border border-white/10 bg-white/5 px-5 py-3.5 text-sm text-white outline-none placeholder:text-white/45 transition-colors focus:border-white/25"
                                 />
                             </div>
 
@@ -191,7 +191,7 @@ export default function ContactPage() {
                                     {loading ? "Sending…" : "Send Message"}
                                     {!loading && <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />}
                                 </button>
-                                <p className="text-xs text-white/50 md:order-first">We typically reply within 24 hours.</p>
+                                <p className="text-xs text-white/70 md:order-first">We typically reply within 24 hours.</p>
                             </div>
 
                         </form>

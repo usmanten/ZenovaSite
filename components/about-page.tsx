@@ -259,7 +259,7 @@ export default function AboutPage() {
                         }}
                         className="flex flex-col items-center gap-6"
                     >
-                        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/40">
+                        <span className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/60">
                             <span className="inline-block size-1.5 rounded-full bg-white/40" />
                             Our Story
                         </span>
@@ -270,10 +270,10 @@ export default function AboutPage() {
                         >
                             <span className="text-white">We believe supplements</span>
                             <br />
-                            <span className="text-white/20">should actually work.</span>
+                            <span className="text-white/40">should actually work.</span>
                         </h1>
 
-                        <p className="max-w-2xl text-balance text-lg text-white/40">
+                        <p className="max-w-2xl text-balance text-lg text-white/60">
                             Zenova was founded by two college students who were tired of supplements
                             that underperform and overcharge. We built a better delivery system and a
                             company that puts integrity first.
@@ -288,7 +288,7 @@ export default function AboutPage() {
             <section className="border-y border-white/5 py-24">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="stat-card mb-16 text-center">
-                        <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">
+                        <span className="text-[10px] font-semibold uppercase tracking-[0.4em] text-white/55">
                             Zenova&apos;s 2026 Projections
                         </span>
                     </div>
@@ -301,7 +301,7 @@ export default function AboutPage() {
                                 <span className="text-5xl font-black tabular-nums text-white md:text-6xl">
                                     <AnimatedCounter from={0} to={stat.value} suffix={stat.suffix} />
                                 </span>
-                                <span className="text-sm text-white/35">{stat.label}</span>
+                                <span className="text-sm text-white/55">{stat.label}</span>
                             </div>
                         ))}
                     </div>
@@ -336,7 +336,7 @@ export default function AboutPage() {
             <section ref={timelineRef} className="py-24 md:py-36">
                 <div className="mx-auto max-w-6xl px-6">
                     <div className="mb-20 text-center">
-                        <span className="mb-4 inline-block text-[10px] font-semibold uppercase tracking-[0.4em] text-white/35">
+                        <span className="mb-4 inline-block text-[10px] font-semibold uppercase tracking-[0.4em] text-white/55">
                             Our principles
                         </span>
                         <h2
@@ -376,14 +376,14 @@ export default function AboutPage() {
                                         }`}
                                     >
                                         <div
-                                            className={`mb-2 inline-flex size-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/55 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white ${
+                                            className={`mb-2 inline-flex size-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/75 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white ${
                                                 i % 2 === 0 ? "ml-auto flex" : ""
                                             }`}
                                         >
                                             {v.icon}
                                         </div>
                                         <h3 className="mt-1 text-lg font-bold text-white">{v.title}</h3>
-                                        <p className="mt-2 text-sm leading-relaxed text-white/40">
+                                        <p className="mt-2 text-sm leading-relaxed text-white/60">
                                             {v.description}
                                         </p>
                                     </div>
@@ -417,7 +417,7 @@ export default function AboutPage() {
                 />
 
                 <div className="relative z-10 max-w-3xl">
-                    <p className="mb-6 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/30">
+                    <p className="mb-6 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/50">
                         Join the movement
                     </p>
 
@@ -427,10 +427,10 @@ export default function AboutPage() {
                     >
                         Ready to feel
                         <br />
-                        <span className="text-white/20">the difference?</span>
+                        <span className="text-white/40">the difference?</span>
                     </h2>
 
-                    <p className="mx-auto mt-6 max-w-xl text-white/40">
+                    <p className="mx-auto mt-6 max-w-xl text-white/60">
                         Join over 50,000 people who've switched to Zenova and never looked back.
                     </p>
 
@@ -444,7 +444,7 @@ export default function AboutPage() {
                         </Link>
                         <Link
                             href="/contact"
-                            className="inline-flex items-center rounded-full border border-white/10 px-8 py-4 text-sm font-bold text-white/50 transition-colors duration-200 hover:border-white/20 hover:text-white"
+                            className="inline-flex items-center rounded-full border border-white/10 px-8 py-4 text-sm font-bold text-white/70 transition-colors duration-200 hover:border-white/20 hover:text-white"
                         >
                             Get in Touch
                         </Link>

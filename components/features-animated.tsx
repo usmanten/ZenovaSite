@@ -102,7 +102,7 @@ export default function Features() {
                     >
                         Built For Perfection.
                     </h2>
-                    <p className="mt-4 text-sm text-white/35">
+                    <p className="mt-4 text-sm text-white/55">
                         The only strips made in the USA with premium ingredients and advanced technology.
                     </p>
                 </div>
@@ -115,11 +115,11 @@ export default function Features() {
                             style={{ willChange: "transform, opacity" }}
                         >
                             <div className="group h-full rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center transition-all duration-300 hover:border-white/14 hover:bg-white/[0.055]">
-                                <div className="mb-5 mx-auto inline-flex size-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/55 transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white">
+                                <div className="mb-5 mx-auto inline-flex size-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/75 transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white">
                                     {feature.icon}
                                 </div>
                                 <h3 className="font-bold text-white">{feature.title}</h3>
-                                <p className="mt-2 text-sm leading-relaxed text-white/40">{feature.description}</p>
+                                <p className="mt-2 text-sm leading-relaxed text-white/60">{feature.description}</p>
                             </div>
                         </div>
                     ))}

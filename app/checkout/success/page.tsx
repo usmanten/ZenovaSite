@@ -21,13 +21,13 @@ export default async function CheckoutSuccess({
                     </svg>
                 </div>
 
-                <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/30">
+                <p className="mb-4 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/50">
                     Order Confirmed
                 </p>
 
                 {order && (
                     <p className="mb-4 font-mono text-lg font-bold tracking-widest text-white">
-                        <span className="font-sans text-xs font-normal tracking-[0.3em] text-white/40 uppercase">Order Number: </span>{order}
+                        <span className="font-sans text-xs font-normal tracking-[0.3em] text-white/60 uppercase">Order Number: </span>{order}
                     </p>
                 )}
 
@@ -36,7 +36,7 @@ export default async function CheckoutSuccess({
                     <br />
                     <span style={{ color: "#FF4D6D" }}>purchase.</span>
                 </h1>
-                <p className="mt-6 text-sm leading-relaxed text-white/45">
+                <p className="mt-6 text-sm leading-relaxed text-white/65">
                     Your Zenova strips are on their way. You'll receive a confirmation email shortly.
                 </p>
 
@@ -50,7 +50,7 @@ export default async function CheckoutSuccess({
                     </Link>
                     <Link
                         href="/"
-                        className="rounded-full border border-white/10 px-8 py-3.5 text-sm font-medium text-white/60 transition-all hover:border-white/20 hover:text-white/80"
+                        className="rounded-full border border-white/10 px-8 py-3.5 text-sm font-medium text-white/80 transition-all hover:border-white/20 hover:text-white/80"
                     >
                         Go Home
                     </Link>
