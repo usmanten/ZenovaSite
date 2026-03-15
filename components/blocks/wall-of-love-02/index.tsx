@@ -137,9 +137,9 @@ export default function WallOfLove02() {
           className="font-black leading-[0.9] tracking-tight text-white"
           style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
         >
-          What Our Customers Are Saying
+          What Our Customers <span className="text-white/20">Are Saying</span>
         </h2>
-        <p className="mt-4 text-sm text-white/55">Real reviews from real customers.</p>
+        <p className="mt-4 text-sm text-white">Real reviews from real customers.</p>
       </div>
 
       <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden">

@@ -96,18 +96,18 @@ export default function HeroHome() {
                             >
                                 <span className="text-white">THE BEST</span>
                                 <br />
-                                <span className="text-white/40">TASTING,</span>
+                                <span className="text-white/20">TASTING,</span>
                                 <br />
                                 <span className="text-white">FASTEST ACTING</span>
                                 <br />
-                                <span className="text-white/40">STRIPS.</span>
+                                <span className="text-white/20">STRIPS.</span>
                             </h1>
 
                             {/* Review badge — now below the headline */}
                             <div className="inline-flex items-center gap-3 rounded-full border border-white/10 bg-black/60 px-5 py-2 text-xs backdrop-blur-sm">
                                 <span className="text-sm leading-none text-yellow-400">★★★★★</span>
                                 <span className="h-3 w-px bg-white/15" />
-                                <span className="text-white/70">100% Satisfaction Guarantee</span>
+                                <span className="text-white">100% Satisfaction Guarantee</span>
                             </div>
 
                             {/* CTA */}

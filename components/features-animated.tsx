@@ -102,7 +102,7 @@ export default function Features() {
                     >
                         Built For Perfection.
                     </h2>
-                    <p className="mt-4 text-sm text-white/55">
+                    <p className="mt-4 text-sm text-white">
                         The only strips made in the USA with premium ingredients and advanced technology.
                     </p>
                 </div>
@@ -119,7 +119,7 @@ export default function Features() {
                                     {feature.icon}
                                 </div>
                                 <h3 className="font-bold text-white">{feature.title}</h3>
-                                <p className="mt-2 text-sm leading-relaxed text-white/60">{feature.description}</p>
+                                <p className="mt-2 text-sm leading-relaxed text-white">{feature.description}</p>
                             </div>
                         </div>
                     ))}

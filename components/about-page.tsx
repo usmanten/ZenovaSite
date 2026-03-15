@@ -270,10 +270,10 @@ export default function AboutPage() {
                         >
                             <span className="text-white">We believe supplements</span>
                             <br />
-                            <span className="text-white/40">should actually work.</span>
+                            <span className="text-white/20">should actually work.</span>
                         </h1>
 
-                        <p className="max-w-2xl text-balance text-lg text-white/60">
+                        <p className="max-w-2xl text-balance text-lg text-white">
                             Zenova was founded by two college students who were tired of supplements
                             that underperform and overcharge. We built a better delivery system and a
                             company that puts integrity first.
@@ -326,7 +326,7 @@ export default function AboutPage() {
 
                     <div className="quote-divider mx-auto mt-10 h-px w-16 bg-black/15" />
 
-                    <p className="quote-author mt-6 text-sm text-black/45">
+                    <p className="quote-author mt-6 text-sm text-black">
                         Mo Khan &amp; Mohamed Eissa, Founders of Zenova
                     </p>
                 </div>
@@ -383,7 +383,7 @@ export default function AboutPage() {
                                             {v.icon}
                                         </div>
                                         <h3 className="mt-1 text-lg font-bold text-white">{v.title}</h3>
-                                        <p className="mt-2 text-sm leading-relaxed text-white/60">
+                                        <p className="mt-2 text-sm leading-relaxed text-white">
                                             {v.description}
                                         </p>
                                     </div>
@@ -427,10 +427,10 @@ export default function AboutPage() {
                     >
                         Ready to feel
                         <br />
-                        <span className="text-white/40">the difference?</span>
+                        <span className="text-white/20">the difference?</span>
                     </h2>
 
-                    <p className="mx-auto mt-6 max-w-xl text-white/60">
+                    <p className="mx-auto mt-6 max-w-xl text-white">
                         Join over 50,000 people who've switched to Zenova and never looked back.
                     </p>
 

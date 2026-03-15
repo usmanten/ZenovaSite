@@ -244,7 +244,7 @@ export default function CatalogPage() {
                     className="flex flex-col items-center gap-0"
                 >
                     <h1 className="text-[10vw] md:text-[13vw] font-black leading-[0.88] tracking-tight text-white">
-                        <span className="text-white/45">THE</span>
+                        <span className="text-white/20">THE</span>
                         <br />
                         COLLECTION
                     </h1>
@@ -271,7 +271,7 @@ export default function CatalogPage() {
                                 <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Free Shipping</span>
                             </div>
                         </div>
-                        <p className="max-w-md text-base leading-relaxed text-white/80">
+                        <p className="max-w-md text-base leading-relaxed text-white">
                             We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
                         </p>
                     </div>
@@ -387,7 +387,7 @@ export default function CatalogPage() {
                         </p>
 
                         {/* Description */}
-                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white/65 md:block">
+                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white md:block">
                             {product.description}
                         </p>
 
@@ -637,6 +637,7 @@ export default function CatalogPage() {
                                         Available Now
                                     </div>
                                 )}
+
                             </div>
 
                             {/* Carousel prev/next buttons */}
@@ -703,9 +704,9 @@ export default function CatalogPage() {
                     <h2 className="text-5xl font-black leading-[0.9] tracking-tight md:text-6xl xl:text-7xl">
                         New drops.
                         <br />
-                        <span className="text-white/40">Coming soon.</span>
+                        <span className="text-white/20">Coming soon.</span>
                     </h2>
-                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white/55">
+                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white">
                         Dream and Glow are in development. Stay tuned for early access and first-drop updates.
                     </p>
 

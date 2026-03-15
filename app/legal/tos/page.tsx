@@ -9,7 +9,7 @@ function renderLegal(content: string) {
             return <h1 key={i} className="text-lg font-black text-white tracking-tight mt-6 mb-2 first:mt-0">{line.slice(2)}</h1>
         }
         if (line.startsWith("## ")) {
-            return <h2 key={i} className="text-sm font-bold text-white/70 mt-6 mb-1">{line.slice(3)}</h2>
+            return <h2 key={i} className="text-sm font-bold text-white mt-6 mb-1">{line.slice(3)}</h2>
         }
         if (line === "---") {
             return <hr key={i} className="border-white/8 my-4" />
@@ -24,11 +24,11 @@ function renderLegal(content: string) {
             if (match) {
                 const [, label, action] = match
                 const href = action === "refund" ? "/legal/refund" : action
-                return <Link key={j} href={href} className="text-white/70 underline underline-offset-2 hover:text-white transition-colors">{label}</Link>
+                return <Link key={j} href={href} className="text-white underline underline-offset-2 hover:text-white transition-colors">{label}</Link>
             }
             return part
         })
-        return <p key={i} className="text-sm text-white/40 leading-relaxed">{rendered}</p>
+        return <p key={i} className="text-sm text-white leading-relaxed">{rendered}</p>
     })
 }
 

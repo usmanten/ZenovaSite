@@ -80,7 +80,7 @@ export default function ContactPage() {
                         Zenova.
                     </h1>
 
-                    <p className="mt-6 max-w-md text-sm leading-relaxed text-white/60">
+                    <p className="mt-6 max-w-md text-sm leading-relaxed text-white">
                         Questions about your order, wholesale inquiries, or anything else.
                     </p>
                 </AnimatedGroup>
