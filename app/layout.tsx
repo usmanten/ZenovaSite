@@ -18,6 +18,9 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL ?? "https://zenovastrips.com"),
+  icons: {
+    icon: "/icon.png",
+  },
   title: "Zenova | Fast-Acting Energy Strips",
   description: "Your wellness routine, simplified. Zenova's sublingual strips deliver clean energy, better sleep, and beauty nutrients faster than any pill or drink.",
   verification: {
