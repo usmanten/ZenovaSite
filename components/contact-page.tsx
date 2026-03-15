@@ -67,7 +67,7 @@ export default function ContactPage() {
                     }}
                     className="relative flex flex-col items-center"
                 >
-                    <div className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/60">
+                    <div className="mb-6 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-[10px] font-semibold uppercase tracking-[0.4em] text-white/60 mt-24">
                         Get in Touch
                     </div>
 
@@ -117,7 +117,7 @@ export default function ContactPage() {
                             {/* Name + Email row */}
                             <div className="grid gap-6 sm:grid-cols-2">
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white">
                                         Name
                                     </label>
                                     <input
@@ -131,7 +131,7 @@ export default function ContactPage() {
                                     />
                                 </div>
                                 <div className="flex flex-col gap-2">
-                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+                                    <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white">
                                         Email
                                     </label>
                                     <input
@@ -148,7 +148,7 @@ export default function ContactPage() {
 
                             {/* Subject */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white">
                                     Subject
                                 </label>
                                 <input
@@ -164,7 +164,7 @@ export default function ContactPage() {
 
                             {/* Message */}
                             <div className="flex flex-col gap-2">
-                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white/60">
+                                <label className="text-xs font-semibold uppercase tracking-[0.3em] text-white">
                                     Message
                                 </label>
                                 <textarea

@@ -253,7 +253,7 @@ export default function CatalogPage() {
                         {products.map(p => (
                             <div key={p.number} className="flex items-center gap-2.5">
                                 <span className="size-1.5 rounded-full" style={{ backgroundColor: p.accent }} />
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white/60">
+                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white">
                                     {p.number}&nbsp;&nbsp;{p.category}
                                 </span>
                             </div>
