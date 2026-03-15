@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 import { Resend } from "resend"
-import { purchaseShippingLabel } from "@/lib/shippo"
+import { purchaseShippingLabel, type ShipmentResult } from "@/lib/shippo"
 import { supabase } from "@/lib/supabase"
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
@@ -105,11 +105,13 @@ export async function POST(req: NextRequest) {
             const toZip = shipping.address.postal_code ?? ""
             const toCountry = shipping.address.country ?? "US"
 
-            try {
-                const productName = fullSession.line_items?.data?.[0]?.description ?? "Focus"
-                const orderQty = Number(fullSession.metadata?.bundle_qty ?? 1)
+            const productName = fullSession.line_items?.data?.[0]?.description ?? "Focus"
+            const orderQty = Number(fullSession.metadata?.bundle_qty ?? 1)
 
-                const label = await purchaseShippingLabel({
+            // ── Attempt Shippo label — failure is non-blocking ────────────────
+            let label: ShipmentResult | null = null
+            try {
+                label = await purchaseShippingLabel({
                     toName,
                     toStreet1,
                     toCity,
@@ -119,7 +121,7 @@ export async function POST(req: NextRequest) {
                     toEmail,
                     toPhone: customer.phone ?? undefined,
                     quantity: orderQty,
-                    productName: orderQty > 1 ? `${productName} (${orderQty}-Pack)` : productName,
+                    productName: productName,
                 })
 
                 if (isDev) {
@@ -129,21 +131,36 @@ export async function POST(req: NextRequest) {
                     console.log("Tracking URL:", label.trackingUrl)
                     console.log("Label URL:", label.labelUrl)
                 }
+            } catch (err) {
+                const sessionRef = isDev ? session.id : "[redacted]"
+                console.error("Shippo label creation failed for session:", sessionRef, err)
+                try {
+                    const resend = new Resend(process.env.RESEND_API_KEY)
+                    await resend.emails.send({
+                        from: fromEmail,
+                        to: adminEmail,
+                        subject: `[ACTION REQUIRED] Shipping label failed for order ${session.id}`,
+                        text: `A payment was completed but the shipping label could not be created.\n\nSession ID: ${session.id}\nError: ${String(err)}\n\nLog in to Shippo and manually create a label for this order.`,
+                    })
+                } catch (alertErr) {
+                    console.error("Failed to send label failure alert email:", alertErr)
+                }
+            }
 
-                // ── Save order to database ────────────────────────────────────
-
+            // ── Save order to database — always runs regardless of Shippo ─────
+            try {
                 const { error: insertError } = await supabase.from("orders").insert({
                     customer_name: toName,
                     customer_email: toEmail,
                     shipping_address: `${toStreet1}, ${toCity}, ${toState} ${toZip}`,
                     product_name: productName,
                     order_quantity: orderQty,
-                    tracking_number: label.trackingNumber,
-                    tracking_url: label.trackingUrl,
-                    label_url: label.labelUrl,
-                    carrier: label.carrier,
+                    tracking_number: label?.trackingNumber ?? null,
+                    tracking_url: label?.trackingUrl ?? null,
+                    label_url: label?.labelUrl ?? null,
+                    carrier: label?.carrier ?? null,
                     stripe_session_id: session.id,
-                    stripe_payment_intent: String(fullSession.payment_intent ?? ""),
+                    stripe_payment_intent: fullSession.payment_intent ? String(fullSession.payment_intent) : null,
                     stripe_payment_url: fullSession.payment_intent
                         ? `https://dashboard.stripe.com/payments/${String(fullSession.payment_intent)}`
                         : null,
@@ -169,25 +186,10 @@ export async function POST(req: NextRequest) {
                     const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
                     if (rpcError) console.error("Failed to increment orders_placed:", rpcError.message)
                 }
-                // ─────────────────────────────────────────────────────────────
-
             } catch (err) {
-                // Log and alert — return 200 so Stripe doesn't retry
-                const sessionRef = isDev ? session.id : "[redacted]"
-                console.error("Shippo label creation failed for session:", sessionRef, err)
-
-                try {
-                    const resend = new Resend(process.env.RESEND_API_KEY)
-                    await resend.emails.send({
-                        from: fromEmail,
-                        to: adminEmail,
-                        subject: `[ACTION REQUIRED] Shipping label failed for order ${session.id}`,
-                        text: `A payment was completed but the shipping label could not be created.\n\nSession ID: ${session.id}\nError: ${String(err)}\n\nLog in to Shippo and manually create a label for this order.`,
-                    })
-                } catch (alertErr) {
-                    console.error("Failed to send label failure alert email:", alertErr)
-                }
+                console.error("Unexpected error saving order to database:", err)
             }
+            // ─────────────────────────────────────────────────────────────────
         }
     }
 
