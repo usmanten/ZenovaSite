@@ -7,7 +7,7 @@ export const PRODUCTS: Record<string, {
         name: "Zenova Focus - Strawberry Frost",
         description: "50mg caffeine energy strip. Fast-acting, sugar free, no crash. Dissolves in seconds.",
         bundles: [
-            { qty: 1, price: 99, originalPrice: 2799 },
+            { qty: 1, price: 1899, originalPrice: 2799 },
             { qty: 2, price: 3599, originalPrice: 5598 },
             { qty: 3, price: 4799, originalPrice: 8397 },
         ],
