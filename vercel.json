@@ -1,9 +1,1 @@
-{
-  "ratelimit": [
-    {
-      "path": "/api/checkout",
-      "windowMs": 60000,
-      "max": 10
-    }
-  ]
-}
+{}
