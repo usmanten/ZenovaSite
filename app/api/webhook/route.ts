@@ -152,6 +152,7 @@ export async function POST(req: NextRequest) {
   body { background-color: #0a0a0a !important; color: #ffffff !important; }
   * { color: #ffffff; }
   a { color: #FF4D6D !important; }
+  a.cta-btn { color: #000000 !important; }
 </style>
 </head>
 <body style="margin:0;padding:0;background-color:#0a0a0a !important;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
@@ -161,8 +162,10 @@ export async function POST(req: NextRequest) {
 
   <!-- Logo -->
   <tr><td align="center" style="padding-bottom:40px;">
-    <span style="font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#ffffff;">zenova<span style="font-size:11px;vertical-align:super;font-weight:700;">™</span></span>
-    <span style="display:block;font-size:9px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px;">strips</span>
+    <div style="display:inline-block;text-align:left;">
+      <span style="display:block;font-size:36px;font-weight:900;letter-spacing:-0.03em;color:#ffffff;line-height:1;">zenova<span style="font-size:16px;vertical-align:super;font-weight:700;">™</span></span>
+      <span style="display:block;font-size:14px;font-weight:400;letter-spacing:0.01em;color:#ffffff;text-align:right;margin-top:2px;margin-right:14px;">strips</span>
+    </div>
   </td></tr>
 
   <!-- Hero card -->
@@ -213,7 +216,7 @@ export async function POST(req: NextRequest) {
 
       <!-- CTA -->
       <tr><td>
-        <a href="${label.trackingUrl}" style="display:block;text-align:center;background:linear-gradient(135deg,#FF4D6D,#d63a58);color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;padding:16px 32px;border-radius:100px;">
+        <a href="${label.trackingUrl}" class="cta-btn" style="display:block;text-align:center;background:linear-gradient(135deg,#FF4D6D,#d63a58);color:#000000;font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;padding:16px 32px;border-radius:100px;">
           Track My Package &rarr;
         </a>
       </td></tr>
