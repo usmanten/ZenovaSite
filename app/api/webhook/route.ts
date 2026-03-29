@@ -131,6 +131,125 @@ export async function POST(req: NextRequest) {
                     console.log("Tracking URL:", label.trackingUrl)
                     console.log("Label URL:", label.labelUrl)
                 }
+
+                // ── Send tracking email to customer ───────────────────────────
+                try {
+                    const resend = new Resend(process.env.RESEND_API_KEY)
+                    const firstName = toName.split(" ")[0]
+                    await resend.emails.send({
+                        from: fromEmail,
+                        to: toEmail,
+                        subject: `Your Zenova order is on its way!`,
+                        html: `<!DOCTYPE html>
+<html lang="en">
+<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /></head>
+<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:48px 16px;">
+<tr><td align="center">
+<table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
+
+  <!-- Logo -->
+  <tr><td align="center" style="padding-bottom:40px;">
+    <span style="font-size:22px;font-weight:900;letter-spacing:-0.03em;color:#ffffff;">zenova<span style="font-size:11px;vertical-align:super;font-weight:700;">™</span></span>
+    <span style="display:block;font-size:9px;font-weight:600;letter-spacing:0.4em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:2px;">strips</span>
+  </td></tr>
+
+  <!-- Hero card -->
+  <tr><td style="background:linear-gradient(135deg,#1a0a0e 0%,#120008 50%,#0d0d0d 100%);border-radius:20px;border:1px solid rgba(255,77,109,0.15);overflow:hidden;">
+    <div style="height:2px;background:linear-gradient(90deg,transparent,#FF4D6D,transparent);"></div>
+    <table width="100%" cellpadding="0" cellspacing="0" style="padding:40px 40px 36px;">
+
+      <!-- Status pill -->
+      <tr><td style="padding-bottom:28px;">
+        <span style="display:inline-block;background:rgba(255,77,109,0.12);border:1px solid rgba(255,77,109,0.25);border-radius:100px;padding:6px 14px;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:#FF4D6D;">
+          &#9679;&nbsp; On Its Way
+        </span>
+      </td></tr>
+
+      <!-- Headline -->
+      <tr><td style="padding-bottom:12px;">
+        <h1 style="margin:0;font-size:32px;font-weight:900;letter-spacing:-0.03em;line-height:1.1;color:#ffffff;">
+          Your order<br/><span style="color:#FF4D6D;">shipped,</span> ${firstName}!
+        </h1>
+      </td></tr>
+
+      <!-- Subtext -->
+      <tr><td style="padding-bottom:36px;">
+        <p style="margin:0;font-size:14px;color:#ffffff;line-height:1.6;">
+          Your Zenova Focus strips are on their way. Here's everything you need to track your package.
+        </p>
+      </td></tr>
+
+      <!-- Tracking card -->
+      <tr><td style="padding-bottom:32px;">
+        <table width="100%" cellpadding="0" cellspacing="0" style="background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:14px;">
+          <tr><td style="padding:24px;">
+            <table width="100%" cellpadding="0" cellspacing="0">
+              <tr>
+                <td style="width:55%;padding-right:16px;border-right:1px solid rgba(255,255,255,0.07);">
+                  <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#ffffff;">Tracking Number</p>
+                  <p style="margin:0;font-size:13px;font-weight:700;color:#ffffff;font-family:monospace;letter-spacing:0.03em;word-break:break-all;">${label.trackingNumber}</p>
+                </td>
+                <td style="padding-left:20px;">
+                  <p style="margin:0 0 6px;font-size:10px;font-weight:700;letter-spacing:0.15em;text-transform:uppercase;color:#ffffff;">Carrier</p>
+                  <p style="margin:0;font-size:15px;font-weight:700;color:#ffffff;">${label.carrier}</p>
+                </td>
+              </tr>
+            </table>
+          </td></tr>
+        </table>
+      </td></tr>
+
+      <!-- CTA -->
+      <tr><td>
+        <a href="${label.trackingUrl}" style="display:block;text-align:center;background:linear-gradient(135deg,#FF4D6D,#d63a58);color:#ffffff;font-size:13px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;text-decoration:none;padding:16px 32px;border-radius:100px;">
+          Track My Package &rarr;
+        </a>
+      </td></tr>
+
+    </table>
+  </td></tr>
+
+  <!-- Divider -->
+  <tr><td style="padding:36px 0 28px;"><div style="height:1px;background:rgba(255,255,255,0.06);"></div></td></tr>
+
+  <!-- Estimated delivery -->
+  <tr><td align="center">
+    <p style="margin:0 0 4px;font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#ffffff;">Estimated Delivery</p>
+    <p style="margin:0;font-size:13px;font-weight:600;color:#ffffff;">3–5 Business Days</p>
+  </td></tr>
+
+  <!-- Divider -->
+  <tr><td style="padding:28px 0 32px;"><div style="height:1px;background:rgba(255,255,255,0.06);"></div></td></tr>
+
+  <!-- Footer -->
+  <tr><td align="center">
+    <p style="margin:0 0 12px;font-size:12px;color:#ffffff;">
+      Questions? <a href="https://zenovastrips.com/contact" style="color:#FF4D6D;text-decoration:none;">Contact us</a>
+    </p>
+    <p style="margin:0;font-size:11px;color:#ffffff;">&copy; 2026 Zenova Strips &mdash; zenovastrips.com</p>
+  </td></tr>
+
+</table>
+</td></tr>
+</table>
+</body>
+</html>`,
+                    })
+                } catch (emailErr) {
+                    console.error("Failed to send tracking email to customer:", emailErr)
+                    try {
+                        const resend = new Resend(process.env.RESEND_API_KEY)
+                        await resend.emails.send({
+                            from: fromEmail,
+                            to: adminEmail,
+                            subject: `[ACTION REQUIRED] Tracking email failed for order ${session.id}`,
+                            text: `A shipping label was created but the tracking email could not be sent to the customer.\n\nSession ID: ${session.id}\nCustomer Email: ${toEmail}\nTracking Number: ${label.trackingNumber}\nTracking URL: ${label.trackingUrl}\nError: ${String(emailErr)}\n\nPlease manually send the customer their tracking information.`,
+                        })
+                    } catch (alertErr) {
+                        console.error("Failed to send tracking email failure alert:", alertErr)
+                    }
+                }
             } catch (err) {
                 const sessionRef = isDev ? session.id : "[redacted]"
                 console.error("Shippo label creation failed for session:", sessionRef, err)
