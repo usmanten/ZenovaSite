@@ -142,9 +142,20 @@ export async function POST(req: NextRequest) {
                         subject: `Your Zenova order is on its way!`,
                         html: `<!DOCTYPE html>
 <html lang="en">
-<head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1.0" /></head>
-<body style="margin:0;padding:0;background:#0a0a0a;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
-<table width="100%" cellpadding="0" cellspacing="0" style="background:#0a0a0a;padding:48px 16px;">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<meta name="color-scheme" content="only light" />
+<meta name="supported-color-schemes" content="light" />
+<style>
+  :root { color-scheme: only light; }
+  body { background-color: #0a0a0a !important; color: #ffffff !important; }
+  * { color: #ffffff; }
+  a { color: #FF4D6D !important; }
+</style>
+</head>
+<body style="margin:0;padding:0;background-color:#0a0a0a !important;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;">
+<table width="100%" cellpadding="0" cellspacing="0" style="background-color:#0a0a0a;padding:48px 16px;">
 <tr><td align="center">
 <table width="560" cellpadding="0" cellspacing="0" style="max-width:560px;width:100%;">
 
