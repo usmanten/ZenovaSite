@@ -1,6 +1,8 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useLayoutEffect, useRef, useState } from "react"
+
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { AnimatedGroup } from "@/components/ui/animated-group"
@@ -135,7 +137,7 @@ export default function CatalogPage() {
         }
     }
 
-    useEffect(() => {
+    useIsomorphicLayoutEffect(() => {
         const ctx = gsap.context(() => {
 
             // ── Marquee ──────────────────────────────────────────────────────
@@ -173,7 +175,7 @@ export default function CatalogPage() {
                 if (flavor) gsap.set(flavor, { opacity: 0, y: 28 })
                 gsap.set(badges, { opacity: 0, y: 18, scale: 0.92 })
                 gsap.set(image,  { opacity: 0, x: isMobile ? 0 : 70, scale: 0.93 })
-                gsap.set(bgText, { opacity: 0, x: 100 })
+                gsap.set(bgText, { autoAlpha: 0, x: 100 })
 
                 const tl = gsap.timeline({
                     scrollTrigger: {
@@ -186,7 +188,7 @@ export default function CatalogPage() {
                 })
 
                 tl
-                    .to(bgText, { opacity: isMobile ? 0.04 : 0.055, x: 0, duration: 1 }, 0)
+                    .to(bgText, { autoAlpha: isMobile ? 0.04 : 0.055, x: 0, duration: 1 }, 0)
                     .to(image,  { opacity: 1, x: 0, scale: 1, duration: 0.9 }, 0)
                     .to(number, { opacity: 1, y: 0, duration: 0.6 }, 0.05)
                     .to(type,   { opacity: 1, y: 0, duration: 0.6 }, 0.1)
@@ -307,7 +309,7 @@ export default function CatalogPage() {
                 >
                     {/* Giant background category word */}
                     <div
-                        className="prod-bg-text pointer-events-none absolute -right-[4vw] top-1/2 -translate-y-1/2 select-none font-black leading-none"
+                        className="prod-bg-text pointer-events-none absolute -right-[4vw] top-1/2 -translate-y-1/2 select-none font-black leading-none invisible"
                         style={{
                             color: product.accent,
                             fontSize: "clamp(80px, 22vw, 320px)",
@@ -341,12 +343,12 @@ export default function CatalogPage() {
                         <div className="flex items-center gap-3">
                             <span
                                 className="prod-number font-mono text-xs tracking-[0.45em]"
-                                style={{ color: product.accent }}
+                                style={{ color: product.accent, opacity: 0 }}
                             >
                                 {product.number}
                             </span>
                             <span className="h-px w-6 bg-white/15" />
-                            <span className="prod-type text-[10px] font-semibold uppercase tracking-[0.35em] text-white/55">
+                            <span className="prod-type text-[10px] font-semibold uppercase tracking-[0.35em] text-white/55" style={{ opacity: 0 }}>
                                 {product.type}
                             </span>
                         </div>
@@ -357,7 +359,7 @@ export default function CatalogPage() {
                                 <div key={li} className="overflow-hidden pb-4">
                                     <h2
                                         className="prod-name-line font-black leading-[0.9] tracking-tight text-white"
-                                        style={{ fontSize: "clamp(2.2rem,4vw,5.5rem)", whiteSpace: "nowrap" }}
+                                        style={{ fontSize: "clamp(2.2rem,4vw,5.5rem)", whiteSpace: "nowrap", opacity: 0 }}
                                     >
                                         {line}
                                     </h2>
@@ -366,7 +368,7 @@ export default function CatalogPage() {
                             {"flavor" in product && product.flavor && (
                                 <p
                                     className="prod-flavor mt-1 text-sm font-semibold uppercase tracking-[0.25em]"
-                                    style={{ color: product.accent + "99" }}
+                                    style={{ color: product.accent + "99", opacity: 0 }}
                                 >
                                     {product.flavor as string}
                                 </p>
@@ -376,19 +378,19 @@ export default function CatalogPage() {
                         {/* Accent divider */}
                         <div
                             className="prod-divider mt-7 h-px w-14"
-                            style={{ backgroundColor: product.accent + "55" }}
+                            style={{ backgroundColor: product.accent + "55", opacity: 0 }}
                         />
 
                         {/* Tagline */}
                         <p
                             className="prod-tagline mt-6 text-sm font-semibold leading-relaxed"
-                            style={{ color: product.accent }}
+                            style={{ color: product.accent, opacity: 0 }}
                         >
                             {product.tagline}
                         </p>
 
                         {/* Description */}
-                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white md:block">
+                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white md:block" style={{ opacity: 0 }}>
                             {product.description}
                         </p>
 
@@ -401,6 +403,7 @@ export default function CatalogPage() {
                                     style={{
                                         border: `1px solid ${product.accent}28`,
                                         backgroundColor: product.accent + "0c",
+                                        opacity: 0,
                                     }}
                                 >
                                     {badge}
@@ -409,7 +412,7 @@ export default function CatalogPage() {
                         </div>
 
                         {/* CTA */}
-                        <div className="prod-cta mt-5">
+                        <div className="prod-cta mt-5" style={{ opacity: 0 }}>
                             {product.available && product.bundles ? (() => {
                                 const selectedQty = getBundle(product.number)
                                 const active = product.bundles.find(b => b.qty === selectedQty) ?? product.bundles[0]
@@ -536,7 +539,7 @@ export default function CatalogPage() {
                     </div>
 
                     {/* ── Right: Product visual ────────────────────────────── */}
-                    <div className="prod-image relative flex w-full md:w-1/2 items-center justify-center px-6 pb-16 md:pb-0 md:pr-16 xl:pr-24">
+                    <div className="prod-image relative flex w-full md:w-1/2 items-center justify-center px-6 pb-16 md:pb-0 md:pr-16 xl:pr-24" style={{ opacity: 0 }}>
                         <div className="relative">
                             {/* Outer glow */}
                             <div
