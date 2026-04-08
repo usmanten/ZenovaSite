@@ -566,10 +566,17 @@ export default function CatalogPage() {
                                     const idx = getCarouselIndex(product.number)
                                     return (
                                         <>
-                                            {/* Slide 0: placeholder mockup */}
+                                            {/* Slides 0+: real photos */}
+                                            {images.map((src, si) => (
+                                                <div key={si} className="absolute inset-0 transition-opacity duration-700 cursor-zoom-in" style={{ opacity: idx === si ? 1 : 0, pointerEvents: idx === si ? "auto" : "none" }} onClick={() => setLightbox(src)}>
+                                                    <Image src={src} alt={`Product photo ${si + 1}`} fill className={`object-cover rounded-3xl opacity-90 ${si <= 1 ? "scale-[1.15]" : ""}`} sizes="345px" />
+                                                </div>
+                                            ))}
+
+                                            {/* Last slide: placeholder mockup */}
                                             <div
                                                 className="absolute inset-0 flex flex-col items-center justify-center gap-5 transition-opacity duration-700"
-                                                style={{ opacity: idx === 0 ? 1 : 0, pointerEvents: idx === 0 ? "auto" : "none" }}
+                                                style={{ opacity: idx === images.length ? 1 : 0, pointerEvents: idx === images.length ? "auto" : "none" }}
                                             >
                                                 <div className="relative flex items-center justify-center">
                                                     {[...Array(3)].map((_, si) => (
@@ -586,13 +593,6 @@ export default function CatalogPage() {
                                                     <p className="mt-1 text-xs text-white/60">{product.nameLines.join(" ")}</p>
                                                 </div>
                                             </div>
-
-                                            {/* Slides 1+: real photos */}
-                                            {images.map((src, si) => (
-                                                <div key={si} className="absolute inset-0 transition-opacity duration-700 cursor-zoom-in" style={{ opacity: idx === si + 1 ? 1 : 0, pointerEvents: idx === si + 1 ? "auto" : "none" }} onClick={() => setLightbox(src)}>
-                                                    <Image src={src} alt={`Product photo ${si + 1}`} fill className={`object-cover rounded-3xl opacity-90 ${si <= 1 ? "scale-[1.15]" : ""}`} sizes="345px" />
-                                                </div>
-                                            ))}
 
                                             {/* Dot indicators */}
                                             <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
