@@ -112,7 +112,7 @@ export default function HeroHome() {
 
                             {/* CTA */}
                             <Link
-                                href="/catalog"
+                                href="/catalog#products"
                                 className="group inline-flex items-center gap-2.5 rounded-full bg-white px-8 py-4 text-sm font-bold text-black transition-all hover:scale-[1.03] hover:opacity-90 active:scale-[0.98]"
                             >
                                 Try Us Now
