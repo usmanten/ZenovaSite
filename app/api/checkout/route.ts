@@ -71,6 +71,7 @@ export async function POST(req: NextRequest) {
             metadata: { order_number: orderNumber },
             description: `Zenova order ${orderNumber}`,
         },
+        allow_promotion_codes: true,
         automatic_tax: { enabled: true },
         shipping_address_collection: {
             allowed_countries: ["US"],

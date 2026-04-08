@@ -29,9 +29,9 @@ const products = [
         packImages: { 1: "/ZS_1.jpeg", 2: "/ZS_2.jpeg", 3: "/ZS_3.jpeg" } as Record<number, string>,
         carouselImages: ["/ZS_single_front.png", "/ZS_single_back.jpeg"],
         bundles: [
-            { qty: 1, days: 30, price: "$18.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.63/strip", pctOff: "32% off", badge: null },
-            { qty: 2, days: 60, price: "$35.99", originalPrice: "$55.98", perPack: "$17.99/pack", perStrip: "$0.60/strip", pctOff: "36% off", badge: "Most Popular" },
-            { qty: 3, days: 90, price: "$47.99", originalPrice: "$83.97", perPack: "$16.00/pack", perStrip: "$0.53/strip", pctOff: "44% off", badge: "Best Value" },
+            { qty: 1, days: 30, price: "$23.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.80/strip", pctOff: "14% off", badge: null },
+            { qty: 2, days: 60, price: "$40.99", originalPrice: "$55.98", perPack: "$20.50/pack", perStrip: "$0.68/strip", pctOff: "27% off", badge: "Most Popular" },
+            { qty: 3, days: 90, price: "$52.99", originalPrice: "$83.97", perPack: "$17.66/pack", perStrip: "$0.59/strip", pctOff: "37% off", badge: "Best Value" },
         ],
     },
     {
