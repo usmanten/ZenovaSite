@@ -300,6 +300,7 @@ export default function CatalogPage() {
             {products.map((product, i) => (
                 <div
                     key={product.number}
+                    id={i === 0 ? "products" : undefined}
                     ref={el => { sectionsRef.current[i] = el }}
                     className="relative flex min-h-screen flex-col md:flex-row md:items-center overflow-hidden"
                     style={{ backgroundColor: product.darkBg }}
