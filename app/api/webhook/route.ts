@@ -17,6 +17,8 @@ if (!fromEmail) throw new Error("Missing env var: RESEND_FROM_EMAIL")
 const adminEmail = process.env.ADMIN_EMAIL!
 if (!adminEmail) throw new Error("Missing env var: ADMIN_EMAIL")
 
+const adminEmail2 = process.env.ADMIN_EMAIL_2 ?? null
+
 const isDev = process.env.NODE_ENV !== "production"
 
 export async function POST(req: NextRequest) {
@@ -318,6 +320,20 @@ export async function POST(req: NextRequest) {
                     // Atomically increment orders_placed
                     const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
                     if (rpcError) console.error("Failed to increment orders_placed:", rpcError.message)
+
+                    // ── New order notification to admin(s) ────────────────────
+                    try {
+                        const resend = new Resend(process.env.RESEND_API_KEY)
+                        const recipients = adminEmail2 ? [adminEmail, adminEmail2] : [adminEmail]
+                        await resend.emails.send({
+                            from: fromEmail,
+                            to: recipients,
+                            subject: `New Zenova Order — ${orderNumber ?? session.id}`,
+                            text: `New order received!\n\nCustomer: ${toName}\nEmail: ${toEmail}\nQuantity: ${orderQty} Pack\nShipping to: ${toStreet1}, ${toCity}, ${toState} ${toZip}\n\nTracking: ${label?.trackingNumber ?? "Not yet created"}\nCarrier: ${label?.carrier ?? "—"}\n\nStripe: https://dashboard.stripe.com/payments/${String(fullSession.payment_intent)}`,
+                        })
+                    } catch (notifyErr) {
+                        console.error("Failed to send new order notification:", notifyErr)
+                    }
                 }
             } catch (err) {
                 console.error("Unexpected error saving order to database:", err)
