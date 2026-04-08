@@ -14,7 +14,7 @@ gsap.registerPlugin(ScrollTrigger)
 const products = [
     {
         number: "01",
-        nameLines: ["Focus"],
+        nameLines: ["Energy + Focus"],
         flavor: "Strawberry Frost",
         category: "ENERGY",
         type: "Caffeine Strip",
@@ -357,7 +357,7 @@ export default function CatalogPage() {
                                 <div key={li} className="overflow-hidden pb-4">
                                     <h2
                                         className="prod-name-line font-black leading-[0.9] tracking-tight text-white"
-                                        style={{ fontSize: "clamp(4rem,7vw,9rem)" }}
+                                        style={{ fontSize: "clamp(2.2rem,4vw,5.5rem)", whiteSpace: "nowrap" }}
                                     >
                                         {line}
                                     </h2>
