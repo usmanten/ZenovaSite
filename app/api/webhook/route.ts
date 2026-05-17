@@ -64,7 +64,7 @@ export async function POST(req: NextRequest) {
 
         // Retrieve full session to get shipping and customer details
         const fullSession = await stripe.checkout.sessions.retrieve(session.id, {
-            expand: ["line_items"],
+            expand: ["line_items", "discounts"],
         })
 
         const shipping = fullSession.collected_information?.shipping_details
@@ -331,6 +331,32 @@ export async function POST(req: NextRequest) {
                         })
                     } catch (notifyErr) {
                         console.error("Failed to send new order notification:", notifyErr)
+                    }
+
+                    // ── Influencer notification ───────────────────────────────
+                    const discounts = fullSession.discounts as Stripe.Discount[] | null
+                    if (discounts && discounts.length > 0) {
+                        try {
+                            const promoCodeId = typeof discounts[0].promotion_code === "string"
+                                ? discounts[0].promotion_code
+                                : (discounts[0].promotion_code as Stripe.PromotionCode | null)?.id
+                            if (promoCodeId) {
+                                const promoCode = await stripe.promotionCodes.retrieve(promoCodeId)
+                                const influencerEmail = promoCode.metadata?.influencer_email
+                                const codeName = promoCode.code
+                                if (influencerEmail) {
+                                    const resend = new Resend(process.env.RESEND_API_KEY)
+                                    await resend.emails.send({
+                                        from: fromEmail,
+                                        to: influencerEmail,
+                                        subject: `Someone used your code ${codeName}!`,
+                                        text: `Hey! Someone just used your code ${codeName} to purchase Zenova Focus strips.\n\nQuantity: ${orderQty} Pack\n\nKeep sharing — every use counts!\n\nZenova Team`,
+                                    })
+                                }
+                            }
+                        } catch (influencerErr) {
+                            console.error("Failed to send influencer notification:", influencerErr)
+                        }
                     }
                 }
             } catch (err) {
