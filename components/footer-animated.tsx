@@ -27,6 +27,8 @@ export default function FooterSection() {
       legalRef.current,
     ].filter(Boolean) as Element[]
 
+    if (window.innerWidth < 768) return
+
     gsap.set(elements, { y: 40, opacity: 0 })
 
     const timer = setTimeout(() => {
