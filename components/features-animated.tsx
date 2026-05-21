@@ -51,35 +51,25 @@ export default function Features() {
             gsap.set(card, featuresData[i].from)
         })
 
-        const isMobile = window.innerWidth < 768
-
         const tl = gsap.timeline({
             scrollTrigger: {
                 trigger: pinWrap,
-                start: isMobile ? "top 90%" : "top top",
-                end: isMobile ? "+=400" : `+=${(cards.length * 1.2 + 1) * 400}`,
-                pin: !isMobile,
-                pinSpacing: !isMobile,
-                scrub: isMobile ? false : 1.2,
-                toggleActions: isMobile ? "play none none none" : undefined,
-                anticipatePin: isMobile ? 0 : 1,
+                start: "top 75%",
+                end: "+=10",
+                scrub: false,
+                toggleActions: "play none none none",
                 invalidateOnRefresh: true,
             },
         })
 
-        if (isMobile) {
-            tl.to(heading, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0)
-            tl.to(cards, { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 0.7, stagger: 0.08, ease: "power3.out" }, 0.2)
-        } else {
-            tl.to(heading, { opacity: 1, y: 0, duration: 0.8, ease: "power2.out" }, 0)
-            cards.forEach((card, i) => {
-                tl.to(
-                    card,
-                    { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 1, ease: "power3.out" },
-                    0.8 + i * 1.2
-                )
-            })
-        }
+        tl.to(heading, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0)
+        cards.forEach((card, i) => {
+            tl.to(
+                card,
+                { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" },
+                0.15 + i * 0.12
+            )
+        })
 
         return () => {
             tl.scrollTrigger?.kill()
