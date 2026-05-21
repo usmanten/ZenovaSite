@@ -78,7 +78,7 @@ export default function Features() {
     }, [])
 
     return (
-        <div ref={pinWrapRef} className="min-h-screen md:h-screen w-full overflow-hidden bg-black">
+        <div ref={pinWrapRef} className="w-full overflow-hidden bg-black py-20 md:h-screen md:py-0">
             <div className="flex h-full w-full flex-col items-center justify-center">
 
                 <div
@@ -97,19 +97,19 @@ export default function Features() {
                     </p>
                 </div>
 
-                <div className="grid w-full max-w-3xl grid-cols-1 sm:grid-cols-2 gap-5 px-6">
+                <div className="grid w-full max-w-3xl grid-cols-2 gap-3 px-6 sm:gap-5">
                     {featuresData.map((feature, i) => (
                         <div
                             key={i}
                             ref={el => { cardsRef.current[i] = el }}
                             style={{ willChange: "transform, opacity" }}
                         >
-                            <div className="group h-full rounded-2xl border border-white/8 bg-white/[0.03] p-6 text-center transition-all duration-300 hover:border-white/14 hover:bg-white/[0.055]">
-                                <div className="mb-5 mx-auto inline-flex size-11 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/75 transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white">
+                            <div className="group h-full rounded-2xl border border-white/8 bg-white/[0.03] p-4 text-center transition-all duration-300 hover:border-white/14 hover:bg-white/[0.055] sm:p-6">
+                                <div className="mb-3 mx-auto inline-flex size-9 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-white/75 transition-all duration-300 group-hover:border-white/20 group-hover:bg-white/10 group-hover:text-white sm:mb-5 sm:size-11">
                                     {feature.icon}
                                 </div>
-                                <h3 className="font-bold text-white">{feature.title}</h3>
-                                <p className="mt-2 text-sm leading-relaxed text-white">{feature.description}</p>
+                                <h3 className="text-sm font-bold text-white sm:text-base">{feature.title}</h3>
+                                <p className="mt-2 hidden text-sm leading-relaxed text-white sm:block">{feature.description}</p>
                             </div>
                         </div>
                     ))}

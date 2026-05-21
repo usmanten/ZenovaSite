@@ -16,7 +16,7 @@ export default function ScienceComparison() {
         <div className="bg-black">
 
             {/* ── Absorption Chart ─────────────────────────────────────────── */}
-            <section className="py-44 px-6 md:px-20">
+            <section className="py-20 md:py-44 px-6 md:px-20">
                 <div className="mx-auto grid max-w-6xl items-center gap-20 md:grid-cols-[1fr_1.3fr]">
 
                     {/* Left copy */}
