@@ -251,7 +251,7 @@ Under California Civil Code Section 1789.3, California users may contact the Com
 ## 28. Contact Information
 
 Zenova MM
-officialzenovastrips@gmail.com
+info@zenovastrips.com
 New York, United States`
 
 export const REFUND_CONTENT = `# Refund Policy
@@ -417,5 +417,5 @@ Your continued use of the Services after changes are posted constitutes acceptan
 ## 14. Contact Information
 
 Zenova MM
-officialzenovastrips@gmail.com
+info@zenovastrips.com
 New York, United States`
