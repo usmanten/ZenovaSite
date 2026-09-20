@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 
 const montserrat = Montserrat({
     subsets: ["latin"],
-    weight: ["800", "900"],
+    weight: "variable",
     variable: "--font-montserrat",
 })
 

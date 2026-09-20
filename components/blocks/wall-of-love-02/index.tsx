@@ -110,7 +110,7 @@ export default function WallOfLove02() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="bg-black pb-20 pt-20 md:pb-32 md:pt-32">
+    <section ref={sectionRef} className="bg-blush-300 pb-20 pt-20 md:pb-32 md:pt-32">
       <style>{`
         @keyframes marquee {
           from { transform: translateX(0); }
@@ -134,12 +134,12 @@ export default function WallOfLove02() {
         style={{ willChange: "transform, opacity" }}
       >
         <h2
-          className="font-black leading-[0.9] tracking-tight text-white"
+          className="font-black leading-[0.9] tracking-tight text-blush-950"
           style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
         >
-          What Our Customers <span className="text-white/20">Are Saying</span>
+          What Our Customers <span className="text-blush-700">Are Saying</span>
         </h2>
-        <p className="mt-4 text-sm text-white">Real reviews from real customers.</p>
+        <p className="mt-4 text-sm text-blush-950/70">Real reviews from real customers.</p>
       </div>
 
       <div className="relative flex h-full w-full flex-col items-center justify-center overflow-hidden">
@@ -153,8 +153,8 @@ export default function WallOfLove02() {
             <ReviewCard key={index} {...review} />
           ))}
         </Marquee>
-        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-black" />
-        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-black" />
+        <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-blush-300" />
+        <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-gradient-to-l from-blush-300" />
       </div>
     </section>
   );
@@ -173,16 +173,16 @@ const ReviewCard = ({
     <figure
       className={cn(
         "relative w-72 cursor-pointer overflow-hidden rounded-2xl border p-4",
-        "border-white/8 bg-white/[0.03] transition-all duration-300 hover:border-white/14 hover:bg-white/[0.055]"
+        "border-blush-950/10 bg-white/70 transition-all duration-300 hover:border-blush-950/20 hover:bg-white/95"
       )}
     >
       <div className="flex flex-col">
-        <figcaption className="text-sm font-semibold text-white">
+        <figcaption className="text-sm font-semibold text-blush-950">
           {name}
         </figcaption>
-        <p className="text-xs font-medium text-white/55">{position}</p>
+        <p className="text-xs font-medium text-blush-950/55">{position}</p>
       </div>
-      <blockquote className="mt-3 text-sm text-white/60">{text}</blockquote>
+      <blockquote className="mt-3 text-sm text-blush-950/70">{text}</blockquote>
     </figure>
   );
 };

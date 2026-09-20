@@ -172,6 +172,18 @@
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
+  --color-blush-50: #FEF4F6;
+  --color-blush-100: #FBE5EA;
+  --color-blush-200: #F7D3DC;
+  --color-blush-300: #F2B9C7;
+  --color-blush-400: #E8A0B2;
+  --color-blush-500: #DB889D;
+  --color-blush-600: #C87189;
+  --color-blush-700: #AD5D74;
+  --color-blush-800: #914C61;
+  --color-blush-900: #74394B;
+  --color-blush-950: #3D1F2A;
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -181,7 +193,7 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --font-sans: var(--font-sans);
+  --font-sans: var(--font-montserrat);
   --font-mono: var(--font-mono);
   --font-serif: var(--font-serif);
 
@@ -204,8 +216,19 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
+  html {
     overflow-x: hidden;
   }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+@keyframes gentle-sway {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-16px); }
+}
+
+.animate-gentle-sway {
+  animation: gentle-sway 4.5s ease-in-out infinite;
 }

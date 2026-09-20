@@ -23,17 +23,23 @@ export const HeroHeader = () => {
         window.addEventListener('scroll', handleScroll)
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
+
     return (
-        <header>
+        <header className="contents">
             <nav
                 data-state={menuState && 'active'}
-                className="fixed z-20 w-full px-2">
-                {/* Top fade so nav is visible against hero backgrounds */}
-                {!isScrolled && (
-                    <div aria-hidden className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-gradient-to-b from-black/60 to-transparent" />
-                )}
-                <div className={cn('mx-auto mt-2 max-w-6xl px-6 transition-all duration-300 lg:px-12', isScrolled && 'bg-background/50 max-w-lg rounded-2xl border backdrop-blur-lg lg:px-5')}>
-                    <div className={cn("relative flex flex-wrap items-center justify-between gap-6 lg:gap-0", isScrolled ? "py-2.5 lg:py-3" : "py-5 lg:py-6")}>
+                className={cn(
+                    'sticky top-0 z-20 w-full px-2 transition-all duration-300',
+                    !isScrolled && 'border-b border-blush-100 bg-white'
+                )}>
+                <div
+                    className={cn(
+                        'mx-auto max-w-6xl transition-all duration-300',
+                        isScrolled
+                            ? 'mt-3 max-w-2xl rounded-2xl border border-blush-100 bg-white/90 px-5 shadow-lg shadow-black/5 backdrop-blur-lg lg:px-6'
+                            : 'px-6 lg:px-12'
+                    )}>
+                    <div className={cn("relative flex flex-wrap items-center justify-between gap-6 lg:gap-0", isScrolled ? "py-2.5 lg:py-3" : "py-4")}>
                         <div className="flex w-full justify-between lg:w-auto">
                             <Link
                                 href="/"
@@ -41,18 +47,18 @@ export const HeroHeader = () => {
                                 data-nav-logo
                                 className="flex items-center space-x-2">
                                 <Image
-                                    src="/logoinvert.png"
+                                    src="/logo.png"
                                     alt="Zenova Strips"
                                     width={120}
                                     height={52}
-                                    style={{ height: "42px", width: "auto" }}
+                                    style={{ height: "36px", width: "auto" }}
                                 />
                             </Link>
 
                             <button
                                 onClick={() => setMenuState(!menuState)}
                                 aria-label={menuState == true ? 'Close Menu' : 'Open Menu'}
-                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 lg:hidden">
+                                className="relative z-20 -m-2.5 -mr-4 block cursor-pointer p-2.5 text-blush-950 lg:hidden">
                                 <Menu className="in-data-[state=active]:rotate-180 in-data-[state=active]:scale-0 in-data-[state=active]:opacity-0 m-auto size-6 duration-200" />
                                 <X className="in-data-[state=active]:rotate-0 in-data-[state=active]:scale-100 in-data-[state=active]:opacity-100 absolute inset-0 m-auto size-6 -rotate-180 scale-0 opacity-0 duration-200" />
                             </button>
@@ -64,7 +70,7 @@ export const HeroHeader = () => {
                                     <li key={index}>
                                         <Link
                                             href={item.href}
-                                            className="text-muted-foreground hover:text-accent-foreground block duration-150">
+                                            className="text-blush-950/70 hover:text-blush-600 block duration-150">
                                             <span>{item.name}</span>
                                         </Link>
                                     </li>
@@ -72,20 +78,24 @@ export const HeroHeader = () => {
                             </ul>
                         </div>
 
-                        <div className="bg-background in-data-[state=active]:block lg:in-data-[state=active]:flex mb-6 hidden w-full flex-wrap items-center justify-end space-y-8 rounded-3xl border p-6 shadow-2xl shadow-zinc-300/20 md:flex-nowrap lg:m-0 lg:flex lg:w-fit lg:gap-6 lg:space-y-0 lg:border-transparent lg:bg-transparent lg:p-0 lg:shadow-none dark:shadow-none dark:lg:bg-transparent">
-                            <div className="lg:hidden">
-                                <ul className="space-y-6 text-base">
-                                    {menuItems.map((item, index) => (
-                                        <li key={index}>
-                                            <Link
-                                                href={item.href}
-                                                className="text-muted-foreground hover:text-accent-foreground block duration-150">
-                                                <span>{item.name}</span>
-                                            </Link>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
+                        <Link
+                            href="/catalog#products"
+                            className="hidden items-center justify-center rounded-full bg-blush-600 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-blush-700 active:scale-[0.98] lg:inline-flex">
+                            Shop
+                        </Link>
+
+                        <div className="in-data-[state=active]:flex absolute inset-x-0 top-full hidden w-full flex-wrap items-center justify-end space-y-6 border-b border-blush-100 bg-white p-6 lg:hidden">
+                            <ul className="w-full space-y-6 text-base">
+                                {menuItems.map((item, index) => (
+                                    <li key={index}>
+                                        <Link
+                                            href={item.href}
+                                            className="text-blush-950/70 hover:text-blush-600 block duration-150">
+                                            <span>{item.name}</span>
+                                        </Link>
+                                    </li>
+                                ))}
+                            </ul>
                         </div>
                     </div>
                 </div>

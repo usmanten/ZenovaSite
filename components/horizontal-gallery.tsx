@@ -25,7 +25,7 @@ export default function HorizontalGallery() {
     return (
         <>
             {/* ── Mobile ──────────────────────────────────────────────────────── */}
-            <div className="block md:hidden bg-black px-4 py-8">
+            <div className="block md:hidden bg-white px-4 py-8">
                 <div className="relative w-full overflow-hidden rounded-2xl" style={{ aspectRatio: "4/5" }}>
                     {images.map((img, i) => (
                         <div
@@ -38,28 +38,28 @@ export default function HorizontalGallery() {
                         </div>
                     ))}
 
-                    <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex size-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm">
+                    <button onClick={prev} className="absolute left-3 top-1/2 -translate-y-1/2 z-10 flex size-10 items-center justify-center rounded-full bg-blush-600 text-white">
                         <ChevronLeft className="size-5" />
                     </button>
-                    <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex size-10 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm">
+                    <button onClick={next} className="absolute right-3 top-1/2 -translate-y-1/2 z-10 flex size-10 items-center justify-center rounded-full bg-blush-600 text-white">
                         <ChevronRight className="size-5" />
                     </button>
 
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2 z-10 flex gap-1.5">
                         {images.map((_, i) => (
                             <button key={i} onClick={() => setActiveIndex(i)} className="size-1.5 rounded-full transition-all duration-300"
-                                style={{ backgroundColor: i === activeIndex ? "white" : "rgba(255,255,255,0.35)" }} />
+                                style={{ backgroundColor: i === activeIndex ? "#C87189" : "#F7D3DC" }} />
                         ))}
                     </div>
                 </div>
 
-                <Link href="/catalog#products" className="mt-5 flex w-full items-center justify-center rounded-full bg-white py-4 text-sm font-black text-black transition-all hover:opacity-90 active:scale-[0.98]">
+                <Link href="/catalog#products" className="mt-5 flex w-full items-center justify-center rounded-full bg-blush-600 py-4 text-sm font-black text-white transition-all hover:bg-blush-700 active:scale-[0.98]">
                     Shop Now
                 </Link>
             </div>
 
             {/* ── Desktop ─────────────────────────────────────────────────────── */}
-            <div className="hidden md:flex h-screen w-full items-center justify-center bg-black relative">
+            <div className="hidden md:flex h-screen w-full items-center justify-center bg-white relative">
 
                 {/* Prev peek — shows right edge of previous image */}
                 <div
@@ -72,7 +72,7 @@ export default function HorizontalGallery() {
                 </div>
 
                 {/* Active card */}
-                <div className="relative overflow-hidden rounded-2xl border border-white/8" style={{ width: "55vw", height: "78vh" }}>
+                <div className="relative overflow-hidden rounded-2xl border border-blush-200" style={{ width: "55vw", height: "78vh" }}>
                     {images.map((img, i) => (
                         <div
                             key={i}
@@ -102,10 +102,10 @@ export default function HorizontalGallery() {
                 </div>
 
                 {/* Arrows */}
-                <button onClick={prev} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 flex size-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm hover:bg-black/60 transition-all">
+                <button onClick={prev} className="absolute left-5 top-1/2 -translate-y-1/2 z-10 flex size-11 items-center justify-center rounded-full bg-blush-600 text-white hover:bg-blush-700 transition-all">
                     <ChevronLeft className="size-5" />
                 </button>
-                <button onClick={next} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 flex size-11 items-center justify-center rounded-full bg-black/40 text-white backdrop-blur-sm hover:bg-black/60 transition-all">
+                <button onClick={next} className="absolute right-5 top-1/2 -translate-y-1/2 z-10 flex size-11 items-center justify-center rounded-full bg-blush-600 text-white hover:bg-blush-700 transition-all">
                     <ChevronRight className="size-5" />
                 </button>
 
@@ -113,7 +113,7 @@ export default function HorizontalGallery() {
                 <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 flex gap-2">
                     {images.map((_, i) => (
                         <button key={i} onClick={() => setActiveIndex(i)} className="size-1.5 rounded-full transition-all duration-300"
-                            style={{ backgroundColor: i === activeIndex ? "white" : "rgba(255,255,255,0.35)" }} />
+                            style={{ backgroundColor: i === activeIndex ? "#C87189" : "#F7D3DC" }} />
                     ))}
                 </div>
             </div>
