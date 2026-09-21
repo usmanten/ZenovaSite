@@ -3,73 +3,44 @@
 import { useEffect, useRef } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { Zap, Candy, XCircle, Leaf } from "lucide-react"
+import Image from "next/image"
+import { Zap, Brain, Ban, Layers } from "lucide-react"
 
 gsap.registerPlugin(ScrollTrigger)
 
-const featuresData = [
-    {
-        icon: <Zap className="size-5" aria-hidden />,
-        title: "Fast Acting",
-        description: "Dissolves in seconds for rapid absorption. Feel the difference faster than any pill or gummy.",
-        from: { x: -500, y: -300, rotation: -45, opacity: 0, scale: 0.8 },
-    },
-    {
-        icon: <Candy className="size-5" aria-hidden />,
-        title: "Best Taste",
-        description: "Delicious flavors that make your daily routine something to look forward to, every single time.",
-        from: { x: 500, y: -300, rotation: 45, opacity: 0, scale: 0.8 },
-    },
-    {
-        icon: <XCircle className="size-5" aria-hidden />,
-        title: "No Sugar or Fillers",
-        description: "Zero sugar, zero artificial fillers. Just clean, effective ingredients your body actually needs.",
-        from: { x: -500, y: 300, rotation: -45, opacity: 0, scale: 0.8 },
-    },
-    {
-        icon: <Leaf className="size-5" aria-hidden />,
-        title: "Fresh Ingredients",
-        description: "Made in the USA with premium, naturally sourced ingredients for purity you can trust.",
-        from: { x: 500, y: 300, rotation: 45, opacity: 0, scale: 0.8 },
-    },
+const stats = [
+    { icon: <Zap className="size-5" aria-hidden />, headline: "50mg", caption: "Caffeine Per Strip" },
+    { icon: <Brain className="size-5" aria-hidden />, headline: "Caffeine + L-Theanine", caption: "Clean Energy Blend" },
+    { icon: <Ban className="size-5" aria-hidden />, headline: "Zero Sugar", caption: "No Fillers or Additives" },
+    { icon: <Layers className="size-5" aria-hidden />, headline: "30 Strips", caption: "Per Pack" },
 ]
 
 export default function Features() {
-    const pinWrapRef = useRef<HTMLDivElement>(null)
     const headingRef = useRef<HTMLDivElement>(null)
-    const cardsRef = useRef<(HTMLDivElement | null)[]>([])
+    const photoRef = useRef<HTMLDivElement>(null)
+    const statsRef = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
-        const pinWrap = pinWrapRef.current
         const heading = headingRef.current
-        if (!pinWrap || !heading) return
-
-        const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[]
+        const photo = photoRef.current
+        const statsRow = statsRef.current
+        if (!heading || !photo || !statsRow) return
 
         gsap.set(heading, { opacity: 0, y: 30 })
-        cards.forEach((card, i) => {
-            gsap.set(card, featuresData[i].from)
-        })
+        gsap.set(photo, { opacity: 0, y: 30 })
+        gsap.set(statsRow, { opacity: 0, y: 20 })
 
         const tl = gsap.timeline({
             scrollTrigger: {
-                trigger: pinWrap,
-                start: "top 75%",
-                end: "+=10",
-                scrub: false,
+                trigger: heading,
+                start: "top 80%",
                 toggleActions: "play none none none",
-                invalidateOnRefresh: true,
             },
         })
 
         tl.to(heading, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0)
-        cards.forEach((card, i) => {
-            tl.to(
-                card,
-                { x: 0, y: 0, rotation: 0, opacity: 1, scale: 1, duration: 0.7, ease: "power3.out" },
-                0.15 + i * 0.12
-            )
-        })
+            .to(photo, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+            .to(statsRow, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.35)
 
         return () => {
             tl.scrollTrigger?.kill()
@@ -78,44 +49,59 @@ export default function Features() {
     }, [])
 
     return (
-        <div ref={pinWrapRef} className="w-full overflow-hidden bg-white py-20 md:h-screen md:py-0">
-            <div className="flex h-full w-full flex-col items-center justify-center">
+        <section className="w-full bg-white px-6 py-20 md:px-16 lg:px-24">
+            <div className="mx-auto max-w-6xl">
 
-                <div
-                    ref={headingRef}
-                    className="mb-10 text-center"
-                    style={{ willChange: "transform, opacity" }}
-                >
-                    <h2
-                        className="font-black leading-[0.9] tracking-tight text-blush-950"
-                        style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
-                    >
-                        Built For Perfection.
-                    </h2>
-                    <p className="mt-4 text-sm text-blush-950/70">
-                        The only strips made in the USA with premium ingredients and advanced technology.
-                    </p>
+                <div className="grid items-center gap-12 md:grid-cols-2">
+                    {/* Left — headline */}
+                    <div ref={headingRef} style={{ willChange: "transform, opacity" }}>
+                        <h2
+                            className="font-black leading-[0.9] tracking-tight text-blush-950"
+                            style={{ fontSize: "clamp(2.5rem, 6vw, 5rem)" }}
+                        >
+                            Built For Perfection.
+                        </h2>
+                        <p className="mt-4 text-sm text-blush-950/70">
+                            The only strips made in the USA with premium ingredients and advanced technology.
+                        </p>
+                    </div>
+
+                    {/* Right — floating product photo */}
+                    <div ref={photoRef} className="relative mx-auto w-full max-w-xs" style={{ willChange: "transform, opacity" }}>
+                        <div
+                            aria-hidden
+                            className="pointer-events-none absolute inset-0 -z-10 rounded-full bg-blush-100 blur-2xl"
+                        />
+                        <Image
+                            src="/product-stack.png"
+                            width={1211}
+                            height={1299}
+                            alt="Zenova Strips"
+                            className="h-auto w-full drop-shadow-xl"
+                        />
+                    </div>
                 </div>
 
-                <div className="grid w-full max-w-3xl grid-cols-2 gap-3 px-6 sm:gap-5">
-                    {featuresData.map((feature, i) => (
-                        <div
-                            key={i}
-                            ref={el => { cardsRef.current[i] = el }}
-                            style={{ willChange: "transform, opacity" }}
-                        >
-                            <div className="group h-full rounded-2xl border border-blush-200 bg-blush-50 p-4 text-center transition-all duration-300 hover:border-blush-300 hover:bg-blush-100 sm:p-6">
-                                <div className="mb-3 mx-auto inline-flex size-9 items-center justify-center rounded-xl bg-blush-600 text-white transition-all duration-300 group-hover:bg-blush-700 sm:mb-5 sm:size-11">
-                                    {feature.icon}
-                                </div>
-                                <h3 className="text-sm font-bold text-blush-950 sm:text-base">{feature.title}</h3>
-                                <p className="mt-2 hidden text-sm leading-relaxed text-blush-950/70 sm:block">{feature.description}</p>
+                {/* Stat row */}
+                <div
+                    ref={statsRef}
+                    className="mt-16 grid grid-cols-2 gap-y-10 border-t border-blush-200 pt-12 md:grid-cols-4 md:divide-x md:divide-blush-200"
+                    style={{ willChange: "transform, opacity" }}
+                >
+                    {stats.map((stat, i) => (
+                        <div key={i} className="flex flex-col items-center gap-3 px-4 text-center">
+                            <div className="inline-flex size-11 items-center justify-center rounded-full bg-blush-100 text-blush-600">
+                                {stat.icon}
+                            </div>
+                            <div>
+                                <p className="font-black text-lg text-blush-950 sm:text-xl">{stat.headline}</p>
+                                <p className="mt-1 text-xs font-bold uppercase tracking-widest text-blush-950/60">{stat.caption}</p>
                             </div>
                         </div>
                     ))}
                 </div>
 
             </div>
-        </div>
+        </section>
     )
 }

@@ -1,9 +1,13 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useRef, useState } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+
+gsap.registerPlugin(ScrollTrigger)
 
 const images = [
     { src: "/ZS_1.jpeg", alt: "Zenova Strips" },
@@ -15,6 +19,8 @@ const images = [
 
 export default function HorizontalGallery() {
     const [activeIndex, setActiveIndex] = useState(0)
+    const mobileRef = useRef<HTMLDivElement>(null)
+    const desktopRef = useRef<HTMLDivElement>(null)
 
     const prev = () => setActiveIndex(i => (i - 1 + images.length) % images.length)
     const next = () => setActiveIndex(i => (i + 1) % images.length)
@@ -22,10 +28,29 @@ export default function HorizontalGallery() {
     const prevIndex = (activeIndex - 1 + images.length) % images.length
     const nextIndex = (activeIndex + 1) % images.length
 
+    useEffect(() => {
+        const els = [mobileRef.current, desktopRef.current].filter(Boolean) as HTMLDivElement[]
+        if (els.length === 0) return
+
+        gsap.set(els, { opacity: 0, y: 30 })
+
+        const triggers = els.map(el =>
+            ScrollTrigger.create({
+                trigger: el,
+                start: "top 85%",
+                onEnter: () => {
+                    gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" })
+                },
+            })
+        )
+
+        return () => triggers.forEach(st => st.kill())
+    }, [])
+
     return (
         <>
             {/* ── Mobile ──────────────────────────────────────────────────────── */}
-            <div className="block md:hidden bg-white px-4 py-8">
+            <div ref={mobileRef} className="block md:hidden bg-white px-4 py-8" style={{ willChange: "transform, opacity" }}>
                 <div className="relative w-full overflow-hidden rounded-2xl" style={{ aspectRatio: "4/5" }}>
                     {images.map((img, i) => (
                         <div
@@ -59,7 +84,7 @@ export default function HorizontalGallery() {
             </div>
 
             {/* ── Desktop ─────────────────────────────────────────────────────── */}
-            <div className="hidden md:flex h-screen w-full items-center justify-center bg-white relative">
+            <div ref={desktopRef} className="hidden md:flex h-screen w-full items-center justify-center bg-white relative" style={{ willChange: "transform, opacity" }}>
 
                 {/* Prev peek — shows right edge of previous image */}
                 <div

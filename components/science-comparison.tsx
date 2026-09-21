@@ -1,7 +1,12 @@
 "use client"
 
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
+
+gsap.registerPlugin(ScrollTrigger)
 
 const tableRows = [
     { feature: "Fast Absorption (< 15 min)" },
@@ -12,6 +17,44 @@ const tableRows = [
 ]
 
 export default function ScienceComparison() {
+    const chartCopyRef = useRef<HTMLDivElement>(null)
+    const chartVisualRef = useRef<HTMLDivElement>(null)
+    const tableCopyRef = useRef<HTMLDivElement>(null)
+    const tableVisualRef = useRef<HTMLDivElement>(null)
+
+    useEffect(() => {
+        const groups = [
+            { copy: chartCopyRef.current, visual: chartVisualRef.current },
+            { copy: tableCopyRef.current, visual: tableVisualRef.current },
+        ]
+
+        const triggers: ScrollTrigger[] = []
+
+        groups.forEach(({ copy, visual }) => {
+            if (!copy || !visual) return
+
+            gsap.set(copy, { opacity: 0, y: 30 })
+            gsap.set(visual, { opacity: 0, y: 30 })
+
+            const tl = gsap.timeline({
+                scrollTrigger: {
+                    trigger: copy,
+                    start: "top 80%",
+                    toggleActions: "play none none none",
+                },
+            })
+
+            tl.to(copy, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0)
+                .to(visual, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.15)
+
+            if (tl.scrollTrigger) triggers.push(tl.scrollTrigger)
+        })
+
+        return () => {
+            triggers.forEach(st => st.kill())
+        }
+    }, [])
+
     return (
         <div>
 
@@ -20,7 +63,7 @@ export default function ScienceComparison() {
                 <div className="mx-auto grid max-w-6xl items-center gap-20 md:grid-cols-[1fr_1.3fr]">
 
                     {/* Left copy */}
-                    <div>
+                    <div ref={chartCopyRef} style={{ willChange: "transform, opacity" }}>
                         <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.4em] text-blush-950/60">The Science</p>
                         <h2
                             className="mb-8 font-black leading-[0.88] tracking-tight text-blush-950"
@@ -36,7 +79,7 @@ export default function ScienceComparison() {
                     </div>
 
                     {/* Right — SVG chart */}
-                    <div className="rounded-2xl border border-blush-200 bg-blush-50 p-6 pt-8">
+                    <div ref={chartVisualRef} className="rounded-2xl border border-blush-200 bg-blush-50 p-6 pt-8" style={{ willChange: "transform, opacity" }}>
                         <svg viewBox="0 0 500 220" className="w-full" aria-hidden>
                             {/* Horizontal grid lines */}
                             <line x1="82" y1="22"  x2="488" y2="22"  stroke="#3D1F2A" strokeOpacity="0.08" strokeWidth="1" />
@@ -95,7 +138,7 @@ export default function ScienceComparison() {
                 <div className="mx-auto grid max-w-6xl items-center gap-20 md:grid-cols-[1fr_1.3fr]">
 
                     {/* Left copy */}
-                    <div>
+                    <div ref={tableCopyRef} style={{ willChange: "transform, opacity" }}>
                         <p className="mb-5 text-[10px] font-bold uppercase tracking-[0.4em] text-blush-950/60">Head to Head</p>
                         <h2
                             className="mb-8 font-black leading-[0.88] tracking-tight text-blush-950"
@@ -115,7 +158,7 @@ export default function ScienceComparison() {
                     </div>
 
                     {/* Right — comparison table */}
-                    <div className="overflow-hidden rounded-2xl border border-blush-950/10">
+                    <div ref={tableVisualRef} className="overflow-hidden rounded-2xl border border-blush-950/10" style={{ willChange: "transform, opacity" }}>
                         {/* Column headers */}
                         <div className="grid grid-cols-4 border-b border-blush-950/10">
                             <div className="p-5" />
