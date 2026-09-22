@@ -8,9 +8,9 @@ import Image from "next/image"
 gsap.registerPlugin(ScrollTrigger)
 
 const steps = [
-    { number: "01", title: "Open", instruction: "Peel open one packet.", image: "/routine-open.png" },
-    { number: "02", title: "Place", instruction: "Place the strip under your tongue.", image: "/routine-place.png" },
-    { number: "03", title: "Dissolve", instruction: "Let it dissolve. No water needed.", image: "/routine-dissolve.png" },
+    { number: "01", title: "Open", instruction: "Peel open one packet.", image: "/routine-open.png", nudge: 7.0, stretch: 1.1 },
+    { number: "02", title: "Place", instruction: "Place the strip under your tongue.", image: "/routine-place.png", nudge: 0, stretch: 1 },
+    { number: "03", title: "Dissolve", instruction: "Let it dissolve. No water needed.", image: "/routine-dissolve.png", nudge: 6.85, stretch: 1 },
 ]
 
 export default function RoutineSection() {
@@ -53,7 +53,7 @@ export default function RoutineSection() {
                         className="font-black leading-[0.9] tracking-tight text-blush-950"
                         style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)" }}
                     >
-                        Your Routine.
+                        Your New Routine.
                     </h2>
                 </div>
 
@@ -74,13 +74,17 @@ export default function RoutineSection() {
                             <p className="max-w-[200px] text-sm text-blush-950/70">
                                 {step.instruction}
                             </p>
-                            <div className="relative mt-4 w-full max-w-[180px]">
+                            {/* mt-auto pins each image to the bottom of its column (the text above wraps to different heights);
+                                nudge shifts each image down by the transparent gap under its content so the visible bottoms match the hand photo;
+                                stretch scales the image vertically about its visible bottom edge (packet only, to match the height of the other two) */}
+                            <div className="relative mt-auto w-full max-w-[180px] pt-4">
                                 <Image
                                     src={step.image}
                                     width={1254}
                                     height={1254}
                                     alt={step.title}
                                     className="h-auto w-full drop-shadow-lg"
+                                    style={{ transform: `translateY(${step.nudge}%) scaleY(${step.stretch})`, transformOrigin: "50% 92.9%" }}
                                 />
                             </div>
                         </div>

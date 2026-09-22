@@ -12,8 +12,8 @@ export default function Home() {
       <LogoIntro />
       <HeroHome />
       <Features />
-      <RoutineSection />
       <ScienceComparison />
+      <RoutineSection />
       <InTheWild />
       <FooterSection />
     </div>
