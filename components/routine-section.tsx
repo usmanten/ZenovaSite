@@ -53,7 +53,7 @@ export default function RoutineSection() {
                         className="font-black leading-[0.9] tracking-tight text-blush-950"
                         style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)" }}
                     >
-                        Your New Routine.
+                        Your New <span className="text-blush-700">Routine.</span>
                     </h2>
                 </div>
 
@@ -71,7 +71,7 @@ export default function RoutineSection() {
                             <h3 className="text-lg font-black uppercase tracking-tight text-blush-950">
                                 {step.title}
                             </h3>
-                            <p className="max-w-[200px] text-sm text-blush-950/70">
+                            <p className="max-w-[200px] text-sm text-black">
                                 {step.instruction}
                             </p>
                             {/* mt-auto pins each image to the bottom of its column (the text above wraps to different heights);

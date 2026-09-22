@@ -69,10 +69,10 @@ export default function HeroHome() {
                             {/* CTA */}
                             <Link
                                 href="/catalog#products"
-                                className="group inline-flex items-center gap-2.5 rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition-all hover:scale-[1.03] hover:bg-neutral-800 active:scale-[0.98]"
+                                className="group inline-flex items-center gap-3 rounded-full bg-black px-10 py-5 text-base font-bold text-white transition-all hover:scale-[1.03] hover:bg-neutral-800 active:scale-[0.98]"
                             >
                                 Try Us Now
-                                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                                <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
                             </Link>
                         </AnimatedGroup>
                     </div>

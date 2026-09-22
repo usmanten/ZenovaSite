@@ -7,8 +7,7 @@ import { cn } from '@/lib/utils'
 
 const menuItems = [
     { name: 'Home', href: '/' },
-    { name: 'About', href: '/about' },
-    { name: 'Shop', href: '/catalog#products' },
+    { name: 'Our Story', href: '/about' },
     { name: 'Contact', href: '/contact' },
 ]
 
@@ -86,7 +85,7 @@ export const HeroHeader = () => {
 
                         <div className="in-data-[state=active]:flex absolute inset-x-0 top-full hidden w-full flex-wrap items-center justify-end space-y-6 border-b border-blush-100 bg-white p-6 lg:hidden">
                             <ul className="w-full space-y-6 text-base">
-                                {menuItems.map((item, index) => (
+                                {[...menuItems, { name: 'Shop', href: '/catalog#products' }].map((item, index) => (
                                     <li key={index}>
                                         <Link
                                             href={item.href}

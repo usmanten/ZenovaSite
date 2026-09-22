@@ -16,15 +16,15 @@ type Moment = { src?: string; pos?: string; alt: string; text: string; name: str
 // Cards without a `src` render a pink placeholder. Keep each photo paired with
 // its own customer's review.
 const moments: Moment[] = [
-    { src: "/wild/car.jpg",     pos: "50% 55%", alt: "Zenova box on a car center console",           text: "No jitters, no crash. Just works.",                                     name: "Aisha Okonkwo" },
+    { src: "/wild/car.jpg",     pos: "50% 55%", alt: "Zenova box on a car center console",           text: "Really no crash!! works",                                     name: "Aisha Okonkwo" },
     { src: "/wild/subway.jpg",  pos: "50% 55%", alt: "Zenova box held up on the subway",       text: "Dissolves in like 2 seconds. Kind of satisfying actually.",             name: "Mei-Lin Torres" },
-    { src: "/wild/bag.jpg",     pos: "50% 45%", alt: "Zenova box tucked in a bag with a charger",    text: "Threw one in my bag before the gym and haven't stopped since.",         name: "Marcus Chen" },
+    { src: "/wild/bag.jpg",     pos: "50% 45%", alt: "Zenova box tucked in a bag with a charger",    text: "Threw one in my bag before the gym for preworkout and haven't stopped since.",         name: "Marcus Chen" },
     { src: "/wild/pocket.jpg",  pos: "50% 45%", alt: "Zenova box in a jeans pocket",             text: "Used it before a presentation, felt locked in the whole time.",         name: "Caleb Osei" },
     { src: "/wild/packs.jpg",   pos: "50% 50%", alt: "Two Zenova boxes and loose strips on a rug",   text: "Zero crash when it wears off. That alone is why I'm on my third pack.", name: "Jordan Williams" },
     { src: "/wild/tracks.jpg",  pos: "50% 53%", alt: "Zenova box held up at a train platform",                 text: "Clean ingredients, nothing sketchy in it. That matters to me.",         name: "Omar Al-Hassan" },
     { src: "/wild/drawer.jpg",  pos: "50% 50%", alt: "Zenova box in a travel drawer",                text: "Took one on a 6am flight. No coffee needed.",                           name: "Ravi Patel" },
     { src: "/wild/shelf.jpg",   pos: "50% 45%", alt: "Zenova box on a store counter display",        text: "Switched from energy drinks and my stomach is so much happier.",        name: "Tyler Nguyen" },
-    { src: "/wild/counter.jpg", pos: "50% 65%", alt: "Zenova box on a kitchen counter",              text: "2pm strip has basically replaced my afternoon coffee.",                 name: "Sofia Reyes" },
+    { src: "/wild/counter.jpg", pos: "50% 65%", alt: "Zenova box on a kitchen counter",              text: "Basically replaced my afternoon coffee.",                 name: "Sofia Reyes" },
     { src: "/wild/wallet.jpg",  pos: "50% 48%", alt: "Zenova strip packets in a wallet",             text: "Fits in my wallet. That's the whole review.",                           name: "Anonymous Buyer" },
 ]
 
@@ -60,21 +60,7 @@ export default function InTheWild() {
     }, [])
 
     return (
-        <section className="relative isolate overflow-hidden bg-blush-400 py-20 md:py-32">
-            {/* Gradient mesh background */}
-            <div
-                aria-hidden
-                className="pointer-events-none absolute inset-0 -z-10"
-                style={{
-                    backgroundImage: [
-                        "radial-gradient(ellipse 60% 45% at 12% 8%, rgba(255,255,255,0.6), transparent 65%)",
-                        "radial-gradient(ellipse 55% 45% at 92% 28%, rgba(247,211,220,0.9), transparent 65%)",
-                        "radial-gradient(ellipse 60% 50% at 25% 92%, rgba(200,113,137,0.6), transparent 65%)",
-                        "radial-gradient(ellipse 50% 40% at 88% 92%, rgba(255,255,255,0.45), transparent 65%)",
-                    ].join(", "),
-                }}
-            />
-
+        <section className="bg-gradient-to-b from-blush-50 to-blush-100 py-20 md:py-32">
             <style>{`
                 @keyframes marquee {
                     from { transform: translate3d(0, 0, 0); }
@@ -99,7 +85,7 @@ export default function InTheWild() {
             </div>
 
             <div className="relative flex w-full flex-col items-center justify-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-                <Marquee ref={rowRef} pauseOnHover className="[--duration:20s]" style={{ willChange: "transform, opacity" }}>
+                <Marquee ref={rowRef} pauseOnHover className="[--duration:20s] py-5" style={{ willChange: "transform, opacity" }}>
                     {moments.map((m, i) => <MomentCard key={i} {...m} />)}
                 </Marquee>
             </div>
@@ -118,7 +104,7 @@ export default function InTheWild() {
                         href="https://www.instagram.com/zenovastrips/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 rounded-full bg-white px-5 py-2.5 text-sm font-bold text-black shadow-sm transition-all hover:shadow-md active:scale-[0.98]"
+                        className="inline-flex items-center gap-1.5 rounded-full bg-blush-950 px-5 py-2.5 text-sm font-bold text-white transition-all hover:bg-blush-800 active:scale-[0.98]"
                     >
                         Share on Instagram <ArrowUpRight className="size-4" />
                     </Link>
@@ -144,7 +130,7 @@ export default function InTheWild() {
 
 function MomentCard({ src, pos, alt, text, name }: Moment) {
     return (
-        <figure className="w-60 shrink-0 overflow-hidden rounded-2xl border border-black/10 bg-white md:w-64">
+        <figure className="w-60 shrink-0 overflow-hidden rounded-2xl border border-blush-200 bg-white shadow-md shadow-blush-900/10 md:w-64">
             <div className="relative aspect-[3/4] w-full">
                 {src ? (
                     <Image src={src} alt={alt} fill loading="eager" className="object-cover" style={{ objectPosition: pos }} sizes="256px" />
