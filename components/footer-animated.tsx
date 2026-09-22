@@ -61,7 +61,7 @@ export default function FooterSection() {
   }, [])
 
   return (
-    <footer ref={footerRef} className="border-t border-blush-950/10 bg-blush-300 py-16 md:py-28">
+    <footer ref={footerRef} className="border-t border-blush-950/10 bg-white py-16 md:py-28">
       <div className="mx-auto max-w-5xl px-6">
         <Link
           ref={logoRef}

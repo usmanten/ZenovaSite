@@ -45,6 +45,7 @@ const Marquee = forwardRef<HTMLDivElement, MarqueeProps>(({
           })}
           style={{
             animationDuration: "40s",
+            willChange: "transform",
             gap: "1rem",
             ...(reverse && { animationDirection: "reverse" }),
           }}
