@@ -10,7 +10,7 @@ gsap.registerPlugin(ScrollTrigger)
 const items = [
     { icon: <span className="text-sm leading-none text-blush-600">★★★★★</span>, label: "Verified Buyers" },
     { icon: <XCircle className="size-4 text-blush-600" aria-hidden />, label: "0 Added Sugar" },
-    { icon: <Timer className="size-4 text-blush-600" aria-hidden />, label: "Peak Absorption < 15 Min" },
+    { icon: <Timer className="size-4 text-blush-600" aria-hidden />, label: "Peak Absorption < 5 Min" },
     { icon: <Leaf className="size-4 text-blush-600" aria-hidden />, label: "Made in USA" },
 ]
 

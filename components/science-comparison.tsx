@@ -12,7 +12,7 @@ type Cell = string | boolean
 
 const tableRows: { feature: string; zenova: Cell; coffee: Cell; energy: Cell }[] = [
     { feature: "Caffeine per serving",      zenova: "50 mg, every strip",  coffee: "Varies by cup",           energy: "Varies by brand" },
-    { feature: "Absorption speed",          zenova: "Within 15 min",       coffee: "30+ min",                  energy: "30+ min" },
+    { feature: "Absorption speed",          zenova: "Within 5 min",       coffee: "30+ min",                  energy: "30+ min" },
     { feature: "Paired with L-theanine",    zenova: "30 mg",               coffee: "None",                     energy: "Varies by brand" },
     { feature: "Sugar",                     zenova: "0 g",                 coffee: "Depends on add-ins",       energy: "Often added" },
     { feature: "Cost per serving",          zenova: "$0.59–$0.80",         coffee: "$3+ at a café",            energy: "$2+ per can" },
@@ -23,7 +23,7 @@ const blocks = [
     {
         number: "01",
         title: "Under your tongue, not your gut.",
-        body: "No swallowing, no waiting on digestion. The strip melts in seconds and is absorbed through the lining of your mouth, so it reaches you in under 15 minutes instead of 30 or more.",
+        body: "No swallowing, no waiting on digestion. The strip melts in seconds and is absorbed through the lining of your mouth, so it reaches you in under 5 minutes instead of 30 or more.",
     },
     {
         number: "02",
@@ -112,7 +112,7 @@ function RouteDiagram() {
                 label="Zenova Strip"
                 accent
                 nodes={["Under your tongue", "Bloodstream"]}
-                time="Within 15 min"
+                time="Within 5 min"
             />
             <div className="my-6 border-t border-dashed border-black/15" />
             <Route
@@ -241,6 +241,10 @@ function CompareTable() {
                 <p className="px-4 py-3 text-[10px] leading-snug text-blush-950/60">
                     <a href="https://pubmed.ncbi.nlm.nih.gov/14607010/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-blush-950">
                         Source: coffee caffeine content, McCusker 2003
+                    </a>
+                    {" · "}
+                    <a href="https://pubmed.ncbi.nlm.nih.gov/6832208/" target="_blank" rel="noopener noreferrer" className="underline underline-offset-2 hover:text-blush-950">
+                        Source: oral caffeine absorption time, Blanchard &amp; Sawers 1983
                     </a>
                 </p>
             </div>
