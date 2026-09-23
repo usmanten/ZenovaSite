@@ -1,113 +1,57 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+// Single-product page modeled on daps.shop/products/energy-strips —
+// big photo + thumbnail gallery, dense buy box.
 
-const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { AnimatedGroup } from "@/components/ui/animated-group"
-import { ArrowRight, ChevronDown, ChevronLeft, ChevronRight } from "lucide-react"
+import { ArrowRight } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
+import { products } from "@/components/catalog-data"
+import InTheWild from "@/components/in-the-wild"
+import CatalogHeroNew from "@/components/catalog-hero-new"
 
 gsap.registerPlugin(ScrollTrigger)
 
-// ─── Data ────@
+// The one live, purchasable product. Dream and Glow (not yet available) get a
+// simple teaser section further down instead of their own buy box.
+const product = products[0]
+const comingSoon = products.filter(p => !p.available)
 
-const products = [
-    {
-        number: "01",
-        nameLines: ["Energy + Focus"],
-        flavor: "Strawberry Frost",
-        category: "ENERGY",
-        type: "Caffeine Strip",
-        tagline: "50mg of clean caffeine. Zero crash. Zero sugar.",
-        description:
-            "Our flagship energy strip dissolves in seconds and kicks in fast. Crisp strawberry flavor, no jitters, no crash. Just clean, focused energy when you need it most.",
-        badges: ["50mg Caffeine", "Sugar Free", "Gluten Free", "Vegan", "No Artificial Colors", "Made in USA", "30 Strips / Pack"],
-        accent: "#FF4D6D",
-        darkBg: "#0d0004",
-        available: true,
-        slug: "strawberry-frost",
-        packImages: { 1: "/ZS_1.jpeg", 2: "/ZS_2.jpeg", 3: "/ZS_3.jpeg" } as Record<number, string>,
-        carouselImages: ["/ZS_single_front.png", "/ZS_single_back.jpeg"],
-        bundles: [
-            { qty: 1, days: 30, price: "$23.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.80/strip", pctOff: "14% off", badge: null },
-            { qty: 2, days: 60, price: "$40.99", originalPrice: "$55.98", perPack: "$20.50/pack", perStrip: "$0.68/strip", pctOff: "27% off", badge: "Most Popular" },
-            { qty: 3, days: 90, price: "$52.99", originalPrice: "$83.97", perPack: "$17.66/pack", perStrip: "$0.59/strip", pctOff: "37% off", badge: "Best Value" },
-        ],
-    },
-    {
-        number: "02",
-        nameLines: ["Dream"],
-        category: "SLEEP",
-        type: "Melatonin Strip",
-        tagline: "Fall asleep faster. Wake up refreshed.",
-        description:
-            "3mg of fast-dissolving melatonin in a strip that works before your head hits the pillow. Formulated for quality sleep without the grogginess you get from pills.",
-        badges: ["3mg Melatonin", "Sugar Free", "Gluten Free", "Vegan", "Non-Habit Forming", "Made in USA", "30 Strips / Pack"],
-        accent: "#8B5CF6",
-        darkBg: "#05010d",
-        available: false,
-    },
-    {
-        number: "03",
-        nameLines: ["Glow"],
-        category: "BEAUTY",
-        type: "Beauty Strip",
-        tagline: "Collagen, biotin & hyaluronic acid. All in one strip.",
-        description:
-            "Your entire daily beauty routine, simplified into a single strip. Zenova Glow delivers premium skin and hair nutrients sublingually for maximum bioavailability.",
-        badges: ["Collagen Peptides", "Biotin 5000mcg", "Hyaluronic Acid", "Gluten Free", "Vegan", "Made in USA", "30 Strips / Pack"],
-        accent: "#F59E0B",
-        darkBg: "#0d0800",
-        available: false,
-        // per-letter margin-right adjustments for BEAUTY: B E A U T Y
-        bgTextSpacing: ["0", "0", "-0.04em", "0.02em", "0.04em", "0"],
-    },
+// Real photos only. Lead shot, a pack photo, then the three
+// "how to use" steps already built for the homepage routine section.
+// `cover` = full-bleed graphic that already fills its own square (no padding, no letterboxing).
+// `contain` = a floating/pedestal product shot that needs breathing room so nothing gets cropped.
+const gallery: { src: string; alt: string; fit: "cover" | "contain" }[] = [
+    { src: "/energy-simplified.jpg", alt: "Your energy, simplified — 50mg caffeine, caffeine + L-theanine, zero sugar, 30 strips per pack", fit: "cover" },
+    { src: "/hero-product.png", alt: "Zenova Energy + Focus", fit: "contain" },
+    { src: "/routine-open.png", alt: "Step 1 — open one packet", fit: "contain" },
+    { src: "/meet-strawberry-frost.jpg", alt: "Meet Strawberry Frost", fit: "cover" },
+    { src: "/supplement-facts.jpg", alt: "Supplement Facts — 50mg caffeine, 30mg L-theanine, no GMO, soy, nuts, gluten, or dairy, made in the USA", fit: "cover" },
 ]
 
-const marqueeItems = [
-    "STRAWBERRY FROST", "·", "DREAM", "·", "GLOW", "·",
-    "MADE IN USA", "·", "SUGAR FREE", "·", "FAST ACTING", "·",
-    "CLEAN FORMULA", "·", "SUBLINGUAL", "·", "30 STRIPS", "·",
-]
-
-// ─── Component ────────────────────────────────────────────────────────────────
+const trustPoints = ["Try It Risk-Free", "Free Shipping", "100% Satisfaction Guarantee"]
 
 export default function CatalogPage() {
-    const containerRef = useRef<HTMLDivElement>(null)
-    const sectionsRef = useRef<(HTMLDivElement | null)[]>([])
-    const marqueeRef = useRef<HTMLDivElement>(null)
+    const [activeImage, setActiveImage] = useState(0)
+    const [lightbox, setLightbox] = useState<string | null>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
     const [soldOutProducts, setSoldOutProducts] = useState<Record<string, boolean>>({})
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
-    const [carouselIndex, setCarouselIndex] = useState<Record<string, number>>({})
-    const carouselTimers = useRef<Record<string, ReturnType<typeof setInterval>>>({})
-    const [lightbox, setLightbox] = useState<string | null>(null)
+
+    const blockRef = useRef<HTMLDivElement>(null)
+    const comingSoonRef = useRef<HTMLDivElement>(null)
 
     const getBundle = (num: string) => selectedBundles[num] ?? 1
-    const getCarouselIndex = (num: string) => carouselIndex[num] ?? 0
-
-    const carouselNext = (num: string, total: number) =>
-        setCarouselIndex(prev => ({ ...prev, [num]: ((prev[num] ?? 0) + 1) % total }))
-    const carouselPrev = (num: string, total: number) =>
-        setCarouselIndex(prev => ({ ...prev, [num]: ((prev[num] ?? 0) - 1 + total) % total }))
+    const selectedQty = getBundle(product.number)
+    const active = product.bundles?.find(b => b.qty === selectedQty) ?? product.bundles?.[0]
 
     useEffect(() => {
         const h = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null) }
         document.addEventListener("keydown", h)
         return () => document.removeEventListener("keydown", h)
-    }, [lightbox])
-
-    useEffect(() => {
-        products.forEach(p => {
-            if (!("carouselImages" in p) || !p.carouselImages) return
-            const total = (p.carouselImages as string[]).length + 1
-            carouselTimers.current[p.number] = setInterval(() => {
-                setCarouselIndex(prev => ({ ...prev, [p.number]: ((prev[p.number] ?? 0) + 1) % total }))
-            }, 10000)
-        })
-        return () => { Object.values(carouselTimers.current).forEach(clearInterval) }
     }, [])
 
     async function handleCheckout(slug: string, productNumber: string) {
@@ -137,590 +81,239 @@ export default function CatalogPage() {
         }
     }
 
-    useIsomorphicLayoutEffect(() => {
-        const ctx = gsap.context(() => {
+    useEffect(() => {
+        const targets = [blockRef.current, comingSoonRef.current].filter(Boolean) as HTMLDivElement[]
+        if (targets.length === 0) return
 
-            // ── Marquee ──────────────────────────────────────────────────────
-            if (marqueeRef.current) {
-                gsap.to(marqueeRef.current, {
-                    xPercent: -50,
-                    duration: 22,
-                    ease: "none",
-                    repeat: -1,
-                })
-            }
+        gsap.set(targets, { opacity: 0, y: 24 })
 
-            // ── Product section pins + scroll-driven animations ───────────────
-            const isMobile = window.innerWidth < 768
-
-            products.forEach((_, i) => {
-                const section = sectionsRef.current[i]
-                if (!section) return
-
-                const number   = section.querySelector(".prod-number")
-                const type     = section.querySelector(".prod-type")
-                const names    = section.querySelectorAll(".prod-name-line")
-                const flavor   = section.querySelector(".prod-flavor")
-                const divider  = section.querySelector(".prod-divider")
-                const tagline  = section.querySelector(".prod-tagline")
-                const desc     = section.querySelector(".prod-desc")
-                const badges   = section.querySelectorAll(".prod-badge")
-                const cta      = section.querySelector(".prod-cta")
-                const image    = section.querySelector(".prod-image")
-                const bgText   = section.querySelector(".prod-bg-text")
-
-                // Initial states
-                gsap.set([number, type, divider, tagline, desc, cta], { opacity: 0, y: 44 })
-                gsap.set(names,  { opacity: 0, y: 70 })
-                if (flavor) gsap.set(flavor, { opacity: 0, y: 28 })
-                gsap.set(badges, { opacity: 0, y: 18, scale: 0.92 })
-                gsap.set(image,  { opacity: 0, x: isMobile ? 0 : 70, scale: 0.93 })
-                gsap.set(bgText, { autoAlpha: 0, x: 100 })
-
-                const tl = gsap.timeline({
-                    scrollTrigger: {
-                        trigger: section,
-                        start: "top 80%",
-                        end: "bottom top",
-                        toggleActions: "play none none reverse",
-                        invalidateOnRefresh: true,
-                    },
-                })
-
-                tl
-                    .to(bgText, { autoAlpha: isMobile ? 0.04 : 0.055, x: 0, duration: 1 }, 0)
-                    .to(image,  { opacity: 1, x: 0, scale: 1, duration: 0.9 }, 0)
-                    .to(number, { opacity: 1, y: 0, duration: 0.6 }, 0.05)
-                    .to(type,   { opacity: 1, y: 0, duration: 0.6 }, 0.1)
-                    .to(names,  { opacity: 1, y: 0, duration: 0.7, stagger: 0.08 }, 0.15)
-                    .to(flavor ?? [], { opacity: 1, y: 0, duration: 0.6 }, 0.15)
-                    .to(divider,{ opacity: 1, y: 0, duration: 0.5 }, 0.2)
-                    .to(tagline,{ opacity: 1, y: 0, duration: 0.6 }, 0.2)
-                    .to(desc,   { opacity: 1, y: 0, duration: 0.6 }, 0.25)
-                    .to(badges, { opacity: 1, y: 0, scale: 1, stagger: 0.07, duration: 0.5 }, 0.3)
-                    .to(cta,    { opacity: 1, y: 0, duration: 0.5 }, 0.35)
+        const triggers = targets.map(el =>
+            ScrollTrigger.create({
+                trigger: el,
+                start: "top 90%",
+                once: true,
+                onEnter: () => gsap.to(el, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }),
             })
+        )
 
-        }, containerRef)
-
-        return () => ctx.revert()
+        return () => triggers.forEach(t => t.kill())
     }, [])
 
     return (
-        <div ref={containerRef} className="overflow-x-hidden">
+        <div className="overflow-x-hidden bg-white">
 
             {/* ── HERO ─────────────────────────────────────────────────────────── */}
-            <section className="relative flex h-screen flex-col items-center justify-center overflow-hidden bg-black px-6 text-center text-white">
-                {/* Subtle grid */}
-                <div
-                    aria-hidden
-                    className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:80px_80px]"
-                />
-                {/* Corner accent dots */}
-                {products.map((p, i) => (
-                    <div
-                        key={p.number}
-                        aria-hidden
-                        className="pointer-events-none absolute size-72 rounded-full blur-3xl"
-                        style={{
-                            backgroundColor: p.accent + "18",
-                            top: i === 0 ? "-5%" : i === 1 ? "30%" : "65%",
-                            left: i === 0 ? "-10%" : i === 1 ? "75%" : "-5%",
-                        }}
-                    />
-                ))}
+            <CatalogHeroNew />
 
-                <AnimatedGroup
-                    variants={{
-                        container: {
-                            visible: { transition: { staggerChildren: 0.14, delayChildren: 0.2 } },
-                        },
-                        item: {
-                            hidden: { opacity: 0, y: 32, filter: "blur(10px)" },
-                            visible: {
-                                opacity: 1, y: 0, filter: "blur(0px)",
-                                transition: { type: "spring", bounce: 0.2, duration: 1.5 },
-                            },
-                        },
-                    }}
-                    className="flex flex-col items-center gap-0"
-                >
-                    <h1 className="text-[10vw] md:text-[13vw] font-black leading-[0.88] tracking-tight text-white">
-                        <span className="text-white/20">THE</span>
-                        <br />
-                        COLLECTION
-                    </h1>
+            {/* ── PRODUCT ──────────────────────────────────────────────────────── */}
+            <section id="products" className="mx-auto max-w-6xl px-6 pb-8 pt-10 md:px-12 md:pt-16 lg:px-16">
+                {/* Breadcrumb */}
+                <p className="mb-6 text-xs text-black/50 md:mb-8">
+                    <Link href="/" className="hover:text-black">Home</Link>
+                    <span className="mx-1.5">/</span>
+                    <span className="text-black/70">{product.nameLines.join(" ")}</span>
+                </p>
 
-                    <div className="mt-8 flex flex-wrap items-center justify-center gap-6">
-                        {products.map(p => (
-                            <div key={p.number} className="flex items-center gap-2.5">
-                                <span className="size-1.5 rounded-full" style={{ backgroundColor: p.accent }} />
-                                <span className="text-[10px] font-semibold uppercase tracking-[0.35em] text-white">
-                                    {p.number}&nbsp;&nbsp;{p.category}
-                                </span>
-                            </div>
-                        ))}
-                    </div>
+                <div ref={blockRef} className="grid gap-10 md:grid-cols-[1.15fr_1fr] md:gap-14" style={{ willChange: "transform, opacity" }}>
 
-                    {/* Risk-free blurb */}
-                    <div className="mt-16 relative flex flex-col items-center gap-4 text-center">
-                        <div aria-hidden className="pointer-events-none absolute -right-24 top-1/2 size-64 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#FF4D6D1a" }} />
-                        <div className="flex flex-wrap items-center justify-center gap-3">
-                            <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
-                                <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Try It Risk-Free</span>
-                            </div>
-                            <div className="rounded-full border border-white/20 bg-white/8 px-6 py-2.5 backdrop-blur-sm">
-                                <span className="text-sm font-black uppercase tracking-[0.4em] text-white">Free Shipping</span>
-                            </div>
-                        </div>
-                        <p className="max-w-md text-base leading-relaxed text-white">
-                            We want you to love Zenova. That's why you can try up to 3 strips from your pack. If you decide the product isn't for you, simply contact us and we'll get you a refund.
-                        </p>
-                    </div>
-                </AnimatedGroup>
-
-                <div className="absolute bottom-8 flex items-center justify-center">
-                    <ChevronDown className="size-5 animate-bounce text-white/45" />
-                </div>
-            </section>
-
-            {/* ── MARQUEE ──────────────────────────────────────────────────────── */}
-            <div className="overflow-hidden border-y border-white/5 bg-black py-3.5">
-                <div ref={marqueeRef} className="flex whitespace-nowrap">
-                    {[...marqueeItems, ...marqueeItems, ...marqueeItems, ...marqueeItems].map((item, i) => (
-                        <span
-                            key={i}
-                            className={`mx-6 text-[10px] font-bold uppercase tracking-[0.4em] ${item === "·" ? "text-white/35" : "text-white/45"}`}
-                        >
-                            {item}
-                        </span>
-                    ))}
-                </div>
-            </div>
-
-            {/* ── PRODUCT SECTIONS ─────────────────────────────────────────────── */}
-            {products.map((product, i) => (
-                <div
-                    key={product.number}
-                    id={i === 0 ? "products" : undefined}
-                    ref={el => { sectionsRef.current[i] = el }}
-                    className="relative flex min-h-screen flex-col md:flex-row md:items-center overflow-hidden"
-                    style={{ backgroundColor: product.darkBg }}
-                >
-                    {/* Giant background category word */}
-                    <div
-                        className="prod-bg-text pointer-events-none absolute -right-[4vw] top-1/2 -translate-y-1/2 select-none font-black leading-none invisible"
-                        style={{
-                            color: product.accent,
-                            fontSize: "clamp(80px, 22vw, 320px)",
-                            lineHeight: 1,
-                            letterSpacing: "-0.01em",
-                            WebkitMaskImage: product.number !== "02" ? "linear-gradient(to right, transparent 7%, black 20%)" : undefined,
-                            maskImage: product.number !== "02" ? "linear-gradient(to right, transparent 7%, black 30%)" : undefined,
-                        }}
-                        aria-hidden
-                    >
-                        {"bgTextSpacing" in product && product.bgTextSpacing
-                            ? (product.category as string).split("").map((char, ci) => (
-                                <span key={ci} style={{ marginRight: (product.bgTextSpacing as string[])[ci] ?? "0" }}>{char}</span>
-                            ))
-                            : product.category}
-                    </div>
-
-                    {/* Ambient glow */}
-                    <div
-                        aria-hidden
-                        className="pointer-events-none absolute inset-0"
-                        style={{
-                            background: `radial-gradient(ellipse 60% 60% at 70% 50%, ${product.accent}12, transparent 70%)`,
-                        }}
-                    />
-
-                    {/* ── Left: Info ───────────────────────────────────────── */}
-                    <div className="relative z-10 flex w-full md:w-1/2 flex-col px-6 pt-20 pb-6 md:pt-0 md:pb-0 md:px-16 xl:px-24">
-
-                        {/* Number + type row */}
-                        <div className="flex items-center gap-3">
-                            <span
-                                className="prod-number font-mono text-xs tracking-[0.45em]"
-                                style={{ color: product.accent, opacity: 0 }}
-                            >
-                                {product.number}
-                            </span>
-                            <span className="h-px w-6 bg-white/15" />
-                            <span className="prod-type text-[10px] font-semibold uppercase tracking-[0.35em] text-white/55" style={{ opacity: 0 }}>
-                                {product.type}
-                            </span>
-                        </div>
-
-                        {/* Product name — each word on its own line for stagger */}
-                        <div className="mt-5">
-                            {product.nameLines.map((line, li) => (
-                                <div key={li} className="overflow-hidden pb-4">
-                                    <h2
-                                        className="prod-name-line font-black leading-[0.9] tracking-tight text-white"
-                                        style={{ fontSize: "clamp(2.2rem,4vw,5.5rem)", whiteSpace: "nowrap", opacity: 0 }}
-                                    >
-                                        {line}
-                                    </h2>
-                                </div>
-                            ))}
-                            {"flavor" in product && product.flavor && (
-                                <p
-                                    className="prod-flavor mt-1 text-sm font-semibold uppercase tracking-[0.25em]"
-                                    style={{ color: product.accent + "99", opacity: 0 }}
-                                >
-                                    {product.flavor as string}
-                                </p>
-                            )}
-                        </div>
-
-                        {/* Accent divider */}
+                    {/* ── Gallery ──────────────────────────────────────────────── */}
+                    <div>
                         <div
-                            className="prod-divider mt-7 h-px w-14"
-                            style={{ backgroundColor: product.accent + "55", opacity: 0 }}
-                        />
-
-                        {/* Tagline */}
-                        <p
-                            className="prod-tagline mt-6 text-sm font-semibold leading-relaxed"
-                            style={{ color: product.accent, opacity: 0 }}
+                            className="relative flex aspect-square w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-2xl border border-blush-200"
+                            style={{ background: `linear-gradient(145deg, ${product.accent}10 0%, #ffffff 55%, ${product.accent}06 100%)` }}
+                            onClick={() => setLightbox(gallery[activeImage].src)}
                         >
-                            {product.tagline}
-                        </p>
+                            <Image
+                                src={gallery[activeImage].src}
+                                alt={gallery[activeImage].alt}
+                                fill
+                                quality={90}
+                                className={gallery[activeImage].fit === "cover" ? "object-cover" : "object-contain p-8"}
+                                sizes="(max-width: 768px) 90vw, 680px"
+                                priority
+                            />
+                        </div>
 
-                        {/* Description */}
-                        <p className="prod-desc mt-4 hidden max-w-sm text-sm leading-relaxed text-white md:block" style={{ opacity: 0 }}>
+                        <div className="mt-5 grid grid-cols-5 gap-3.5">
+                            {gallery.map((img, i) => (
+                                <button
+                                    key={img.src}
+                                    onClick={() => setActiveImage(i)}
+                                    className={
+                                        "relative aspect-square overflow-hidden rounded-xl border-2 bg-white transition-colors " +
+                                        (i === activeImage ? "border-blush-600" : "border-blush-100 hover:border-blush-300")
+                                    }
+                                    aria-label={`Show photo: ${img.alt}`}
+                                >
+                                    <Image
+                                        src={img.src}
+                                        alt={img.alt}
+                                        fill
+                                        className={img.fit === "cover" ? "object-cover" : "object-contain p-1.5"}
+                                        sizes="140px"
+                                    />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* ── Buy box ──────────────────────────────────────────────── */}
+                    <div>
+                        <h1
+                            className="font-black leading-[0.95] tracking-tight text-black"
+                            style={{ fontSize: "clamp(1.9rem, 3.4vw, 2.75rem)" }}
+                        >
+                            {product.nameLines.join(" ")}
+                        </h1>
+
+                        <Link
+                            href="#reviews"
+                            className="mt-2 inline-block text-sm font-semibold text-black underline decoration-black/30 underline-offset-4 transition-colors hover:decoration-black"
+                        >
+                            ★ See what customers are saying →
+                        </Link>
+
+                        <p className="mt-4 max-w-md text-sm leading-relaxed text-black/75">
                             {product.description}
                         </p>
 
-                        {/* Badges */}
+                        {/* Feature pills */}
                         <div className="mt-4 flex flex-wrap gap-2">
                             {product.badges.map(badge => (
                                 <span
                                     key={badge}
-                                    className="prod-badge rounded-full px-3 py-1 text-[10px] font-medium uppercase tracking-wide text-white/70"
-                                    style={{
-                                        border: `1px solid ${product.accent}28`,
-                                        backgroundColor: product.accent + "0c",
-                                        opacity: 0,
-                                    }}
+                                    className="rounded-full bg-blush-100 px-3 py-1 text-[11px] font-semibold text-blush-900"
                                 >
                                     {badge}
                                 </span>
                             ))}
                         </div>
 
-                        {/* CTA */}
-                        <div className="prod-cta mt-5" style={{ opacity: 0 }}>
-                            {product.available && product.bundles ? (() => {
-                                const selectedQty = getBundle(product.number)
-                                const active = product.bundles.find(b => b.qty === selectedQty) ?? product.bundles[0]
-                                return (
-                                    <div className="flex flex-col gap-3">
-                                        {/* Price summary */}
-                                        <div className="flex flex-col gap-1">
-                                            <div className="flex items-baseline gap-2.5">
-                                                <span className="text-3xl font-black" style={{ color: product.accent }}>
-                                                    {active.price}
-                                                </span>
-                                                <span className="text-sm font-medium text-white/50 line-through">
-                                                    {active.originalPrice}
-                                                </span>
-                                                <span className="text-[11px] text-white/45">{active.perStrip}</span>
-                                            </div>
-                                            <p className="text-[10px] font-semibold uppercase tracking-[0.3em]" style={{ color: product.accent + "99" }}>
-                                                Launch Batch · Special limited pricing while supplies last
-                                            </p>
-                                        </div>
+                        {/* Flavor (single, informational — no other flavors exist yet) */}
+                        {"flavor" in product && product.flavor && (
+                            <div className="mt-6">
+                                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.25em] text-black/50">Flavor</p>
+                                <div className="inline-flex items-center gap-2 rounded-xl border-2 border-blush-600 bg-blush-50 px-4 py-2.5 text-sm font-bold text-black">
+                                    {product.flavor as string}
+                                </div>
+                            </div>
+                        )}
 
-                                        {/* Bundle cards — grid fills the same width as the text block above */}
-                                        <div className="mt-2 grid grid-cols-3 gap-2.5">
-                                                {product.bundles.map(b => {
-                                                    const isSelected = b.qty === selectedQty
-                                                    return (
-                                                        <div key={b.qty} className="flex flex-col items-center gap-1">
-                                                            {b.badge ? (
-                                                                <span
-                                                                    className="mb-0.5 rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider"
-                                                                    style={{ backgroundColor: product.accent + "22", color: product.accent }}
-                                                                >
-                                                                    {b.badge}
-                                                                </span>
-                                                            ) : (
-                                                                <span className="mb-0.5 h-4" />
-                                                            )}
-                                                            <button
-                                                                onClick={() => {
-                                                                    setSelectedBundles(prev => ({ ...prev, [product.number]: b.qty }))
-                                                                    if ("carouselImages" in product && product.carouselImages) {
-                                                                        setCarouselIndex(prev => ({ ...prev, [product.number]: 1 }))
-                                                                        clearInterval(carouselTimers.current[product.number])
-                                                                        const imgs = product.carouselImages as string[]
-                                                                        const total = imgs.length + ("packImages" in product && product.packImages ? 2 : 1)
-                                                                        carouselTimers.current[product.number] = setInterval(() => {
-                                                                            setCarouselIndex(prev => ({ ...prev, [product.number]: ((prev[product.number] ?? 0) + 1) % total }))
-                                                                        }, 10000)
-                                                                    }
-                                                                }}
-                                                                className="w-full flex flex-col items-center gap-1 rounded-xl px-3 py-3.5 text-center transition-all duration-200"
-                                                                style={{
-                                                                    border: `1.5px solid ${isSelected ? product.accent : product.accent + "28"}`,
-                                                                    backgroundColor: isSelected ? product.accent + "18" : "transparent",
-                                                                }}
-                                                            >
-                                                                <span className="text-[9px] font-semibold uppercase tracking-[0.25em] text-white/60">
-                                                                    {b.days} Days
-                                                                </span>
-                                                                <span className="text-sm font-black" style={{ color: isSelected ? product.accent : "rgba(255,255,255,0.6)" }}>
-                                                                    {b.qty === 1 ? "1 Pack" : `${b.qty} Packs`}
-                                                                </span>
-                                                                <span className="text-[11px] font-medium" style={{ color: isSelected ? product.accent + "cc" : "rgba(255,255,255,0.3)" }}>
-                                                                    {b.perPack ?? b.price}
-                                                                </span>
-                                                                {b.pctOff ? (
-                                                                    <span
-                                                                        className="mt-0.5 rounded-full px-2 py-0.5 text-[9px] font-bold"
-                                                                        style={{ backgroundColor: product.accent + "22", color: product.accent }}
-                                                                    >
-                                                                        {b.pctOff}
-                                                                    </span>
-                                                                ) : (
-                                                                    <span className="mt-0.5 h-4" />
-                                                                )}
-                                                            </button>
-                                                        </div>
-                                                    )
-                                                })}
-                                        </div>
-
-                                        {/* Checkout button */}
-                                        {soldOutProducts[product.number] ? (
-                                            <div
-                                                className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold"
-                                                style={{ border: `1px solid ${product.accent}30`, backgroundColor: product.accent + "08", color: product.accent + "cc" }}
-                                            >
-                                                <span className="size-2 rounded-full" style={{ backgroundColor: product.accent }} />
-                                                Sold Out
-                                            </div>
-                                        ) : (
+                        {/* Pack selector */}
+                        {product.bundles && (
+                            <div className="mt-6">
+                                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.25em] text-black/50">Pack Size</p>
+                                <div className="flex flex-col gap-2.5">
+                                    {product.bundles.map(b => {
+                                        const isSelected = b.qty === selectedQty
+                                        return (
                                             <button
-                                                onClick={() => handleCheckout(product.slug!, product.number)}
-                                                disabled={loadingProductId === product.number}
-                                                className="group flex w-full items-center justify-center gap-2.5 rounded-full py-4 text-base font-black text-black transition-all hover:scale-[1.02] hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                                                key={b.qty}
+                                                onClick={() => setSelectedBundles(prev => ({ ...prev, [product.number]: b.qty }))}
+                                                className="relative flex w-full items-center justify-between gap-4 rounded-xl px-4 py-3.5 text-left transition-all duration-200"
                                                 style={{
-                                                    backgroundColor: product.accent,
-                                                    boxShadow: `0 0 28px ${product.accent}55`,
+                                                    border: `1.5px solid ${isSelected ? product.accent : "#F7D3DC"}`,
+                                                    backgroundColor: isSelected ? product.accent + "10" : "#ffffff",
                                                 }}
                                             >
-                                                {loadingProductId === product.number
-                                                    ? "Redirecting…"
-                                                    : `Shop Now — ${active.price}`}
-                                                {loadingProductId !== product.number && (
-                                                    <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
-                                                )}
-                                            </button>
-                                        )}
-                                    </div>
-                                )
-                            })() : !product.available ? (
-                                <div
-                                    className="inline-flex items-center gap-3 rounded-full border px-8 py-3.5 text-sm font-medium text-white/65"
-                                    style={{ borderColor: product.accent + "30", backgroundColor: product.accent + "08" }}
-                                >
-                                    <span
-                                        className="size-2 animate-pulse rounded-full"
-                                        style={{ backgroundColor: product.accent }}
-                                    />
-                                    Coming Soon
-                                </div>
-                            ) : null}
-                        </div>
-                    </div>
-
-                    {/* ── Right: Product visual ────────────────────────────── */}
-                    <div className="prod-image relative flex w-full md:w-1/2 items-center justify-center px-6 pb-16 md:pb-0 md:pr-16 xl:pr-24" style={{ opacity: 0 }}>
-                        <div className="relative">
-                            {/* Outer glow */}
-                            <div
-                                aria-hidden
-                                className="absolute inset-0 -z-10 scale-110 rounded-3xl blur-3xl"
-                                style={{ backgroundColor: product.accent + "22" }}
-                            />
-
-                            {/* Card */}
-                            <div
-                                className="relative flex h-[113vw] w-[85vw] md:h-[460px] md:w-[345px] flex-col items-center justify-center overflow-hidden rounded-3xl"
-                                style={{
-                                    border: `1px solid ${product.accent}22`,
-                                    background: `linear-gradient(145deg, ${product.accent}14 0%, ${product.darkBg} 50%, ${product.accent}08 100%)`,
-                                }}
-                            >
-                                {/* Inner grid texture */}
-                                <div
-                                    aria-hidden
-                                    className="pointer-events-none absolute inset-0 opacity-[0.06] [background-image:linear-gradient(to_right,white_1px,transparent_1px),linear-gradient(to_bottom,white_1px,transparent_1px)] [background-size:24px_24px]"
-                                />
-
-                                {"carouselImages" in product && product.carouselImages ? (() => {
-                                    const packImg = "packImages" in product && product.packImages ? (product.packImages as Record<number, string>)[getBundle(product.number)] : null
-                                    const images = packImg ? [packImg, ...(product.carouselImages as string[])] : product.carouselImages as string[]
-                                    const total = images.length + 1
-                                    const idx = getCarouselIndex(product.number)
-                                    return (
-                                        <>
-                                            {/* Slides 0+: real photos */}
-                                            {images.map((src, si) => (
-                                                <div key={si} className="absolute inset-0 transition-opacity duration-700 cursor-zoom-in" style={{ opacity: idx === si ? 1 : 0, pointerEvents: idx === si ? "auto" : "none" }} onClick={() => setLightbox(src)}>
-                                                    <Image src={src} alt={`Product photo ${si + 1}`} fill className={`object-cover rounded-3xl opacity-90 ${si <= 1 ? "scale-[1.15]" : ""}`} sizes="345px" />
-                                                </div>
-                                            ))}
-
-                                            {/* Last slide: placeholder mockup */}
-                                            <div
-                                                className="absolute inset-0 flex flex-col items-center justify-center gap-5 transition-opacity duration-700"
-                                                style={{ opacity: idx === images.length ? 1 : 0, pointerEvents: idx === images.length ? "auto" : "none" }}
-                                            >
-                                                <div className="relative flex items-center justify-center">
-                                                    {[...Array(3)].map((_, si) => (
-                                                        <div key={si} className="absolute rounded-2xl" style={{ width: 90, height: 140, backgroundColor: product.accent + (si === 0 ? "50" : si === 1 ? "35" : "20"), transform: `rotate(${(si - 1) * 8}deg) translateX(${(si - 1) * 14}px)`, zIndex: 3 - si }} />
-                                                    ))}
-                                                    <div className="relative z-10 flex h-36 w-[88px] flex-col items-center justify-center gap-2 rounded-2xl" style={{ backgroundColor: product.accent, boxShadow: `0 20px 60px ${product.accent}50` }}>
-                                                        <span className="text-[8px] font-black uppercase tracking-widest text-black/60">Zenova</span>
-                                                        <div className="h-px w-8 bg-black/20" />
-                                                        <span className="text-center text-[7px] font-bold uppercase tracking-wider text-black/50">{product.type}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <span
+                                                        className="flex size-4 shrink-0 items-center justify-center rounded-full border-2"
+                                                        style={{ borderColor: isSelected ? product.accent : "#E8A0B2" }}
+                                                    >
+                                                        {isSelected && <span className="size-2 rounded-full" style={{ backgroundColor: product.accent }} />}
+                                                    </span>
+                                                    <div>
+                                                        <p className="text-sm font-black text-black">
+                                                            {b.qty === 1 ? "1 Pack" : `${b.qty} Packs`}
+                                                            <span className="ml-2 font-medium text-black/50">· {b.days} days</span>
+                                                        </p>
+                                                        <p className="text-xs text-black/50">{b.perStrip}</p>
                                                     </div>
                                                 </div>
-                                                <div className="text-center">
-                                                    <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
-                                                    <p className="mt-1 text-xs text-white/60">{product.nameLines.join(" ")}</p>
+                                                <div className="flex items-center gap-2">
+                                                    {b.badge && (
+                                                        <span
+                                                            className="rounded-full px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide"
+                                                            style={{ backgroundColor: product.accent + "22", color: product.accent }}
+                                                        >
+                                                            {b.badge}
+                                                        </span>
+                                                    )}
+                                                    <span className="text-base font-black" style={{ color: isSelected ? product.accent : "#000" }}>
+                                                        {b.price}
+                                                    </span>
                                                 </div>
-                                            </div>
-
-                                            {/* Dot indicators */}
-                                            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 z-20">
-                                                {Array.from({ length: total }).map((_, di) => (
-                                                    <button key={di} onClick={() => setCarouselIndex(prev => ({ ...prev, [product.number]: di }))} className="size-1.5 rounded-full transition-all duration-300" style={{ backgroundColor: di === idx ? product.accent : product.accent + "44" }} />
-                                                ))}
-                                            </div>
-                                        </>
-                                    )
-                                })() : (
-                                    /* Non-carousel mockup for coming-soon products */
-                                    <div className="flex flex-col items-center gap-5" style={{ filter: "blur(3px) saturate(0.4)" }}>
-                                        <div className="relative flex items-center justify-center">
-                                            {[...Array(3)].map((_, si) => (
-                                                <div key={si} className="absolute rounded-2xl" style={{ width: 90, height: 140, backgroundColor: product.accent + (si === 0 ? "50" : si === 1 ? "35" : "20"), transform: `rotate(${(si - 1) * 8}deg) translateX(${(si - 1) * 14}px)`, zIndex: 3 - si }} />
-                                            ))}
-                                            <div className="relative z-10 flex h-36 w-[88px] flex-col items-center justify-center gap-2 rounded-2xl" style={{ backgroundColor: product.accent, boxShadow: `0 20px 60px ${product.accent}50` }}>
-                                                <span className="text-[8px] font-black uppercase tracking-widest text-black/60">Zenova</span>
-                                                <div className="h-px w-8 bg-black/20" />
-                                                <span className="text-center text-[7px] font-bold uppercase tracking-wider text-black/50">{product.type}</span>
-                                            </div>
-                                        </div>
-                                        <div className="text-center">
-                                            <p className="text-[10px] font-bold uppercase tracking-[0.3em]" style={{ color: product.accent }}>{product.category}</p>
-                                            <p className="mt-1 text-xs text-white/60">{product.nameLines.join(" ")}</p>
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Coming soon overlay */}
-                                {!product.available && (
-                                    <div className="absolute inset-0 flex items-center justify-center">
-                                        <div className="rounded-full px-7 py-2.5 text-[10px] font-bold uppercase tracking-[0.35em] backdrop-blur-md" style={{ border: `1px solid ${product.accent}45`, backgroundColor: product.accent + "18", color: product.accent }}>
-                                            Coming Soon
-                                        </div>
-                                    </div>
-                                )}
-
-                                {/* Available badge */}
-                                {product.available && (
-                                    <div className="absolute right-4 top-4 z-20 flex items-center gap-1.5 rounded-full px-3 py-1 text-[9px] font-bold uppercase tracking-wider" style={{ backgroundColor: product.accent + "22", color: product.accent }}>
-                                        <span className="size-1.5 rounded-full" style={{ backgroundColor: product.accent }} />
-                                        Available Now
-                                    </div>
-                                )}
-
+                                            </button>
+                                        )
+                                    })}
+                                </div>
                             </div>
+                        )}
 
-                            {/* Carousel prev/next buttons */}
-                            {"carouselImages" in product && product.carouselImages && (() => {
-                                    const hasPackImg = "packImages" in product && product.packImages && (product.packImages as Record<number, string>)[getBundle(product.number)]
-                                    const btnTotal = (product.carouselImages as string[]).length + 1 + (hasPackImg ? 1 : 0)
-                                    return (
-                                        <div className="mt-4 flex items-center justify-center gap-4">
-                                            <button
-                                                onClick={() => carouselPrev(product.number, btnTotal)}
-                                                className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
-                                                style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
-                                            >
-                                                <ChevronLeft className="size-4" />
-                                            </button>
-                                            <button
-                                                onClick={() => carouselNext(product.number, btnTotal)}
-                                                className="flex size-8 items-center justify-center rounded-full border transition-colors duration-150"
-                                                style={{ borderColor: product.accent + "33", color: product.accent + "99" }}
-                                            >
-                                                <ChevronRight className="size-4" />
-                                            </button>
-                                        </div>
-                                    )
-                                })()}
+                        {/* CTA */}
+                        <div className="mt-6">
+                            {soldOutProducts[product.number] ? (
+                                <div
+                                    className="flex w-full items-center justify-center gap-2 rounded-full py-4 text-sm font-bold"
+                                    style={{ border: `1px solid ${product.accent}30`, backgroundColor: product.accent + "08", color: product.accent + "cc" }}
+                                >
+                                    <span className="size-2 rounded-full" style={{ backgroundColor: product.accent }} />
+                                    Sold Out
+                                </div>
+                            ) : (
+                                <button
+                                    onClick={() => handleCheckout(product.slug!, product.number)}
+                                    disabled={loadingProductId === product.number}
+                                    className="group flex w-full items-center justify-center gap-2.5 rounded-full bg-black py-4 text-base font-bold text-white transition-all hover:scale-[1.01] hover:bg-neutral-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                                >
+                                    {loadingProductId === product.number
+                                        ? "Redirecting…"
+                                        : `Shop Now — ${active?.price}`}
+                                    {loadingProductId !== product.number && (
+                                        <ArrowRight className="size-5 transition-transform group-hover:translate-x-1" />
+                                    )}
+                                </button>
+                            )}
+
+                            <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5">
+                                {trustPoints.map(point => (
+                                    <span key={point} className="text-[11px] font-semibold text-black/55">
+                                        {point}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
                     </div>
 
-                    {/* Bottom rule */}
-                    <div
-                        className="absolute bottom-0 left-0 right-0 h-px"
-                        style={{ backgroundColor: product.accent + "12" }}
-                    />
-
-                    {/* Gradient blend into next section */}
-                    <div
-                        aria-hidden
-                        className="pointer-events-none absolute bottom-0 left-0 right-0 h-32"
-                        style={{
-                            background: `linear-gradient(to bottom, transparent, ${i < products.length - 1 ? products[i + 1].darkBg : "#000000"})`,
-                        }}
-                    />
                 </div>
-            ))}
+            </section>
+
+            {/* ── REVIEWS ──────────────────────────────────────────────────────── */}
+            <InTheWild compact altBg />
 
             {/* ── COMING SOON ──────────────────────────────────────────────────── */}
-            <section className="relative flex min-h-[65vh] flex-col items-center justify-center overflow-hidden bg-black px-6 text-center text-white">
-                {/* Gradient blobs */}
-                <div
-                    aria-hidden
-                    className="pointer-events-none absolute left-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-                    style={{ backgroundColor: "#8B5CF620" }}
-                />
-                <div
-                    aria-hidden
-                    className="pointer-events-none absolute right-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl"
-                    style={{ backgroundColor: "#F59E0B18" }}
-                />
+            <section ref={comingSoonRef} className="relative flex min-h-[50vh] flex-col items-center justify-center overflow-hidden bg-blush-100 px-6 py-20 text-center" style={{ willChange: "transform, opacity" }}>
+                <div aria-hidden className="pointer-events-none absolute left-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#8B5CF620" }} />
+                <div aria-hidden className="pointer-events-none absolute right-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#F59E0B18" }} />
 
                 <div className="relative z-10 max-w-2xl">
-                    <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.5em] text-white/50">
+                    <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.5em] text-black/50">
                         Be the first to know
                     </p>
-                    <h2 className="text-5xl font-black leading-[0.9] tracking-tight md:text-6xl xl:text-7xl">
-                        New drops.
-                        <br />
-                        <span className="text-white/20">Coming soon.</span>
+                    <h2 className="text-4xl font-black leading-[0.9] tracking-tight text-black md:text-5xl">
+                        New drops. <span className="text-black/35">Coming soon.</span>
                     </h2>
-                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-white">
+                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-black">
                         Dream and Glow are in development. Stay tuned for early access and first-drop updates.
                     </p>
 
-                    {/* Product pills */}
                     <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-                        {products.filter(p => !p.available).map(p => (
+                        {comingSoon.map(p => (
                             <div
                                 key={p.number}
-                                className="flex items-center gap-2 rounded-full border px-4 py-1.5 text-xs"
-                                style={{ borderColor: p.accent + "30", backgroundColor: p.accent + "0a", color: p.accent + "cc" }}
+                                className="flex items-center gap-2 rounded-full border bg-white px-4 py-1.5 text-xs text-black/70"
+                                style={{ borderColor: p.accent + "40" }}
                             >
                                 <span className="size-1.5 animate-pulse rounded-full" style={{ backgroundColor: p.accent }} />
                                 {p.nameLines.join(" ")} · {p.category}
@@ -740,8 +333,10 @@ export default function CatalogPage() {
                         <Image
                             src={lightbox}
                             alt="Product photo"
-                            width={900}
-                            height={900}
+                            width={1600}
+                            height={1600}
+                            quality={95}
+                            sizes="80vw"
                             className="max-h-[80vh] max-w-[80vw] rounded-2xl object-contain"
                             style={{ width: "auto", height: "auto" }}
                         />

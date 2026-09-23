@@ -15,6 +15,7 @@ import {
 import { useEffect as useEffectCounter, useRef as useRefCounter } from "react"
 import { Leaf, Users, Zap, ShieldCheck, FlaskConical, Target, ArrowRight } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -399,7 +400,7 @@ export default function AboutPage() {
             </section>
 
             {/* ── CTA ──────────────────────────────────────────────────────────── */}
-            <section className="relative flex min-h-[65vh] flex-col items-center justify-center overflow-hidden border-t border-blush-100 bg-blush-300 px-6 text-center">
+            <section className="relative flex min-h-[65vh] flex-col items-center justify-center overflow-hidden border-t border-blush-100 bg-blush-300 px-6">
                 {/* Ambient glow blobs */}
                 <div
                     aria-hidden
@@ -410,38 +411,50 @@ export default function AboutPage() {
                     className="pointer-events-none absolute right-1/4 top-1/2 size-[500px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-white/25 blur-3xl"
                 />
 
-                <div className="relative z-10 max-w-3xl">
-                    <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.5em] text-black">
-                        Join the movement
-                    </p>
+                <div className="relative z-10 mx-auto flex w-full max-w-5xl flex-col items-center gap-10 text-center lg:flex-row lg:items-center lg:justify-between lg:gap-12 lg:text-left">
+                    <div className="max-w-xl">
+                        <p className="mb-6 text-[10px] font-bold uppercase tracking-[0.5em] text-black">
+                            Join the movement
+                        </p>
 
-                    <h2
-                        className="font-black leading-[1.05] text-black"
-                        style={{ fontSize: "clamp(2.5rem, 7vw, 6rem)" }}
-                    >
-                        Ready to feel
-                        <br />
-                        <span className="text-blush-700">the difference?</span>
-                    </h2>
-
-                    <p className="mx-auto mt-6 max-w-xl text-black">
-                        Join over 50,000 people who&apos;ve switched to Zenova and never looked back.
-                    </p>
-
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-                        <Link
-                            href="/catalog"
-                            className="group inline-flex items-center gap-2.5 rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition-all hover:scale-[1.03] hover:bg-neutral-800 active:scale-[0.98]"
+                        <h2
+                            className="font-black leading-[1.05] text-black"
+                            style={{ fontSize: "clamp(2.5rem, 6vw, 5.25rem)" }}
                         >
-                            Shop Now
-                            <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
-                        </Link>
-                        <Link
-                            href="/contact"
-                            className="inline-flex items-center rounded-full border border-black/15 px-8 py-4 text-sm font-bold text-black transition-colors duration-200 hover:border-black/30"
-                        >
-                            Get in Touch
-                        </Link>
+                            Ready to feel{" "}
+                            <span className="text-blush-700">the difference?</span>
+                        </h2>
+
+                        <p className="mx-auto mt-6 max-w-xl text-black lg:mx-0">
+                            Join over 50,000 people who&apos;ve switched to Zenova and never looked back.
+                        </p>
+
+                        <div className="mt-10 flex flex-wrap items-center justify-center gap-4 lg:justify-start">
+                            <Link
+                                href="/catalog"
+                                className="group inline-flex items-center gap-2.5 rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition-all hover:scale-[1.03] hover:bg-neutral-800 active:scale-[0.98]"
+                            >
+                                Shop Now
+                                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" />
+                            </Link>
+                            <Link
+                                href="/contact"
+                                className="inline-flex items-center rounded-full border border-black/15 px-8 py-4 text-sm font-bold text-black transition-colors duration-200 hover:border-black/30"
+                            >
+                                Get in Touch
+                            </Link>
+                        </div>
+                    </div>
+
+                    {/* Floating product shot — the three-pack stack, a different shot from the ones used elsewhere */}
+                    <div className="hidden w-80 shrink-0 lg:block xl:w-[26rem]" aria-hidden>
+                        <Image
+                            src="/product-stack.png"
+                            width={1211}
+                            height={1299}
+                            alt=""
+                            className="animate-gentle-sway h-auto w-full drop-shadow-2xl"
+                        />
                     </div>
                 </div>
             </section>

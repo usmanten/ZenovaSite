@@ -28,7 +28,7 @@ const moments: Moment[] = [
     { src: "/wild/wallet.jpg",  pos: "50% 48%", alt: "Zenova strip packets in a wallet",             text: "Fits in my wallet. That's the whole review.",                           name: "Anonymous Buyer" },
 ]
 
-export default function InTheWild() {
+export default function InTheWild({ compact = false, altBg = false }: { compact?: boolean; altBg?: boolean }) {
     const headingRef = useRef<HTMLDivElement>(null)
     const rowRef = useRef<HTMLDivElement>(null)
     const ctaRef = useRef<HTMLDivElement>(null)
@@ -60,7 +60,13 @@ export default function InTheWild() {
     }, [])
 
     return (
-        <section className="bg-gradient-to-b from-blush-50 to-blush-100 py-20 md:py-32">
+        <section
+            id="reviews"
+            className={
+                "py-20 md:py-32 " +
+                (altBg ? "bg-white" : "bg-gradient-to-b from-blush-50 to-blush-100")
+            }
+        >
             <style>{`
                 @keyframes marquee {
                     from { transform: translate3d(0, 0, 0); }
@@ -86,7 +92,7 @@ export default function InTheWild() {
 
             <div className="relative flex w-full flex-col items-center justify-center overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
                 <Marquee ref={rowRef} pauseOnHover className="[--duration:20s] py-5" style={{ willChange: "transform, opacity" }}>
-                    {moments.map((m, i) => <MomentCard key={i} {...m} />)}
+                    {moments.map((m, i) => <MomentCard key={i} compact={compact} {...m} />)}
                 </Marquee>
             </div>
 
@@ -128,22 +134,27 @@ export default function InTheWild() {
     )
 }
 
-function MomentCard({ src, pos, alt, text, name }: Moment) {
+function MomentCard({ src, pos, alt, text, name, compact }: Moment & { compact: boolean }) {
     return (
-        <figure className="w-60 shrink-0 overflow-hidden rounded-2xl border border-blush-200 bg-white shadow-md shadow-blush-900/10 md:w-64">
+        <figure
+            className={
+                "shrink-0 overflow-hidden rounded-2xl border border-blush-200 bg-white shadow-md shadow-blush-900/10 " +
+                (compact ? "w-48 md:w-52" : "w-60 md:w-64")
+            }
+        >
             <div className="relative aspect-[3/4] w-full">
                 {src ? (
-                    <Image src={src} alt={alt} fill loading="eager" className="object-cover" style={{ objectPosition: pos }} sizes="256px" />
+                    <Image src={src} alt={alt} fill loading="eager" className="object-cover" style={{ objectPosition: pos }} sizes={compact ? "208px" : "256px"} />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blush-200 via-blush-100 to-blush-50">
-                        <Camera className="size-8 text-black/25" aria-hidden />
+                        <Camera className={compact ? "size-7 text-black/25" : "size-8 text-black/25"} aria-hidden />
                     </div>
                 )}
             </div>
-            <figcaption className="p-4">
-                <blockquote className="text-sm leading-snug text-black">&ldquo;{text}&rdquo;</blockquote>
-                <p className="mt-3 text-xs font-bold text-black">{name}</p>
-                <p className="text-[11px] font-medium text-black/60">Verified Buyer</p>
+            <figcaption className={compact ? "p-3" : "p-4"}>
+                <blockquote className={"text-sm leading-snug text-black"}>&ldquo;{text}&rdquo;</blockquote>
+                <p className={"mt-2 font-bold text-black " + (compact ? "text-xs" : "text-xs")}>{name}</p>
+                <p className={"font-medium text-black/60 " + (compact ? "text-[10px]" : "text-[11px]")}>Verified Buyer</p>
             </figcaption>
         </figure>
     )
