@@ -453,6 +453,7 @@ export default function AboutPage() {
                             width={1211}
                             height={1299}
                             alt=""
+                            sizes="(max-width: 1279px) 320px, 416px"
                             className="animate-gentle-sway h-auto w-full drop-shadow-2xl"
                         />
                     </div>

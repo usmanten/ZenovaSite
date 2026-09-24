@@ -17,9 +17,13 @@ export const HeroHeader = () => {
 
     React.useEffect(() => {
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 50)
+            setIsScrolled(prev => {
+                if (window.scrollY > 80) return true
+                if (window.scrollY < 40) return false
+                return prev
+            })
         }
-        window.addEventListener('scroll', handleScroll)
+        window.addEventListener('scroll', handleScroll, { passive: true })
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
@@ -28,15 +32,15 @@ export const HeroHeader = () => {
             <nav
                 data-state={menuState && 'active'}
                 className={cn(
-                    'sticky top-0 z-20 w-full px-2 transition-all duration-300',
-                    !isScrolled && 'border-b border-blush-100 bg-white'
+                    'sticky top-0 z-20 w-full border-b px-2 transition-all duration-300',
+                    isScrolled ? 'border-transparent' : 'border-blush-100 bg-white'
                 )}>
                 <div
                     className={cn(
-                        'mx-auto max-w-6xl transition-all duration-300',
+                        'mx-auto max-w-6xl border transition-all duration-300',
                         isScrolled
-                            ? 'mt-3 max-w-2xl rounded-2xl border border-blush-100 bg-white/90 px-5 shadow-lg shadow-black/5 backdrop-blur-lg lg:px-6'
-                            : 'px-6 lg:px-12'
+                            ? 'mt-3 max-w-2xl rounded-2xl border-blush-100 bg-white/90 px-5 shadow-lg shadow-black/5 backdrop-blur-lg lg:px-6'
+                            : 'border-transparent px-6 lg:px-12'
                     )}>
                     <div className={cn("relative flex flex-wrap items-center justify-between gap-6 lg:gap-0", isScrolled ? "py-2.5 lg:py-3" : "py-4")}>
                         <div className="flex w-full justify-between lg:w-auto">
@@ -89,6 +93,7 @@ export const HeroHeader = () => {
                                     <li key={index}>
                                         <Link
                                             href={item.href}
+                                            onClick={() => setMenuState(false)}
                                             className="text-blush-950/70 hover:text-blush-600 block duration-150">
                                             <span>{item.name}</span>
                                         </Link>

@@ -93,14 +93,14 @@ export default function LogoIntro() {
         <div
             ref={overlayRef}
             className="fixed inset-0 z-[9999] flex items-center justify-center"
-            style={{ backgroundColor: "#000000", pointerEvents: "all" }}
+            style={{ backgroundColor: "#ffffff", pointerEvents: "all" }}
         >
             <div
                 ref={logoRef}
                 style={{ opacity: 0, transformOrigin: "center center" }}
             >
                 <Image
-                    src="/logoinvert.png"
+                    src="/logo.png"
                     alt="Zenova"
                     width={420}
                     height={180}

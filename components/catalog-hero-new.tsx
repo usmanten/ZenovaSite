@@ -112,7 +112,7 @@ export default function CatalogHeroNew() {
                         width={1374}
                         height={1145}
                         alt="Zenova Strips — Energy + Focus, Strawberry Frost"
-                        priority
+                        sizes="(max-width: 768px) 320px, 384px"
                         className="animate-gentle-sway h-auto w-full drop-shadow-2xl"
                     />
                 </div>

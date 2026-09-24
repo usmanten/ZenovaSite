@@ -1,8 +1,9 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { gsap } from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import { AnimatePresence, motion } from "motion/react"
 import Link from "next/link"
 import { ArrowRight, ChevronRight } from "lucide-react"
 
@@ -37,7 +38,17 @@ const blocks = [
     },
 ]
 
-export default function ScienceComparison() {
+const tabLabels = ["Absorption", "No Crash", "Comparison"]
+
+type ScienceComparisonProps = {
+    variant?: "stacked" | "tabs"
+}
+
+export default function ScienceComparison({ variant = "stacked" }: ScienceComparisonProps) {
+    return variant === "tabs" ? <TabsLayout /> : <StackedLayout />
+}
+
+function StackedLayout() {
     const headingRef = useRef<HTMLDivElement>(null)
     const blockRefs = useRef<(HTMLDivElement | null)[]>([])
 
@@ -97,6 +108,109 @@ export default function ScienceComparison() {
                             {i === 2 && <CompareTable />}
                         </div>
                     ))}
+                </div>
+
+            </div>
+        </section>
+    )
+}
+
+function TabsLayout() {
+    const headingRef = useRef<HTMLDivElement>(null)
+    const panelRef = useRef<HTMLDivElement>(null)
+    const [active, setActive] = useState(0)
+
+    useEffect(() => {
+        const heading = headingRef.current
+        const panel = panelRef.current
+        if (!heading || !panel) return
+
+        const targets = [heading, panel]
+        gsap.set(targets, { opacity: 0, y: 30 })
+
+        const timelines = targets.map(el => {
+            const tl = gsap.timeline({
+                scrollTrigger: { trigger: el, start: "top 85%", toggleActions: "play none none none" },
+            })
+            tl.to(el, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" })
+            return tl
+        })
+
+        return () => {
+            timelines.forEach(tl => {
+                tl.scrollTrigger?.kill()
+                tl.kill()
+            })
+        }
+    }, [])
+
+    const block = blocks[active]
+
+    return (
+        <section className="bg-white px-6 py-20 md:px-12 md:py-32">
+            <div className="mx-auto max-w-4xl">
+
+                {/* Heading */}
+                <div ref={headingRef} className="mb-14 text-center md:mb-20" style={{ willChange: "transform, opacity" }}>
+                    <h2
+                        className="font-black leading-[0.9] tracking-tight text-black"
+                        style={{ fontSize: "clamp(2.25rem, 5vw, 4rem)" }}
+                    >
+                        Why Zenova Strips?
+                    </h2>
+                </div>
+
+                <div ref={panelRef} style={{ willChange: "transform, opacity" }}>
+                    <div role="tablist" aria-label="Why strips beat the rest" className="mb-10 flex flex-wrap justify-center gap-2.5 md:mb-14">
+                        {tabLabels.map((label, i) => {
+                            const isActive = i === active
+                            return (
+                                <button
+                                    key={label}
+                                    id={`science-tab-${i}`}
+                                    role="tab"
+                                    aria-selected={isActive}
+                                    aria-controls="science-tabpanel"
+                                    onClick={() => setActive(i)}
+                                    className={
+                                        "rounded-xl border-2 px-5 py-2.5 text-sm font-black transition-all duration-200 active:scale-[0.98] " +
+                                        (isActive
+                                            ? "border-blush-950 bg-blush-950 text-white"
+                                            : "border-blush-200 bg-white text-black/70 hover:border-blush-400 hover:text-black")
+                                    }
+                                >
+                                    <span className="mr-1.5 opacity-60">{i + 1}</span>
+                                    {label}
+                                </button>
+                            )
+                        })}
+                    </div>
+
+                    <AnimatePresence mode="wait">
+                        <motion.div
+                            key={active}
+                            id="science-tabpanel"
+                            role="tabpanel"
+                            aria-labelledby={`science-tab-${active}`}
+                            initial={{ opacity: 0, y: 12 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -12 }}
+                            transition={{ duration: 0.25, ease: "easeOut" }}
+                        >
+                            <p className="mb-2 font-mono text-xs font-bold text-black/60">{block.number}</p>
+                            <h3
+                                className="mb-3 font-black leading-[0.95] tracking-tight text-black"
+                                style={{ fontSize: "clamp(1.75rem, 3vw, 2.5rem)" }}
+                            >
+                                {block.title}
+                            </h3>
+                            <p className="mb-6 max-w-xl text-sm leading-relaxed text-black">{block.body}</p>
+
+                            {active === 0 && <RouteDiagram />}
+                            {active === 1 && <NoCrash />}
+                            {active === 2 && <CompareTable />}
+                        </motion.div>
+                    </AnimatePresence>
                 </div>
 
             </div>
@@ -263,9 +377,9 @@ function CompareTable() {
 
 function CellValue({ value, highlight = false }: { value: Cell; highlight?: boolean }) {
     if (value === true) return <span className="text-xl font-bold text-blush-700">✓</span>
-    if (value === false) return <span className="text-xl text-blush-950/25">✕</span>
+    if (value === false) return <span className="text-xl text-black/40">✕</span>
     return (
-        <span className={highlight ? "text-xs font-bold leading-snug text-blush-950" : "text-xs leading-snug text-blush-950/70"}>
+        <span className={highlight ? "text-xs font-bold leading-snug text-blush-950" : "text-xs leading-snug text-black"}>
             {value}
         </span>
     )

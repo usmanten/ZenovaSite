@@ -12,13 +12,12 @@ import Link from "next/link"
 import { products } from "@/components/catalog-data"
 import InTheWild from "@/components/in-the-wild"
 import CatalogHeroNew from "@/components/catalog-hero-new"
+import ScienceComparison from "@/components/science-comparison"
 
 gsap.registerPlugin(ScrollTrigger)
 
-// The one live, purchasable product. Dream and Glow (not yet available) get a
-// simple teaser section further down instead of their own buy box.
+// The one live, purchasable product.
 const product = products[0]
-const comingSoon = products.filter(p => !p.available)
 
 // Real photos only. Lead shot, a pack photo, then the three
 // "how to use" steps already built for the homepage routine section.
@@ -27,7 +26,7 @@ const comingSoon = products.filter(p => !p.available)
 const gallery: { src: string; alt: string; fit: "cover" | "contain" }[] = [
     { src: "/energy-simplified.jpg", alt: "Your energy, simplified — 50mg caffeine, caffeine + L-theanine, zero sugar, 30 strips per pack", fit: "cover" },
     { src: "/hero-product.png", alt: "Zenova Energy + Focus", fit: "contain" },
-    { src: "/routine-open.png", alt: "Step 1 — open one packet", fit: "contain" },
+    { src: "/packet-front.png", alt: "Step 1 — open one packet", fit: "contain" },
     { src: "/meet-strawberry-frost.jpg", alt: "Meet Strawberry Frost", fit: "cover" },
     { src: "/supplement-facts.jpg", alt: "Supplement Facts — 50mg caffeine, 30mg L-theanine, no GMO, soy, nuts, gluten, or dairy, made in the USA", fit: "cover" },
 ]
@@ -39,10 +38,10 @@ export default function CatalogPage() {
     const [lightbox, setLightbox] = useState<string | null>(null)
     const [loadingProductId, setLoadingProductId] = useState<string | null>(null)
     const [soldOutProducts, setSoldOutProducts] = useState<Record<string, boolean>>({})
+    const [checkoutErrors, setCheckoutErrors] = useState<Record<string, string>>({})
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
 
     const blockRef = useRef<HTMLDivElement>(null)
-    const comingSoonRef = useRef<HTMLDivElement>(null)
 
     const getBundle = (num: string) => selectedBundles[num] ?? 1
     const selectedQty = getBundle(product.number)
@@ -56,6 +55,7 @@ export default function CatalogPage() {
 
     async function handleCheckout(slug: string, productNumber: string) {
         setLoadingProductId(productNumber)
+        setCheckoutErrors(prev => ({ ...prev, [productNumber]: "" }))
         try {
             const res = await fetch("/api/checkout", {
                 method: "POST",
@@ -66,23 +66,27 @@ export default function CatalogPage() {
                 const body = await res.json().catch(() => ({}))
                 if (body.error === "sold_out") {
                     setSoldOutProducts(prev => ({ ...prev, [productNumber]: true }))
+                } else {
+                    setCheckoutErrors(prev => ({ ...prev, [productNumber]: "Something went wrong. Please try again." }))
                 }
                 setLoadingProductId(null)
                 return
             }
             const { url } = await res.json()
             if (!url) {
+                setCheckoutErrors(prev => ({ ...prev, [productNumber]: "Something went wrong. Please try again." }))
                 setLoadingProductId(null)
                 return
             }
             window.location.href = url
         } catch {
+            setCheckoutErrors(prev => ({ ...prev, [productNumber]: "Something went wrong. Please try again." }))
             setLoadingProductId(null)
         }
     }
 
     useEffect(() => {
-        const targets = [blockRef.current, comingSoonRef.current].filter(Boolean) as HTMLDivElement[]
+        const targets = [blockRef.current].filter(Boolean) as HTMLDivElement[]
         if (targets.length === 0) return
 
         gsap.set(targets, { opacity: 0, y: 24 })
@@ -100,7 +104,7 @@ export default function CatalogPage() {
     }, [])
 
     return (
-        <div className="overflow-x-hidden bg-white">
+        <div className="overflow-x-clip bg-white">
 
             {/* ── HERO ─────────────────────────────────────────────────────────── */}
             <CatalogHeroNew />
@@ -118,7 +122,9 @@ export default function CatalogPage() {
 
                     {/* ── Gallery ──────────────────────────────────────────────── */}
                     <div>
-                        <div
+                        <button
+                            type="button"
+                            aria-label="Zoom in on product photo"
                             className="relative flex aspect-square w-full cursor-zoom-in items-center justify-center overflow-hidden rounded-2xl border border-blush-200"
                             style={{ background: `linear-gradient(145deg, ${product.accent}10 0%, #ffffff 55%, ${product.accent}06 100%)` }}
                             onClick={() => setLightbox(gallery[activeImage].src)}
@@ -127,12 +133,11 @@ export default function CatalogPage() {
                                 src={gallery[activeImage].src}
                                 alt={gallery[activeImage].alt}
                                 fill
-                                quality={90}
+                                priority
                                 className={gallery[activeImage].fit === "cover" ? "object-cover" : "object-contain p-8"}
                                 sizes="(max-width: 768px) 90vw, 680px"
-                                priority
                             />
-                        </div>
+                        </button>
 
                         <div className="mt-5 grid grid-cols-5 gap-3.5">
                             {gallery.map((img, i) => (
@@ -276,6 +281,10 @@ export default function CatalogPage() {
                                 </button>
                             )}
 
+                            {checkoutErrors[product.number] && (
+                                <p className="mt-3 text-xs text-red-600">{checkoutErrors[product.number]}</p>
+                            )}
+
                             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5">
                                 {trustPoints.map(point => (
                                     <span key={point} className="text-[11px] font-semibold text-black/55">
@@ -289,39 +298,11 @@ export default function CatalogPage() {
                 </div>
             </section>
 
+            {/* ── SCIENCE ──────────────────────────────────────────────────────── */}
+            <ScienceComparison variant="tabs" />
+
             {/* ── REVIEWS ──────────────────────────────────────────────────────── */}
-            <InTheWild compact altBg />
-
-            {/* ── COMING SOON ──────────────────────────────────────────────────── */}
-            <section ref={comingSoonRef} className="relative flex min-h-[50vh] flex-col items-center justify-center overflow-hidden bg-blush-100 px-6 py-20 text-center" style={{ willChange: "transform, opacity" }}>
-                <div aria-hidden className="pointer-events-none absolute left-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#8B5CF620" }} />
-                <div aria-hidden className="pointer-events-none absolute right-1/4 top-1/2 size-96 -translate-x-1/2 -translate-y-1/2 rounded-full blur-3xl" style={{ backgroundColor: "#F59E0B18" }} />
-
-                <div className="relative z-10 max-w-2xl">
-                    <p className="mb-5 text-[10px] font-semibold uppercase tracking-[0.5em] text-black/50">
-                        Be the first to know
-                    </p>
-                    <h2 className="text-4xl font-black leading-[0.9] tracking-tight text-black md:text-5xl">
-                        New drops. <span className="text-black/35">Coming soon.</span>
-                    </h2>
-                    <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-black">
-                        Dream and Glow are in development. Stay tuned for early access and first-drop updates.
-                    </p>
-
-                    <div className="mt-10 flex flex-wrap items-center justify-center gap-3">
-                        {comingSoon.map(p => (
-                            <div
-                                key={p.number}
-                                className="flex items-center gap-2 rounded-full border bg-white px-4 py-1.5 text-xs text-black/70"
-                                style={{ borderColor: p.accent + "40" }}
-                            >
-                                <span className="size-1.5 animate-pulse rounded-full" style={{ backgroundColor: p.accent }} />
-                                {p.nameLines.join(" ")} · {p.category}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
+            <InTheWild compact />
 
             {/* ── LIGHTBOX ─────────────────────────────────────────────────────── */}
             {lightbox && (
@@ -335,12 +316,13 @@ export default function CatalogPage() {
                             alt="Product photo"
                             width={1600}
                             height={1600}
-                            quality={95}
                             sizes="80vw"
                             className="max-h-[80vh] max-w-[80vw] rounded-2xl object-contain"
                             style={{ width: "auto", height: "auto" }}
                         />
                         <button
+                            type="button"
+                            aria-label="Close image"
                             onClick={() => setLightbox(null)}
                             className="absolute -right-10 -top-10 z-10 flex size-8 items-center justify-center rounded-full bg-white/20 text-white/80 hover:bg-white/35 transition-colors"
                         >

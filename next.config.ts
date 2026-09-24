@@ -28,6 +28,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
       },
     ],
+    minimumCacheTTL: 31536000,
   },
   async headers() {
     return [

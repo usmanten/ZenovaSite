@@ -16,8 +16,6 @@ export const products = [
         darkBg: "#0d0004",
         available: true,
         slug: "strawberry-frost",
-        packImages: { 1: "/ZS_1.jpeg", 2: "/ZS_2.jpeg", 3: "/ZS_3.jpeg" } as Record<number, string>,
-        carouselImages: ["/ZS_single_front.png", "/ZS_single_back.jpeg"],
         bundles: [
             { qty: 1, days: 30, price: "$23.99", originalPrice: "$27.99", perPack: null,         perStrip: "$0.80/strip", pctOff: "14% off", badge: null },
             { qty: 2, days: 60, price: "$40.99", originalPrice: "$55.98", perPack: "$20.50/pack", perStrip: "$0.68/strip", pctOff: "27% off", badge: "Most Popular" },

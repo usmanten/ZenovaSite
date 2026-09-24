@@ -26,38 +26,20 @@ export default function FooterSection() {
       legalRef.current,
     ].filter(Boolean) as Element[]
 
+    if (elements.length === 0) return
     if (window.innerWidth < 768) return
 
     gsap.set(elements, { y: 40, opacity: 0 })
 
-    const timer = setTimeout(() => {
-      const st = ScrollTrigger.create({
-        trigger: footer,
-        start: "top 95%",
-        onEnter: () => {
-          gsap.to(elements, {
-            y: 0,
-            opacity: 1,
-            duration: 0.7,
-            stagger: 0.12,
-            ease: "power3.out",
-          })
-        },
-        onLeaveBack: () => {
-          gsap.to(elements, {
-            y: 40,
-            opacity: 0,
-            duration: 0.4,
-            stagger: 0.08,
-            ease: "power2.in",
-          })
-        },
-      })
+    const tl = gsap.timeline({
+      scrollTrigger: { trigger: footer, start: "top 95%", toggleActions: "play none none reverse" },
+    })
+    tl.to(elements, { y: 0, opacity: 1, duration: 0.7, stagger: 0.12, ease: "power3.out" })
 
-      return () => st.kill()
-    }, 300)
-
-    return () => clearTimeout(timer)
+    return () => {
+      tl.scrollTrigger?.kill()
+      tl.kill()
+    }
   }, [])
 
   return (

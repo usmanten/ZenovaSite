@@ -64,7 +64,11 @@ export default function InTheWild({ compact = false, altBg = false }: { compact?
             id="reviews"
             className={
                 "py-20 md:py-32 " +
-                (altBg ? "bg-white" : "bg-gradient-to-b from-blush-50 to-blush-100")
+                (altBg
+                    ? "bg-white"
+                    : compact
+                        ? "bg-gradient-to-b from-blush-200 to-blush-300"
+                        : "bg-gradient-to-b from-blush-50 to-blush-100")
             }
         >
             <style>{`
@@ -144,7 +148,7 @@ function MomentCard({ src, pos, alt, text, name, compact }: Moment & { compact: 
         >
             <div className="relative aspect-[3/4] w-full">
                 {src ? (
-                    <Image src={src} alt={alt} fill loading="eager" className="object-cover" style={{ objectPosition: pos }} sizes={compact ? "208px" : "256px"} />
+                    <Image src={src} alt={alt} fill className="object-cover" style={{ objectPosition: pos }} sizes={compact ? "208px" : "256px"} />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-blush-200 via-blush-100 to-blush-50">
                         <Camera className={compact ? "size-7 text-black/25" : "size-8 text-black/25"} aria-hidden />

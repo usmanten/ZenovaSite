@@ -77,6 +77,7 @@ export default function Features() {
                             width={1211}
                             height={1299}
                             alt="Zenova Strips"
+                            sizes="320px"
                             className="h-auto w-full drop-shadow-xl"
                         />
                     </div>

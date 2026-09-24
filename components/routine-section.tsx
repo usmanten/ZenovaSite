@@ -8,9 +8,9 @@ import Image from "next/image"
 gsap.registerPlugin(ScrollTrigger)
 
 const steps = [
-    { number: "01", title: "Open", instruction: "Peel open one packet.", image: "/routine-open.png", nudge: 7.0, stretch: 1.1 },
-    { number: "02", title: "Place", instruction: "Place the strip under your tongue.", image: "/routine-place.png", nudge: 0, stretch: 1 },
-    { number: "03", title: "Dissolve", instruction: "Let it dissolve. No water needed.", image: "/routine-dissolve.png", nudge: 6.85, stretch: 1 },
+    { number: "01", title: "Open", instruction: "Peel open one packet.", image: "/packet-cutout.png", width: 1036, height: 1138, maxWidth: 164, nudge: 0, stretch: 1 },
+    { number: "02", title: "Place", instruction: "Place the strip under your tongue.", image: "/routine-place.png", width: 1254, height: 1254, maxWidth: 180, nudge: 0, stretch: 1 },
+    { number: "03", title: "Dissolve", instruction: "Let it dissolve. No water needed.", image: "/routine-dissolve.png", width: 1254, height: 1254, maxWidth: 180, nudge: 6.85, stretch: 1 },
 ]
 
 export default function RoutineSection() {
@@ -77,12 +77,13 @@ export default function RoutineSection() {
                             {/* mt-auto pins each image to the bottom of its column (the text above wraps to different heights);
                                 nudge shifts each image down by the transparent gap under its content so the visible bottoms match the hand photo;
                                 stretch scales the image vertically about its visible bottom edge (packet only, to match the height of the other two) */}
-                            <div className="relative mt-auto w-full max-w-[180px] pt-4">
+                            <div className="relative mt-auto w-full pt-4" style={{ maxWidth: step.maxWidth }}>
                                 <Image
                                     src={step.image}
-                                    width={1254}
-                                    height={1254}
+                                    width={step.width}
+                                    height={step.height}
                                     alt={step.title}
+                                    sizes="200px"
                                     className="h-auto w-full drop-shadow-lg"
                                     style={{ transform: `translateY(${step.nudge}%) scaleY(${step.stretch})`, transformOrigin: "50% 92.9%" }}
                                 />

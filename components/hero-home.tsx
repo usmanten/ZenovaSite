@@ -85,6 +85,7 @@ export default function HeroHome() {
                             height={1145}
                             alt="Zenova Strips"
                             priority
+                            sizes="(max-width: 768px) 384px, 448px"
                             className="animate-gentle-sway h-auto w-full drop-shadow-2xl"
                         />
                     </div>

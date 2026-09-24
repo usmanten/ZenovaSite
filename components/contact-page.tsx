@@ -38,7 +38,7 @@ export default function ContactPage() {
     }
 
     return (
-        <div className="overflow-x-hidden">
+        <div className="overflow-x-clip">
 
             {/* ── HERO ─────────────────────────────────────────────────────────── */}
             <section className="relative flex min-h-[55vh] flex-col items-center justify-center overflow-hidden bg-blush-300 px-6 text-center">
