@@ -77,6 +77,7 @@ export default function CatalogHeroNew() {
                         {/* CTA */}
                         <div className="mt-2 flex flex-wrap items-center justify-center gap-x-6 gap-y-3 md:justify-start">
                             <Link
+                                id="hero-shop-cta"
                                 href="#products"
                                 className="group inline-flex items-center gap-3 rounded-full bg-black px-8 py-4 text-sm font-bold text-white transition-all hover:scale-[1.03] hover:bg-neutral-800 active:scale-[0.98]"
                             >

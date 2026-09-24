@@ -35,7 +35,7 @@ export default function TrustBar() {
     }, [])
 
     return (
-        <div ref={barRef} className="border-y border-blush-200 bg-blush-100 px-6 py-5" style={{ willChange: "transform, opacity" }}>
+        <div ref={barRef} className="hidden border-y border-blush-200 bg-blush-100 px-6 py-5 sm:block" style={{ willChange: "transform, opacity" }}>
             <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-10 gap-y-3">
                 {items.map((item, i) => (
                     <div key={i} className="flex items-center gap-x-10">

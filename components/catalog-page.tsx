@@ -40,6 +40,7 @@ export default function CatalogPage() {
     const [soldOutProducts, setSoldOutProducts] = useState<Record<string, boolean>>({})
     const [checkoutErrors, setCheckoutErrors] = useState<Record<string, string>>({})
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
+    const [showStickyBar, setShowStickyBar] = useState(false)
 
     const blockRef = useRef<HTMLDivElement>(null)
 
@@ -51,6 +52,22 @@ export default function CatalogPage() {
         const h = (e: KeyboardEvent) => { if (e.key === "Escape") setLightbox(null) }
         document.addEventListener("keydown", h)
         return () => document.removeEventListener("keydown", h)
+    }, [])
+
+    // Show the mobile sticky buy bar only once the hero's own "Shop Now" CTA has scrolled out of view above.
+    useEffect(() => {
+        const heroCta = document.getElementById("hero-shop-cta")
+        if (!heroCta) return
+
+        const observer = new IntersectionObserver(
+            ([entry]) => {
+                setShowStickyBar(!entry.isIntersecting && entry.boundingClientRect.top < 0)
+            },
+            { threshold: 0 }
+        )
+        observer.observe(heroCta)
+
+        return () => observer.disconnect()
     }, [])
 
     async function handleCheckout(slug: string, productNumber: string) {
@@ -104,7 +121,7 @@ export default function CatalogPage() {
     }, [])
 
     return (
-        <div className="overflow-x-clip bg-white">
+        <div className="overflow-x-clip bg-white pb-20 lg:pb-0">
 
             {/* ── HERO ─────────────────────────────────────────────────────────── */}
             <CatalogHeroNew />
@@ -303,6 +320,37 @@ export default function CatalogPage() {
 
             {/* ── REVIEWS ──────────────────────────────────────────────────────── */}
             <InTheWild compact />
+
+            {/* ── MOBILE STICKY BUY BAR ───────────────────────────────────────────── */}
+            <div
+                aria-hidden={!showStickyBar}
+                className={
+                    "fixed inset-x-0 bottom-0 z-40 flex items-center justify-between gap-3 border-t border-blush-200 bg-white/95 px-4 py-3 backdrop-blur transition-transform duration-300 lg:hidden " +
+                    (showStickyBar ? "translate-y-0" : "translate-y-full")
+                }
+                style={{ paddingBottom: "calc(0.75rem + env(safe-area-inset-bottom))" }}
+            >
+                <div>
+                    <p className="text-[10px] font-bold uppercase tracking-widest text-black/50">{product.nameLines.join(" ")}</p>
+                    <p className="text-sm font-black text-black">{active?.price}</p>
+                </div>
+                {soldOutProducts[product.number] ? (
+                    <span
+                        className="rounded-full px-5 py-2.5 text-xs font-bold"
+                        style={{ border: `1px solid ${product.accent}30`, backgroundColor: product.accent + "08", color: product.accent + "cc" }}
+                    >
+                        Sold Out
+                    </span>
+                ) : (
+                    <button
+                        onClick={() => handleCheckout(product.slug!, product.number)}
+                        disabled={loadingProductId === product.number}
+                        className="flex items-center gap-2 rounded-full bg-black px-6 py-2.5 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
+                    >
+                        {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
+                    </button>
+                )}
+            </div>
 
             {/* ── LIGHTBOX ─────────────────────────────────────────────────────── */}
             {lightbox && (
