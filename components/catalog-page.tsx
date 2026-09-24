@@ -347,7 +347,7 @@ export default function CatalogPage() {
                         disabled={loadingProductId === product.number}
                         className="flex items-center gap-2 rounded-full bg-black px-6 py-2.5 text-sm font-bold text-white transition-all active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-70"
                     >
-                        {loadingProductId === product.number ? "Redirecting…" : "Shop Now"}
+                        {loadingProductId === product.number ? "Redirecting…" : "Buy"}
                     </button>
                 )}
             </div>
