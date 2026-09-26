@@ -16,13 +16,16 @@ if (!pmcId) throw new Error("Missing env var: STRIPE_PAYMENT_METHOD_CONFIG_ID")
 const baseUrlEnv = process.env.NEXT_PUBLIC_BASE_URL!
 if (!baseUrlEnv) throw new Error("Missing env var: NEXT_PUBLIC_BASE_URL")
 
+const welcomeCouponId = process.env.STRIPE_WELCOME_COUPON_ID!
+if (!welcomeCouponId) throw new Error("Missing env var: STRIPE_WELCOME_COUPON_ID")
+
 export async function POST(req: NextRequest) {
     const origin = req.headers.get("origin") ?? ""
     if (origin !== baseUrlEnv) {
         return NextResponse.json({ error: "Forbidden" }, { status: 403 })
     }
 
-    const { slug, bundle } = await req.json()
+    const { slug, bundle, discountCode } = await req.json()
 
     const product = PRODUCTS[slug]
     if (!product) {
@@ -47,6 +50,21 @@ export async function POST(req: NextRequest) {
     }
     // ─────────────────────────────────────────────────────────────────────────
 
+    // ── Welcome discount code (from the email-signup popup) ───────────────────
+    let welcomeDiscountCode: string | null = null
+    if (discountCode) {
+        const { data: discountRow } = await supabase
+            .from("discount_codes")
+            .select("code, used_at")
+            .eq("code", String(discountCode).trim())
+            .maybeSingle()
+
+        if (discountRow && !discountRow.used_at) {
+            welcomeDiscountCode = discountRow.code
+        }
+    }
+    // ─────────────────────────────────────────────────────────────────────────
+
     const productName = bundleQty > 1
         ? `${product.name} (${bundleQty}-Pack)`
         : product.name
@@ -66,12 +84,18 @@ export async function POST(req: NextRequest) {
             quantity: 1,
         }],
         client_reference_id: orderNumber,
-        metadata: { bundle_qty: String(bundleQty), order_number: orderNumber },
+        metadata: {
+            bundle_qty: String(bundleQty),
+            order_number: orderNumber,
+            ...(welcomeDiscountCode ? { discount_code: welcomeDiscountCode } : {}),
+        },
         payment_intent_data: {
             metadata: { order_number: orderNumber },
             description: `Zenova order ${orderNumber}`,
         },
-        allow_promotion_codes: true,
+        ...(welcomeDiscountCode
+            ? { discounts: [{ coupon: welcomeCouponId }] }
+            : { allow_promotion_codes: true }),
         automatic_tax: { enabled: true },
         shipping_address_collection: {
             allowed_countries: ["US"],

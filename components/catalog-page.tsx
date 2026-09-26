@@ -13,6 +13,7 @@ import { products } from "@/components/catalog-data"
 import InTheWild from "@/components/in-the-wild"
 import CatalogHeroNew from "@/components/catalog-hero-new"
 import ScienceComparison from "@/components/science-comparison"
+import { STORAGE_CODE_KEY, STORAGE_USED_KEY } from "@/components/email-discount-popup"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -41,6 +42,8 @@ export default function CatalogPage() {
     const [checkoutErrors, setCheckoutErrors] = useState<Record<string, string>>({})
     const [selectedBundles, setSelectedBundles] = useState<Record<string, number>>({})
     const [showStickyBar, setShowStickyBar] = useState(false)
+    const [showDiscountInput, setShowDiscountInput] = useState(false)
+    const [discountCode, setDiscountCode] = useState("")
 
     const blockRef = useRef<HTMLDivElement>(null)
 
@@ -70,6 +73,27 @@ export default function CatalogPage() {
         return () => observer.disconnect()
     }, [])
 
+    // Auto-fill the discount code field for anyone who already has an unused
+    // welcome code saved from the email popup, so they don't have to retype it.
+    useEffect(() => {
+        if (localStorage.getItem(STORAGE_USED_KEY) === "true") return
+
+        const savedCode = localStorage.getItem(STORAGE_CODE_KEY)
+        if (!savedCode) return
+
+        fetch(`/api/discount-status?code=${encodeURIComponent(savedCode)}`)
+            .then(res => res.json())
+            .then((data: { used?: boolean }) => {
+                if (data.used) {
+                    localStorage.setItem(STORAGE_USED_KEY, "true")
+                    return
+                }
+                setDiscountCode(savedCode)
+                setShowDiscountInput(true)
+            })
+            .catch(() => {})
+    }, [])
+
     async function handleCheckout(slug: string, productNumber: string) {
         setLoadingProductId(productNumber)
         setCheckoutErrors(prev => ({ ...prev, [productNumber]: "" }))
@@ -77,7 +101,11 @@ export default function CatalogPage() {
             const res = await fetch("/api/checkout", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ slug, bundle: getBundle(productNumber) }),
+                body: JSON.stringify({
+                    slug,
+                    bundle: getBundle(productNumber),
+                    discountCode: discountCode.trim() || undefined,
+                }),
             })
             if (!res.ok) {
                 const body = await res.json().catch(() => ({}))
@@ -301,6 +329,27 @@ export default function CatalogPage() {
                             {checkoutErrors[product.number] && (
                                 <p className="mt-3 text-xs text-red-600">{checkoutErrors[product.number]}</p>
                             )}
+
+                            <div className="mt-4">
+                                {showDiscountInput ? (
+                                    <input
+                                        type="text"
+                                        autoFocus
+                                        value={discountCode}
+                                        onChange={e => setDiscountCode(e.target.value)}
+                                        placeholder="Enter code"
+                                        className="w-full rounded-full border border-blush-200 px-4 py-2.5 text-sm text-black outline-none focus:border-blush-500"
+                                    />
+                                ) : (
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowDiscountInput(true)}
+                                        className="text-xs font-semibold text-black/50 underline decoration-black/30 underline-offset-4 hover:text-black"
+                                    >
+                                        Have a discount code?
+                                    </button>
+                                )}
+                            </div>
 
                             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1.5">
                                 {trustPoints.map(point => (

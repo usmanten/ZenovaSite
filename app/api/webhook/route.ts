@@ -320,6 +320,16 @@ export async function POST(req: NextRequest) {
                     const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
                     if (rpcError) console.error("Failed to increment orders_placed:", rpcError.message)
 
+                    // ── Mark welcome discount code as redeemed ────────────────
+                    const usedDiscountCode = fullSession.metadata?.discount_code
+                    if (usedDiscountCode) {
+                        const { error: discountError } = await supabase
+                            .from("discount_codes")
+                            .update({ used_at: new Date().toISOString() })
+                            .eq("code", usedDiscountCode)
+                        if (discountError) console.error("Failed to mark discount code as used:", discountError.message)
+                    }
+
                     // ── New order notification to admin(s) ────────────────────
                     try {
                         const resend = new Resend(process.env.RESEND_API_KEY)
