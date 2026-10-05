@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react"
 import { motion } from "motion/react"
 
 const POLL_INTERVAL_MS = 20000
-const TILE_HEIGHT = 44 // px, keep in sync with the h-11 tile class below
+const TILE_HEIGHT = 60 // px, keep in sync with the inline style below
 
 function DigitRoller({ digit }: { digit: number }) {
     return (
         <div
-            className="relative w-6 overflow-hidden sm:w-7"
+            className="relative w-8 overflow-hidden sm:w-10"
             style={{ height: TILE_HEIGHT }}
             aria-hidden
         >
@@ -21,13 +21,30 @@ function DigitRoller({ digit }: { digit: number }) {
                     <div
                         key={n}
                         className="flex items-center justify-center font-black text-blush-950"
-                        style={{ height: TILE_HEIGHT, fontSize: "1.5rem" }}
+                        style={{ height: TILE_HEIGHT, fontSize: "2rem" }}
                     >
                         {n}
                     </div>
                 ))}
             </motion.div>
         </div>
+    )
+}
+
+function Flourish({ flip = false }: { flip?: boolean }) {
+    return (
+        <span
+            aria-hidden
+            className="h-3.5 w-10"
+            style={{
+                backgroundImage: "repeating-linear-gradient(115deg, currentColor 0, currentColor 1.5px, transparent 1.5px, transparent 6px)",
+                color: "var(--color-blush-400, #E8A0B2)",
+                opacity: 0.6,
+                transform: flip ? "scaleX(-1)" : undefined,
+                maskImage: "linear-gradient(to " + (flip ? "left" : "right") + ", black, transparent)",
+                WebkitMaskImage: "linear-gradient(to " + (flip ? "left" : "right") + ", black, transparent)",
+            }}
+        />
     )
 }
 
@@ -64,38 +81,38 @@ export default function StripCounter() {
     const chars = formatted.split("")
 
     return (
-        <div className="relative mx-auto flex w-full max-w-xs flex-col items-center gap-4 text-center">
+        <div className="relative mx-auto flex w-full max-w-xs flex-col items-center gap-5 text-center">
 
             {/* LIVE badge */}
             <div className="flex items-center gap-3">
-                <span aria-hidden className="h-px w-6 bg-blush-950/20" />
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-600 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                <Flourish />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-600 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
                     <span className="relative flex size-1.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
                         <span className="relative inline-flex size-1.5 rounded-full bg-white" />
                     </span>
                     Live
                 </span>
-                <span aria-hidden className="h-px w-6 bg-blush-950/20" />
+                <Flourish flip />
             </div>
 
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
+            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
                 Strips Remaining
             </p>
 
             {/* Digit tiles */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
                 {chars.map((ch, i) =>
                     ch === "," ? (
-                        <span key={i} className="w-2 text-xl font-black text-blush-950/40">,</span>
+                        <span key={i} className="w-2.5 text-2xl font-black text-blush-950/30">,</span>
                     ) : (
                         <div
                             key={i}
-                            className="flex items-center justify-center rounded-lg bg-white shadow-sm shadow-black/5"
+                            className="flex items-center justify-center rounded-xl bg-white shadow-md shadow-black/10 ring-1 ring-black/5"
                             style={{ height: TILE_HEIGHT }}
                         >
                             {remaining !== null ? <DigitRoller digit={Number(ch)} /> : (
-                                <span className="w-6 text-center font-black text-blush-950 sm:w-7" style={{ fontSize: "1.5rem" }}>
+                                <span className="w-8 text-center font-black text-blush-950 sm:w-10" style={{ fontSize: "2rem" }}>
                                     {ch}
                                 </span>
                             )}
@@ -105,11 +122,11 @@ export default function StripCounter() {
             </div>
 
             <div className="flex items-center gap-3">
-                <span aria-hidden className="h-px w-8 bg-blush-950/20" />
-                <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
+                <Flourish />
+                <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
                     And Counting
                 </p>
-                <span aria-hidden className="h-px w-8 bg-blush-950/20" />
+                <Flourish flip />
             </div>
 
         </div>
