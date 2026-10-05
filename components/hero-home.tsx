@@ -8,6 +8,7 @@ import { AnimatedGroup } from '@/components/ui/animated-group'
 import { HeroHeader } from './header'
 import { AnnouncementBar } from './announcement-bar'
 import TrustBar from './trust-bar'
+import StripCounter from './strip-counter'
 
 const transitionVariants = {
     item: {
@@ -29,7 +30,7 @@ export default function HeroHome() {
             <main className="overflow-hidden bg-blush-300 text-blush-950">
 
                 {/* ── HERO ─────────────────────────────────────────────────────── */}
-                <section className="relative grid items-center gap-8 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-2 md:px-16 md:pt-20 md:pb-20 lg:px-24">
+                <section className="relative grid items-center gap-10 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-6 md:px-16 md:pt-20 md:pb-20 lg:px-24">
 
                     {/* Left — copy */}
                     <div className="relative z-10 flex flex-col items-start gap-4 text-left">
@@ -76,6 +77,9 @@ export default function HeroHome() {
                             </Link>
                         </AnimatedGroup>
                     </div>
+
+                    {/* Middle — live strips-remaining counter */}
+                    <StripCounter />
 
                     {/* Right — floating product shot */}
                     <div className="relative mx-auto w-full max-w-sm md:max-w-md">
