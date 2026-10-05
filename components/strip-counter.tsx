@@ -4,12 +4,12 @@ import { useEffect, useRef, useState } from "react"
 import { motion } from "motion/react"
 
 const POLL_INTERVAL_MS = 20000
-const TILE_HEIGHT = 60 // px, keep in sync with the inline style below
+const TILE_HEIGHT = 60 // px — only the height needs to be a fixed JS constant, it drives the roll-offset math below
 
 function DigitRoller({ digit }: { digit: number }) {
     return (
         <div
-            className="relative w-8 overflow-hidden sm:w-10"
+            className="relative w-9 overflow-hidden sm:w-[52px]"
             style={{ height: TILE_HEIGHT }}
             aria-hidden
         >
@@ -36,10 +36,8 @@ function Sparkle({ flip = false }: { flip?: boolean }) {
     return (
         <svg
             aria-hidden
-            width="28"
-            height="20"
             viewBox="0 0 28 20"
-            className="text-blush-400"
+            className="h-3.5 w-5 shrink-0 text-blush-400 sm:h-5 sm:w-7"
             style={{ transform: flip ? "scaleX(-1)" : undefined }}
         >
             <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
@@ -104,24 +102,28 @@ export default function StripCounter() {
             </p>
 
             {/* Digit tiles */}
-            <div className="flex items-center gap-1.5">
-                {chars.map((ch, i) =>
-                    ch === "," ? (
-                        <span key={i} className="w-2.5 text-2xl font-black text-blush-900/40">,</span>
-                    ) : (
-                        <div
-                            key={i}
-                            className="flex items-center justify-center rounded-xl bg-blush-100 shadow-md shadow-black/10 ring-1 ring-black/5"
-                            style={{ height: TILE_HEIGHT }}
-                        >
-                            {remaining !== null ? <DigitRoller digit={Number(ch)} /> : (
-                                <span className="w-8 text-center font-black text-blush-900 sm:w-10" style={{ fontSize: "2rem" }}>
-                                    {ch}
-                                </span>
-                            )}
-                        </div>
-                    )
-                )}
+            <div className="flex items-center gap-1.5 sm:gap-2">
+                <Sparkle />
+                <div className="flex items-center gap-1 sm:gap-1.5">
+                    {chars.map((ch, i) =>
+                        ch === "," ? (
+                            <span key={i} className="w-2 text-xl font-black text-blush-900/40 sm:w-2.5 sm:text-2xl">,</span>
+                        ) : (
+                            <div
+                                key={i}
+                                className="flex w-9 items-center justify-center rounded-xl bg-blush-100 shadow-md shadow-black/10 ring-1 ring-black/5 sm:w-[52px]"
+                                style={{ height: TILE_HEIGHT }}
+                            >
+                                {remaining !== null ? <DigitRoller digit={Number(ch)} /> : (
+                                    <span className="text-center font-black text-blush-900" style={{ fontSize: "2rem" }}>
+                                        {ch}
+                                    </span>
+                                )}
+                            </div>
+                        )
+                    )}
+                </div>
+                <Sparkle flip />
             </div>
 
             <div className="flex items-center gap-3">
