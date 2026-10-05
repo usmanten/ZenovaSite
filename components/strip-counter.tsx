@@ -20,7 +20,7 @@ function DigitRoller({ digit }: { digit: number }) {
                 {Array.from({ length: 10 }, (_, n) => (
                     <div
                         key={n}
-                        className="flex items-center justify-center font-black text-blush-950"
+                        className="flex items-center justify-center font-black text-blush-900"
                         style={{ height: TILE_HEIGHT, fontSize: "2rem" }}
                     >
                         {n}
@@ -31,20 +31,23 @@ function DigitRoller({ digit }: { digit: number }) {
     )
 }
 
-function Flourish({ flip = false }: { flip?: boolean }) {
+// Small radiating sparkle-burst — 3 short rays fanning outward, mirrored for the opposite side.
+function Sparkle({ flip = false }: { flip?: boolean }) {
     return (
-        <span
+        <svg
             aria-hidden
-            className="h-3.5 w-10"
-            style={{
-                backgroundImage: "repeating-linear-gradient(115deg, currentColor 0, currentColor 1.5px, transparent 1.5px, transparent 6px)",
-                color: "var(--color-blush-400, #E8A0B2)",
-                opacity: 0.6,
-                transform: flip ? "scaleX(-1)" : undefined,
-                maskImage: "linear-gradient(to " + (flip ? "left" : "right") + ", black, transparent)",
-                WebkitMaskImage: "linear-gradient(to " + (flip ? "left" : "right") + ", black, transparent)",
-            }}
-        />
+            width="28"
+            height="20"
+            viewBox="0 0 28 20"
+            className="text-blush-400"
+            style={{ transform: flip ? "scaleX(-1)" : undefined }}
+        >
+            <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+                <line x1="2" y1="3" x2="9" y2="7" />
+                <line x1="1" y1="10" x2="10" y2="10" />
+                <line x1="2" y1="17" x2="9" y2="13" />
+            </g>
+        </svg>
     )
 }
 
@@ -85,15 +88,15 @@ export default function StripCounter() {
 
             {/* LIVE badge */}
             <div className="flex items-center gap-3">
-                <Flourish />
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-600 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
+                <Sparkle />
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-blush-900 px-4 py-1.5 text-[10px] font-bold uppercase tracking-widest text-white">
                     <span className="relative flex size-1.5">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/80" />
                         <span className="relative inline-flex size-1.5 rounded-full bg-white" />
                     </span>
                     Live
                 </span>
-                <Flourish flip />
+                <Sparkle flip />
             </div>
 
             <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
@@ -104,15 +107,15 @@ export default function StripCounter() {
             <div className="flex items-center gap-1.5">
                 {chars.map((ch, i) =>
                     ch === "," ? (
-                        <span key={i} className="w-2.5 text-2xl font-black text-blush-950/30">,</span>
+                        <span key={i} className="w-2.5 text-2xl font-black text-blush-900/40">,</span>
                     ) : (
                         <div
                             key={i}
-                            className="flex items-center justify-center rounded-xl bg-white shadow-md shadow-black/10 ring-1 ring-black/5"
+                            className="flex items-center justify-center rounded-xl bg-blush-100 shadow-md shadow-black/10 ring-1 ring-black/5"
                             style={{ height: TILE_HEIGHT }}
                         >
                             {remaining !== null ? <DigitRoller digit={Number(ch)} /> : (
-                                <span className="w-8 text-center font-black text-blush-950 sm:w-10" style={{ fontSize: "2rem" }}>
+                                <span className="w-8 text-center font-black text-blush-900 sm:w-10" style={{ fontSize: "2rem" }}>
                                     {ch}
                                 </span>
                             )}
@@ -122,11 +125,11 @@ export default function StripCounter() {
             </div>
 
             <div className="flex items-center gap-3">
-                <Flourish />
+                <span aria-hidden className="h-px w-8 bg-blush-300" />
                 <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
                     And Counting
                 </p>
-                <Flourish flip />
+                <span aria-hidden className="h-px w-8 bg-blush-300" />
             </div>
 
         </div>
