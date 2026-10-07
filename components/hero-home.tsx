@@ -1,14 +1,15 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import Link from 'next/link'
-import { ArrowRight } from 'lucide-react'
+import { ArrowRight, Trophy } from 'lucide-react'
 import Image from 'next/image'
 import { AnimatedGroup } from '@/components/ui/animated-group'
 import { HeroHeader } from './header'
 import { AnnouncementBar } from './announcement-bar'
 import TrustBar from './trust-bar'
 import StripCounter from './strip-counter'
+import LeaderboardModal from './leaderboard-modal'
 
 const transitionVariants = {
     item: {
@@ -23,6 +24,8 @@ const transitionVariants = {
 }
 
 export default function HeroHome() {
+    const [showLeaderboard, setShowLeaderboard] = useState(false)
+
     return (
         <>
             <HeroHeader />
@@ -79,7 +82,16 @@ export default function HeroHome() {
                     </div>
 
                     {/* Middle — live strips-remaining counter */}
-                    <StripCounter />
+                    <div className="flex flex-col items-center gap-5">
+                        <StripCounter />
+                        <button
+                            onClick={() => setShowLeaderboard(true)}
+                            className="inline-flex items-center gap-2 rounded-full bg-blush-700 px-6 py-3 text-sm font-bold text-white transition-all hover:scale-[1.03] hover:bg-blush-800 active:scale-[0.98]"
+                        >
+                            <Trophy className="size-4" />
+                            View Cash Prize Leaderboard
+                        </button>
+                    </div>
 
                     {/* Right — floating product shot */}
                     <div className="relative mx-auto w-full max-w-sm md:max-w-md">
@@ -99,6 +111,8 @@ export default function HeroHome() {
                 <AnnouncementBar />
 
             </main>
+
+            <LeaderboardModal open={showLeaderboard} onClose={() => setShowLeaderboard(false)} />
         </>
     )
 }

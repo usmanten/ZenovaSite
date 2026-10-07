@@ -60,6 +60,8 @@ If a product is listed with incorrect pricing or information, Zenova MM reserves
 
 Offers for products are void where prohibited by law.
 
+Purchases may automatically count toward Zenova's customer leaderboard. Customer names are anonymized on the public leaderboard. You can opt out of leaderboard participation at any time via the opt-out link included in your order confirmation email.
+
 ---
 
 ## 5. Payment Processing
@@ -292,7 +294,7 @@ By using our Services, you consent to the collection and use of your information
 
 We collect personal information that you voluntarily provide when interacting with our Services.
 
-This information may include your name, email address, phone number, shipping address, products purchased, order details, transaction history, and payment information.
+This information may include your name, email address, phone number, shipping address, products purchased, order details, transaction history, payment information, and information associated with participation in promotional features such as our customer leaderboard, including purchase quantities, leaderboard position, and leaderboard preferences.
 
 Payments are processed through third-party payment processors such as Stripe. Zenova MM does not store complete credit card or payment details on our servers.
 
@@ -338,7 +340,23 @@ We may use personal information for purposes including processing and fulfilling
 
 ---
 
-## 6. Sharing of Personal Information
+## 6. Customer Leaderboard
+
+Zenova MM may operate a customer leaderboard that recognizes customers based on eligible purchases made through our Services.
+
+When you make an eligible purchase, certain information associated with your purchase, such as the quantity of products or strips purchased, may be used to calculate your position on the leaderboard.
+
+We do not publicly display your full name, email address, shipping address, payment information, or other direct contact information on the leaderboard. Customer identities displayed on the public leaderboard are masked or otherwise presented in a manner designed to avoid publicly identifying individual customers.
+
+Participation in the leaderboard is optional. Customers may opt out of leaderboard participation using the opt-out option provided in their order confirmation email or through other methods we may make available. Customers may also contact us at info@zenovastrips.com to request removal from the leaderboard.
+
+If you opt out, your customer information and eligible purchases will no longer be displayed or attributed to you on the public leaderboard. Your opt-out will not affect our retention or use of transaction information where necessary to process orders, maintain business records, prevent fraud, comply with legal obligations, or otherwise operate our Services.
+
+We may modify, suspend, or discontinue the leaderboard or its rules at any time.
+
+---
+
+## 7. Sharing of Personal Information
 
 Zenova MM does not sell personal information.
 
@@ -350,7 +368,7 @@ We may also disclose personal information if required to comply with legal oblig
 
 ---
 
-## 7. Data Retention
+## 8. Data Retention
 
 We retain personal information only for as long as necessary to fulfill orders, provide services, comply with legal obligations, resolve disputes, and enforce our policies.
 
@@ -358,7 +376,7 @@ When personal information is no longer required, we will securely delete or anon
 
 ---
 
-## 8. Data Security
+## 9. Data Security
 
 Zenova MM maintains administrative, technical, and physical safeguards designed to protect personal information from unauthorized access, disclosure, or misuse.
 
@@ -366,7 +384,7 @@ However, no internet transmission or electronic storage system can be guaranteed
 
 ---
 
-## 9. Children's Privacy
+## 10. Children's Privacy
 
 Our Services are not directed toward children under the age of 13.
 
@@ -376,7 +394,7 @@ Parents or guardians who believe their child has provided personal information m
 
 ---
 
-## 10. Third-Party Services
+## 11. Third-Party Services
 
 Our website may use or link to third-party services including payment processors, analytics tools, and marketing providers.
 
@@ -384,7 +402,7 @@ These third parties operate under their own privacy policies, and Zenova MM is n
 
 ---
 
-## 11. California Privacy Rights
+## 12. California Privacy Rights
 
 Residents of California may have certain rights under the California Consumer Privacy Act (CCPA) and California Privacy Rights Act (CPRA), including the right to request access to personal information collected about them, the right to request deletion of personal information, the right to correct inaccurate personal information, and the right to opt out of the sale of personal information.
 
@@ -394,7 +412,7 @@ California residents may contact us to exercise privacy rights using the contact
 
 ---
 
-## 12. International Data Transfers
+## 13. International Data Transfers
 
 Zenova MM operates in the United States.
 
@@ -404,7 +422,7 @@ By using our Services, you consent to such transfers.
 
 ---
 
-## 13. Changes to This Privacy Policy
+## 14. Changes to This Privacy Policy
 
 We may update this Privacy Policy periodically.
 
@@ -414,7 +432,7 @@ Your continued use of the Services after changes are posted constitutes acceptan
 
 ---
 
-## 14. Contact Information
+## 15. Contact Information
 
 Zenova MM
 info@zenovastrips.com

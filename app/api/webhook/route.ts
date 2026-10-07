@@ -3,6 +3,9 @@ import Stripe from "stripe"
 import { Resend } from "resend"
 import { purchaseShippingLabel, type ShipmentResult } from "@/lib/shippo"
 import { supabase } from "@/lib/supabase"
+import { signOptOutToken } from "@/lib/leaderboard-optout"
+
+const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ?? "https://zenovastrips.com"
 
 const stripeKey = process.env.STRIPE_SECRET_KEY
 if (!stripeKey) throw new Error("Missing env var: STRIPE_SECRET_KEY")
@@ -137,6 +140,7 @@ export async function POST(req: NextRequest) {
                 try {
                     const resend = new Resend(process.env.RESEND_API_KEY)
                     const firstName = toName.split(" ")[0]
+                    const leaderboardOptOutUrl = `${baseUrl}/api/leaderboard-optout?email=${encodeURIComponent(toEmail)}&token=${signOptOutToken(toEmail)}`
                     await resend.emails.send({
                         from: fromEmail,
                         to: toEmail,
@@ -241,6 +245,9 @@ export async function POST(req: NextRequest) {
   <tr><td align="center">
     <p style="margin:0 0 12px;font-size:12px;color:#ffffff;">
       Questions? <a href="https://zenovastrips.com/contact" style="color:#FF4D6D;text-decoration:none;">Contact us</a>
+    </p>
+    <p style="margin:0 0 12px;font-size:11px;color:rgba(255,255,255,0.6);">
+      Your order may appear anonymized on our public leaderboard (first/last initial only). <a href="${leaderboardOptOutUrl}" style="color:rgba(255,255,255,0.6);">Prefer not to be included?</a>
     </p>
     <p style="margin:0;font-size:11px;color:#ffffff;">&copy; 2026 Zenova Strips &mdash; zenovastrips.com</p>
   </td></tr>

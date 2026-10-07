@@ -37,10 +37,10 @@ function Sparkle({ flip = false }: { flip?: boolean }) {
         <svg
             aria-hidden
             viewBox="0 0 28 20"
-            className="h-3.5 w-5 shrink-0 text-blush-400 sm:h-5 sm:w-7"
+            className="h-3.5 w-5 shrink-0 text-blush-900 sm:h-5 sm:w-7"
             style={{ transform: flip ? "scaleX(-1)" : undefined }}
         >
-            <g stroke="currentColor" strokeWidth="1.5" strokeLinecap="round">
+            <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
                 <line x1="2" y1="3" x2="9" y2="7" />
                 <line x1="1" y1="10" x2="10" y2="10" />
                 <line x1="2" y1="17" x2="9" y2="13" />
@@ -103,7 +103,6 @@ export default function StripCounter() {
 
             {/* Digit tiles */}
             <div className="flex items-center gap-1.5 sm:gap-2">
-                <Sparkle />
                 <div className="flex items-center gap-1 sm:gap-1.5">
                     {chars.map((ch, i) =>
                         ch === "," ? (
@@ -123,7 +122,6 @@ export default function StripCounter() {
                         )
                     )}
                 </div>
-                <Sparkle flip />
             </div>
 
             <div className="flex items-center gap-3">
