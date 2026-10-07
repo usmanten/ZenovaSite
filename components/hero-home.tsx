@@ -88,7 +88,7 @@ export default function HeroHome() {
                         </div>
                         <button
                             onClick={() => setShowLeaderboard(true)}
-                            className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-blush-700 bg-white/60 px-5 py-3 text-sm font-bold text-blush-700 transition-all hover:scale-[1.03] hover:bg-blush-700 hover:text-white active:scale-[0.98] lg:px-4 lg:text-xs lg:gap-1.5 2xl:px-6 2xl:text-sm 2xl:gap-2"
+                            className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-blush-700 bg-white/60 px-5 py-3 text-sm font-bold text-blush-700 transition-all hover:scale-[1.03] hover:bg-blush-700 hover:text-white active:scale-[0.98] lg:-mt-4 lg:px-4 lg:text-xs lg:gap-1.5 2xl:mt-0 2xl:px-6 2xl:text-sm 2xl:gap-2"
                         >
                             <Trophy className="size-4" />
                             <span className="sm:hidden">Cash Prize Leaderboard</span>
