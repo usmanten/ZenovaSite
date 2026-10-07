@@ -83,7 +83,7 @@ export default function HeroHome() {
 
                     {/* Middle — live strips-remaining counter */}
                     <div className="order-3 flex flex-col items-center gap-3 md:order-none md:gap-5">
-                        <div className="scale-90 py-2 md:scale-125 md:py-6">
+                        <div className="scale-90 py-2 md:scale-100 md:py-3 lg:scale-110 lg:py-4 xl:scale-125 xl:py-6">
                             <StripCounter />
                         </div>
                         <button
