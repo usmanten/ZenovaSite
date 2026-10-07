@@ -30,26 +30,19 @@ export default function Features() {
         gsap.set(photo, { opacity: 0, y: 30 })
         gsap.set(statsRow, { opacity: 0, y: 20 })
 
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: heading,
-                start: "top 80%",
-                toggleActions: "play none none none",
-            },
-        })
+        const tl = gsap.timeline()
 
         tl.to(heading, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0)
             .to(photo, { opacity: 1, y: 0, duration: 0.7, ease: "power2.out" }, 0.15)
             .to(statsRow, { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }, 0.35)
 
         return () => {
-            tl.scrollTrigger?.kill()
             tl.kill()
         }
     }, [])
 
     return (
-        <section className="w-full bg-white px-6 py-20 md:px-16 lg:px-24">
+        <section className="w-full bg-white px-6 pb-20 pt-10 md:px-16 md:pt-12 lg:px-24">
             <div className="mx-auto max-w-6xl">
 
                 <div className="grid items-center gap-12 md:grid-cols-2">

@@ -4,13 +4,14 @@ import { useEffect, useRef, useState } from "react"
 import { motion } from "motion/react"
 
 const POLL_INTERVAL_MS = 20000
-const TILE_HEIGHT = 60 // px — only the height needs to be a fixed JS constant, it drives the roll-offset math below
+const TILE_HEIGHT = 72 // px — only the height needs to be a fixed JS constant, it drives the roll-offset math below
+const TILE_WIDTH = 56 // px — narrower than TILE_HEIGHT for a taller, more rectangular tile
 
 function DigitRoller({ digit }: { digit: number }) {
     return (
         <div
-            className="relative w-9 overflow-hidden sm:w-[52px]"
-            style={{ height: TILE_HEIGHT }}
+            className="relative overflow-hidden"
+            style={{ height: TILE_HEIGHT, width: TILE_WIDTH }}
             aria-hidden
         >
             <motion.div
@@ -21,9 +22,11 @@ function DigitRoller({ digit }: { digit: number }) {
                     <div
                         key={n}
                         className="flex items-center justify-center font-black text-blush-900"
-                        style={{ height: TILE_HEIGHT, fontSize: "2rem" }}
+                        style={{ height: TILE_HEIGHT, fontSize: "2.6rem" }}
                     >
-                        {n}
+                        <span className="inline-block" style={{ transform: "scaleY(1.1)" }}>
+                            {n}
+                        </span>
                     </div>
                 ))}
             </motion.div>
@@ -41,9 +44,9 @@ function Sparkle({ flip = false }: { flip?: boolean }) {
             style={{ transform: flip ? "scaleX(-1)" : undefined }}
         >
             <g stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <line x1="2" y1="3" x2="9" y2="7" />
-                <line x1="1" y1="10" x2="10" y2="10" />
-                <line x1="2" y1="17" x2="9" y2="13" />
+                <line x1="4" y1="1" x2="9" y2="5" />
+                <line x1="0" y1="10" x2="12" y2="10" />
+                <line x1="3" y1="19" x2="10" y2="14" />
             </g>
         </svg>
     )
@@ -97,24 +100,31 @@ export default function StripCounter() {
                 <Sparkle flip />
             </div>
 
-            <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
+            <p className="text-sm font-black uppercase tracking-[0.3em] text-blush-900 sm:text-base">
                 Strips Remaining
             </p>
 
-            {/* Digit tiles */}
-            <div className="flex items-center gap-1.5 sm:gap-2">
-                <div className="flex items-center gap-1 sm:gap-1.5">
+            {/* Tile row + "And Counting" share this stretch column so the divider
+                lines below always span exactly to the tile row's own width, no
+                matter how many digits are currently showing. */}
+            <div className="flex flex-col items-stretch gap-4">
+                <div className="flex items-center justify-center gap-0.5 sm:gap-1">
                     {chars.map((ch, i) =>
                         ch === "," ? (
-                            <span key={i} className="w-2 text-xl font-black text-blush-900/40 sm:w-2.5 sm:text-2xl">,</span>
+                            <span key={i} className="relative top-2 w-2.5 text-2xl font-black text-blush-900 sm:w-3 sm:text-3xl">
+                                ,
+                            </span>
                         ) : (
                             <div
                                 key={i}
-                                className="flex w-9 items-center justify-center rounded-xl bg-blush-100 shadow-md shadow-black/10 ring-1 ring-black/5 sm:w-[52px]"
-                                style={{ height: TILE_HEIGHT }}
+                                className="flex items-center justify-center rounded-md bg-blush-50"
+                                style={{ height: TILE_HEIGHT, width: TILE_WIDTH }}
                             >
                                 {remaining !== null ? <DigitRoller digit={Number(ch)} /> : (
-                                    <span className="text-center font-black text-blush-900" style={{ fontSize: "2rem" }}>
+                                    <span
+                                        className="inline-block text-center font-black text-blush-900"
+                                        style={{ fontSize: "2.6rem", transform: "scaleY(1.1)" }}
+                                    >
                                         {ch}
                                     </span>
                                 )}
@@ -122,14 +132,14 @@ export default function StripCounter() {
                         )
                     )}
                 </div>
-            </div>
 
-            <div className="flex items-center gap-3">
-                <span aria-hidden className="h-px w-8 bg-blush-300" />
-                <p className="text-[11px] font-bold uppercase tracking-[0.3em] text-blush-950/60">
-                    And Counting
-                </p>
-                <span aria-hidden className="h-px w-8 bg-blush-300" />
+                <div className="flex items-center gap-3">
+                    <span aria-hidden className="h-px flex-1 bg-blush-600" />
+                    <p className="shrink-0 text-sm font-bold uppercase tracking-[0.3em] text-blush-950/60">
+                        And Counting
+                    </p>
+                    <span aria-hidden className="h-px flex-1 bg-blush-600" />
+                </div>
             </div>
 
         </div>
