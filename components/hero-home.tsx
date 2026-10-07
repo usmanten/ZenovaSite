@@ -33,7 +33,7 @@ export default function HeroHome() {
             <main className="overflow-hidden bg-blush-300 text-blush-950">
 
                 {/* ── HERO ─────────────────────────────────────────────────────── */}
-                <section className="relative grid items-center gap-6 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-8 md:px-16 md:pt-20 md:pb-20 lg:px-24">
+                <section className="relative grid items-center gap-6 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-6 md:px-16 md:pt-20 md:pb-20 lg:px-24">
 
                     {/* Left — copy */}
                     <div className="relative z-10 min-w-0 flex flex-col items-center gap-4 text-center md:items-start md:text-left">
@@ -83,12 +83,12 @@ export default function HeroHome() {
 
                     {/* Middle — live strips-remaining counter */}
                     <div className="order-3 min-w-0 flex flex-col items-center gap-3 md:order-none md:gap-5">
-                        <div className="scale-90 py-2 md:scale-100 md:py-3 lg:scale-110 lg:py-4 xl:scale-125 xl:py-6">
+                        <div className="scale-90 py-2 md:scale-100 md:py-3 lg:scale-[0.825] lg:py-3 xl:scale-[0.9375] xl:py-4 2xl:scale-125 2xl:py-6">
                             <StripCounter />
                         </div>
                         <button
                             onClick={() => setShowLeaderboard(true)}
-                            className="group inline-flex items-center gap-2 rounded-full border-2 border-blush-700 bg-white/60 px-6 py-3 text-sm font-bold text-blush-700 transition-all hover:scale-[1.03] hover:bg-blush-700 hover:text-white active:scale-[0.98]"
+                            className="group inline-flex items-center gap-2 whitespace-nowrap rounded-full border-2 border-blush-700 bg-white/60 px-5 py-3 text-sm font-bold text-blush-700 transition-all hover:scale-[1.03] hover:bg-blush-700 hover:text-white active:scale-[0.98] lg:px-4 lg:text-xs lg:gap-1.5 2xl:px-6 2xl:text-sm 2xl:gap-2"
                         >
                             <Trophy className="size-4" />
                             <span className="sm:hidden">Cash Prize Leaderboard</span>
@@ -98,7 +98,7 @@ export default function HeroHome() {
                     </div>
 
                     {/* Right — floating product shot */}
-                    <div className="order-2 relative mx-auto w-full min-w-0 max-w-sm md:order-none md:max-w-md lg:max-w-[380px] 2xl:max-w-md">
+                    <div className="order-2 relative mx-auto w-full min-w-0 max-w-sm md:order-none md:max-w-md lg:ml-auto lg:mr-0 lg:max-w-[381px] 2xl:mx-auto 2xl:max-w-md">
                         <Image
                             src="/hero-product.png"
                             width={1374}
