@@ -33,7 +33,7 @@ export default function HeroHome() {
             <main className="overflow-hidden bg-blush-300 text-blush-950">
 
                 {/* ── HERO ─────────────────────────────────────────────────────── */}
-                <section className="relative grid items-center gap-6 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-6 md:px-16 md:pt-20 md:pb-20 lg:px-24">
+                <section className="relative grid items-center gap-6 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-8 md:px-16 md:pt-20 md:pb-20 lg:px-24">
 
                     {/* Left — copy */}
                     <div className="relative z-10 min-w-0 flex flex-col items-center gap-4 text-center md:items-start md:text-left">
@@ -98,7 +98,7 @@ export default function HeroHome() {
                     </div>
 
                     {/* Right — floating product shot */}
-                    <div className="order-2 relative mx-auto w-full min-w-0 max-w-sm md:order-none md:max-w-md">
+                    <div className="order-2 relative mx-auto w-full min-w-0 max-w-sm md:order-none md:max-w-md lg:max-w-[380px] 2xl:max-w-md">
                         <Image
                             src="/hero-product.png"
                             width={1374}
