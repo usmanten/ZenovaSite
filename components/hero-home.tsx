@@ -36,7 +36,7 @@ export default function HeroHome() {
                 <section className="relative grid items-center gap-6 overflow-hidden px-6 pt-14 pb-14 md:grid-cols-[1.1fr_0.8fr_1fr] md:gap-6 md:px-16 md:pt-20 md:pb-20 lg:px-24">
 
                     {/* Left — copy */}
-                    <div className="relative z-10 flex flex-col items-center gap-4 text-center md:items-start md:text-left">
+                    <div className="relative z-10 min-w-0 flex flex-col items-center gap-4 text-center md:items-start md:text-left">
                         <AnimatedGroup
                             variants={{
                                 container: {
@@ -82,7 +82,7 @@ export default function HeroHome() {
                     </div>
 
                     {/* Middle — live strips-remaining counter */}
-                    <div className="order-3 flex flex-col items-center gap-3 md:order-none md:gap-5">
+                    <div className="order-3 min-w-0 flex flex-col items-center gap-3 md:order-none md:gap-5">
                         <div className="scale-90 py-2 md:scale-100 md:py-3 lg:scale-110 lg:py-4 xl:scale-125 xl:py-6">
                             <StripCounter />
                         </div>
@@ -98,7 +98,7 @@ export default function HeroHome() {
                     </div>
 
                     {/* Right — floating product shot */}
-                    <div className="order-2 relative mx-auto w-full max-w-sm md:order-none md:max-w-md">
+                    <div className="order-2 relative mx-auto w-full min-w-0 max-w-sm md:order-none md:max-w-md">
                         <Image
                             src="/hero-product.png"
                             width={1374}
