@@ -1,4 +1,5 @@
 import { Shippo } from "shippo"
+import { clampQuantity, selectCheapestRate } from "@/lib/shippo-helpers"
 
 const shippo = new Shippo({ apiKeyHeader: process.env.SHIPPO_API_KEY! })
 
@@ -24,7 +25,7 @@ export interface ShipmentResult {
 }
 
 export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentResult> {
-    const qty = Math.max(1, Math.min(3, order.quantity ?? 1))
+    const qty = clampQuantity(order.quantity)
     const shipment = await shippo.shipments.create({
         addressFrom: {
             name: process.env.SHIPPO_FROM_NAME!,
@@ -64,18 +65,7 @@ export async function purchaseShippingLabel(order: OrderData): Promise<ShipmentR
     })
 
     const rates = shipment.rates ?? []
-    if (rates.length === 0) {
-        throw new Error("No shipping rates returned for this shipment")
-    }
-
-    // Pick the cheapest available rate
-    const cheapestRate = rates
-        .filter((r) => r.objectId && parseFloat(r.amount ?? "999") > 0)
-        .sort((a, b) => parseFloat(a.amount ?? "0") - parseFloat(b.amount ?? "0"))[0]
-
-    if (!cheapestRate?.objectId) {
-        throw new Error("Could not determine a valid shipping rate")
-    }
+    const cheapestRate = selectCheapestRate(rates)
 
     const transaction = await shippo.transactions.create({
         rate: cheapestRate.objectId,

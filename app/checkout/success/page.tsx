@@ -34,7 +34,7 @@ export default async function CheckoutSuccess({
                     <span className="text-blush-600">purchase.</span>
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-black/60">
-                    Your Zenova strips are on their way. You'll receive a confirmation email shortly.
+                    Your Zenova strips are on their way. You&apos;ll receive a confirmation email shortly.
                 </p>
 
                 <div className="mt-10 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">

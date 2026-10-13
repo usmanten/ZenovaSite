@@ -1,0 +1,51 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm test
+
+      - run: npm run build
+        env:
+          # Placeholder values only — just enough for `next build` to statically
+          # evaluate the API routes, which validate required env vars on load.
+          STRIPE_SECRET_KEY: sk_test_dummy
+          STRIPE_WEBHOOK_SECRET: whsec_dummy
+          STRIPE_SHIPPING_RATE_ID: shr_dummy
+          STRIPE_PAYMENT_METHOD_CONFIG_ID: pmc_dummy
+          STRIPE_WELCOME_COUPON_ID: dummy
+          SUPABASE_URL: https://example.supabase.co
+          SUPABASE_SERVICE_ROLE_KEY: dummy
+          SHIPPO_API_KEY: dummy
+          SHIPPO_FROM_NAME: Test
+          SHIPPO_FROM_STREET1: 123 Test St
+          SHIPPO_FROM_CITY: Test City
+          SHIPPO_FROM_STATE: CA
+          SHIPPO_FROM_ZIP: "00000"
+          SHIPPO_FROM_PHONE: "+10000000000"
+          SHIPPO_FROM_EMAIL: test@example.com
+          RESEND_API_KEY: dummy
+          RESEND_FROM_EMAIL: "Zenova <test@example.com>"
+          ADMIN_EMAIL: test@example.com
+          RESEND_AUDIENCE_API_KEY: dummy
+          RESEND_AUDIENCE_ID: dummy
+          LEADERBOARD_OPTOUT_SECRET: dummy
+          NEXT_PUBLIC_BASE_URL: http://localhost:3000

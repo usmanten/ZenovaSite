@@ -15,7 +15,7 @@ export default function CheckoutCancel() {
                     <span className="text-blush-600">Come back anytime.</span>
                 </h1>
                 <p className="mt-6 text-sm leading-relaxed text-black">
-                    Your cart was not charged. Head back to the catalog whenever you're ready.
+                    Your cart was not charged. Head back to the catalog whenever you&apos;re ready.
                 </p>
 
                 <div className="mt-10">
