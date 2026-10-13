@@ -168,12 +168,12 @@ export default function LeaderboardModal({ open, onClose }: { open: boolean; onC
                             {/* Stats bar */}
                             <div className="mt-8">
                                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                                    <div className="flex items-center gap-3 rounded-2xl bg-blush-100/70 px-4 py-4 sm:px-5">
-                                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blush-200/80 text-blush-900">
-                                            <Package className="size-5" />
+                                    <div className="flex items-center gap-2 rounded-2xl bg-blush-100/70 px-3 py-3 sm:gap-3 sm:px-5 sm:py-4">
+                                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-blush-200/80 text-blush-900 sm:size-10">
+                                            <Package className="size-4 sm:size-5" />
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="truncate text-xl font-black text-blush-900 sm:text-2xl">
+                                            <p className="break-words font-black leading-tight text-blush-900 text-lg sm:text-2xl">
                                                 {claimed.toLocaleString()}
                                             </p>
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-blush-950/50">
@@ -181,12 +181,12 @@ export default function LeaderboardModal({ open, onClose }: { open: boolean; onC
                                             </p>
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 rounded-2xl bg-blush-100/70 px-4 py-4 sm:px-5">
-                                        <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-blush-200/80 text-blush-900">
-                                            <Package className="size-5" />
+                                    <div className="flex items-center gap-2 rounded-2xl bg-blush-100/70 px-3 py-3 sm:gap-3 sm:px-5 sm:py-4">
+                                        <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-blush-200/80 text-blush-900 sm:size-10">
+                                            <Package className="size-4 sm:size-5" />
                                         </span>
                                         <div className="min-w-0">
-                                            <p className="truncate text-xl font-black text-blush-900 sm:text-2xl">
+                                            <p className="break-words font-black leading-tight text-blush-900 text-lg sm:text-2xl">
                                                 {remaining.toLocaleString()}
                                             </p>
                                             <p className="text-[10px] font-bold uppercase tracking-widest text-blush-950/50">

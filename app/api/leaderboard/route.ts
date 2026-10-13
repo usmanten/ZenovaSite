@@ -6,7 +6,7 @@ import { anonymizeName } from "@/lib/anonymize-name"
 const LEADERBOARD_LIMIT = 10
 // True original starting point (as opposed to the homepage counter's 72,990 baseline-adjusted
 // figure, which exists only because historical/offline orders predate full Supabase tracking).
-const LEADERBOARD_TOTAL_STRIPS = 100000
+const LEADERBOARD_TOTAL_STRIPS = 90000
 
 type LeaderboardRow = {
     customer_name: string | null
