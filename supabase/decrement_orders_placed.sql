@@ -1,0 +1,12 @@
+-- SNAPSHOT NEEDED: paste the current live body of this function here before it's
+-- retired, purely for rollback/reference purposes.
+--
+-- Source: Supabase dashboard → Database → Functions → decrement_orders_placed → Definition.
+--
+-- RETIRED as of the inventory-counter-drift fix: app/api/webhook/route.ts no longer
+-- calls this function on refund. Marking an order `refunded = true` (already happening)
+-- is now sufficient on its own, since get_claimed_packs() excludes refunded rows at
+-- read time — there's no separate counter left to decrement.
+--
+-- Not dropped from Supabase yet — kept as a rollback window. Safe to drop once the new
+-- path has been live and verified correct for a while (see supabase/README.md).

@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server"
 import Stripe from "stripe"
 import { PRODUCTS } from "@/lib/products"
 import { supabase } from "@/lib/supabase"
+import { getStripsInventory } from "@/lib/strips-inventory"
+import { STARTING_STRIPS, STRIPS_PER_PACK } from "@/lib/strips-inventory-math"
 
 const stripeKey = process.env.STRIPE_SECRET_KEY!
 if (!stripeKey) throw new Error("Missing env var: STRIPE_SECRET_KEY")
@@ -39,13 +41,8 @@ export async function POST(req: NextRequest) {
     }
 
     // ── Inventory gate ────────────────────────────────────────────────────────
-    const { data: inv } = await supabase
-        .from("inventory")
-        .select("max_orders, orders_placed")
-        .eq("id", 1)
-        .single()
-
-    if (inv && inv.orders_placed + bundleQty > inv.max_orders) {
+    const { claimed } = await getStripsInventory()
+    if (claimed + bundleQty * STRIPS_PER_PACK > STARTING_STRIPS) {
         return NextResponse.json({ error: "sold_out" }, { status: 409 })
     }
     // ─────────────────────────────────────────────────────────────────────────

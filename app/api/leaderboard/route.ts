@@ -4,9 +4,6 @@ import { getStripsInventory } from "@/lib/strips-inventory"
 import { anonymizeName } from "@/lib/anonymize-name"
 
 const LEADERBOARD_LIMIT = 10
-// True original starting point (as opposed to the homepage counter's 72,990 baseline-adjusted
-// figure, which exists only because historical/offline orders predate full Supabase tracking).
-const LEADERBOARD_TOTAL_STRIPS = 90000
 
 type LeaderboardRow = {
     customer_name: string | null
@@ -20,12 +17,12 @@ export async function GET() {
         getStripsInventory(),
     ])
 
-    const claimed = LEADERBOARD_TOTAL_STRIPS - inventory.remaining
+    const { claimed, remaining, total } = inventory
 
     if (error) {
         console.error("Failed to load leaderboard:", error.message)
         return NextResponse.json(
-            { entries: [], claimed, remaining: inventory.remaining, total: LEADERBOARD_TOTAL_STRIPS },
+            { entries: [], claimed, remaining, total },
             { headers: { "Cache-Control": "no-store" } }
         )
     }
@@ -38,7 +35,7 @@ export async function GET() {
     }))
 
     return NextResponse.json(
-        { entries, claimed, remaining: inventory.remaining, total: LEADERBOARD_TOTAL_STRIPS },
+        { entries, claimed, remaining, total },
         { headers: { "Cache-Control": "no-store" } }
     )
 }
