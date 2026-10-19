@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
         if (paymentIntent) {
             const { data: order } = await supabase
                 .from("orders")
-                .select("id, order_quantity")
+                .select("id")
                 .eq("stripe_payment_intent", paymentIntent)
                 .maybeSingle()
 
@@ -54,9 +54,6 @@ export async function POST(req: NextRequest) {
 
                 if (error) {
                     console.error("Failed to mark order as refunded:", error.message)
-                } else {
-                    const { error: rpcError } = await supabase.rpc("decrement_orders_placed", { qty: order.order_quantity })
-                    if (rpcError) console.error("Failed to decrement orders_placed:", rpcError.message)
                 }
             }
         }
@@ -323,10 +320,6 @@ export async function POST(req: NextRequest) {
                         console.error("Failed to send insert failure alert:", alertErr)
                     }
                 } else {
-                    // Atomically increment orders_placed
-                    const { error: rpcError } = await supabase.rpc("increment_orders_placed", { qty: orderQty })
-                    if (rpcError) console.error("Failed to increment orders_placed:", rpcError.message)
-
                     // ── Mark welcome discount code as redeemed ────────────────
                     const usedDiscountCode = fullSession.metadata?.discount_code
                     if (usedDiscountCode) {

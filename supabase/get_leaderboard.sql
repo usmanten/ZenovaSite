@@ -1,0 +1,13 @@
+-- SNAPSHOT NEEDED: paste the current live body of this function here.
+--
+-- Source: Supabase dashboard → Database → Functions → get_leaderboard → Definition.
+-- This function is still in active use (app/api/leaderboard/route.ts calls it via
+-- `supabase.rpc("get_leaderboard", { limit_count })`) and is NOT changed by the
+-- inventory-counter-drift fix. This file exists purely to bring it under version
+-- control for the first time, since it currently lives only in the Supabase SQL
+-- editor with no history/review trail.
+--
+-- Expected to return rows shaped like: { customer_name, total_strips, total_orders },
+-- already sorted by rank, and presumably excluding emails present in
+-- `leaderboard_optouts` (that filtering logic is unverified from the app code alone —
+-- confirm it's actually doing that when you paste the real definition in).

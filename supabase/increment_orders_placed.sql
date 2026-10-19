@@ -1,0 +1,15 @@
+-- SNAPSHOT NEEDED: paste the current live body of this function here before it's
+-- retired, purely for rollback/reference purposes.
+--
+-- Source: Supabase dashboard → Database → Functions → increment_orders_placed → Definition.
+--
+-- RETIRED as of the inventory-counter-drift fix: app/api/webhook/route.ts no longer
+-- calls this function. The public "claimed/remaining" numbers are now derived live
+-- from the `orders` table via get_claimed_packs() instead of a separately-maintained
+-- counter on `inventory.orders_placed`. This was the root cause of a silent-drift bug:
+-- the webhook called this RPC as a second, non-atomic network call AFTER inserting the
+-- order row, and only logged to console (no retry, no alert) if the call failed —
+-- so an order could be correctly recorded in `orders` while never bumping this counter.
+--
+-- Not dropped from Supabase yet — kept as a rollback window. Safe to drop once the new
+-- path has been live and verified correct for a while (see supabase/README.md).
